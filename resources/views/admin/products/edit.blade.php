@@ -1,6 +1,6 @@
 @extends('layouts.static')
 
-@section('title', 'Create New Product')
+@section('title', 'Edit Product')
 
 @section('content')
 <main class="flex-grow container mx-auto px-4 py-8">
@@ -19,10 +19,16 @@
                         <a href="{{ route('admin.product.index') }}" class="text-gray-500 hover:text-primary">Products</a>
                     </div>
                 </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2 text-xs"></i>
+                        <a href="{{ route('admin.products.show', $product->id) }}" class="text-gray-500 hover:text-primary">{{ $product->product_name }}</a>
+                    </div>
+                </li>
                 <li aria-current="page">
                     <div class="flex items-center">
                         <i class="fas fa-chevron-right text-gray-400 mx-2 text-xs"></i>
-                        <span class="text-primary font-medium">Create New Product</span>
+                        <span class="text-primary font-medium">Edit</span>
                     </div>
                 </li>
             </ol>
@@ -30,32 +36,29 @@
 
         <!-- Page Title -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-neutral">Create New Product</h1>
-            <p class="text-gray-600 mt-2">Add a new duck product to your inventory</p>
+            <h1 class="text-3xl font-bold text-neutral">Edit Product</h1>
+            <p class="text-gray-600 mt-2">Update product information</p>
         </div>
 
-        <!-- Create Product Form -->
+        <!-- Edit Product Form -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <div class="p-8">
-                <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     
                     <!-- Product Image -->
                     <div class="mb-6">
                         <label for="product_image" class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
                         <div class="flex items-center">
-                            <div class="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 mr-4">
-                                <img id="image_preview" src="#" alt="Preview" class="w-full h-full object-cover rounded-lg hidden">
-                                <div id="upload_prompt" class="text-center">
-                                    <i class="fas fa-cloud-upload-alt text-gray-400 text-2xl mb-2"></i>
-                                    <p class="text-sm text-gray-500">Upload Image</p>
-                                </div>
+                            <div class="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 mr-4 overflow-hidden">
+                                <img id="image_preview" src="{{ asset($product->product_image) }}" alt="{{ $product->product_name }}" class="w-full h-full object-cover rounded-lg">
                             </div>
                             <div class="flex-1">
                                 <input type="file" id="product_image" name="product_image" 
                                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
                                     onchange="previewImage(this)">
-                                <p class="mt-1 text-xs text-gray-500">PNG, JPG or JPEG (max. 2MB)</p>
+                                <p class="mt-1 text-xs text-gray-500">PNG, JPG or JPEG (max. 2MB). Leave empty to keep current image.</p>
                             </div>
                         </div>
                         @error('product_image')
@@ -68,7 +71,7 @@
                         <label for="product_name" class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
                         <input type="text" id="product_name" name="product_name" 
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                            placeholder="Enter product name" value="{{ old('product_name') }}" required>
+                            placeholder="Enter product name" value="{{ old('product_name', $product->product_name) }}" required>
                         @error('product_name')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -79,7 +82,7 @@
                         <label for="product_id" class="block text-sm font-medium text-gray-700 mb-2">Product ID</label>
                         <input type="text" id="product_id" name="product_id" 
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                            placeholder="Enter product ID" value="{{ old('product_id') }}" required>
+                            placeholder="Enter product ID" value="{{ old('product_id', $product->product_id) }}" required>
                         @error('product_id')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -94,7 +97,7 @@
                             </div>
                             <input type="number" id="product_price" name="product_price" step="0.01" min="0" 
                                 class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                                placeholder="0.00" value="{{ old('product_price') }}" required>
+                                placeholder="0.00" value="{{ old('product_price', $product->product_price) }}" required>
                         </div>
                         @error('product_price')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -106,7 +109,7 @@
                         <label for="product_stock" class="block text-sm font-medium text-gray-700 mb-2">Stock Quantity</label>
                         <input type="number" id="product_stock" name="product_stock" min="0" 
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                            placeholder="Enter stock quantity" value="{{ old('product_stock', 0) }}" required>
+                            placeholder="Enter stock quantity" value="{{ old('product_stock', $product->product_stock) }}" required>
                         @error('product_stock')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -117,7 +120,7 @@
                         <label for="product_description" class="block text-sm font-medium text-gray-700 mb-2">Product Description</label>
                         <textarea id="product_description" name="product_description" rows="5" 
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                            placeholder="Enter product description">{{ old('product_description') }}</textarea>
+                            placeholder="Enter product description">{{ old('product_description', $product->product_description) }}</textarea>
                         @error('product_description')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -125,13 +128,13 @@
 
                     <!-- Form Actions -->
                     <div class="flex justify-end space-x-4">
-                        <a href="{{ route('admin.product.index') }}" 
+                        <a href="{{ route('admin.products.show', $product->id) }}" 
                             class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
                             Cancel
                         </a>
                         <button type="submit" 
-                            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-colors">
-                            Create Product
+                            class="px-6 py-3 bg-secondary text-white rounded-lg hover:bg-opacity-90 transition-colors">
+                            Update Product
                         </button>
                     </div>
                 </form>
@@ -144,15 +147,12 @@
 <script>
     function previewImage(input) {
         const preview = document.getElementById('image_preview');
-        const uploadPrompt = document.getElementById('upload_prompt');
         
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             
             reader.onload = function(e) {
                 preview.src = e.target.result;
-                preview.classList.remove('hidden');
-                uploadPrompt.classList.add('hidden');
             }
             
             reader.readAsDataURL(input.files[0]);

@@ -15,7 +15,7 @@
                     </div>
                     <div>
                         <h4 class="font-semibold text-xl text-neutral mb-2">Our Location</h4>
-                        <p class="text-gray-600">123 Duck Street, Pond City, DC 12345</p>
+                        <p class="text-gray-600">Ligaw Street, Macatoc, Victoria City, Oriental Mindoro</p>
                     </div>
                 </div>
                 
@@ -25,17 +25,35 @@
                     </div>
                     <div>
                         <h4 class="font-semibold text-xl text-neutral mb-2">Phone Number</h4>
-                        <p class="text-gray-600">+1 (555) 123-4567</p>
+                        <p class="text-gray-600">+63977 619 3200</p>
                     </div>
                 </div>
                 
-                <div class="flex items-start space-x-6">
-                    <div class="w-14 h-14 bg-accent text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                        <i class="fas fa-envelope text-2xl"></i>
+                <div class="flex flex-col space-y-6">
+                    <!-- Email Contact -->
+                    <div class="flex items-start space-x-4">
+                        <div class="w-14 h-14 bg-accent text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                            <i class="fas fa-envelope text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-xl text-neutral mb-2">Email Address</h4>
+                            <p class="text-gray-600">jmcasabar@gmail.com</p>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-semibold text-xl text-neutral mb-2">Email Address</h4>
-                        <p class="text-gray-600">jmcasabar@gmail.com</p>
+                    
+                    <!-- Facebook Contact -->
+                    <div class="flex items-start space-x-4">
+                        <div class="w-14 h-14 bg-accent text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                            <i class="fab fa-facebook-f text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-xl text-neutral mb-2">Facebook Account</h4>
+                            <p class="text-gray-600">
+                                <a href="https://www.facebook.com/share/18gxfPvdFU/" class="hover:text-primary transition-colors">
+                                    facebook.com/share/18gxfPvdFU
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

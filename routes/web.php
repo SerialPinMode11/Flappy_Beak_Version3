@@ -47,6 +47,12 @@ Route::middleware("auth")->group(function(){
 Route::middleware("auth")->group(function(){
     Route::get('/admin/dashboard', [AdminBillingController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout'); 
+
+    //personal
+    Route::get('/admin/personal', [AdminController::class, 'toPersonal'])->name('admin.personal');
+
+    //hardware ESP32
+    Route::get('/admin/hardware-esp32', [AdminController::class, 'toHardware'])->name('admin.hardware_esp32');
    
     //biling
     Route::get('/admin/billing', [AdminBillingController::class, 'index'])->name('admin.billing.index');

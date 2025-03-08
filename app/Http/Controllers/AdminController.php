@@ -47,4 +47,14 @@ class AdminController extends Controller
     {
         return view('auth.adregister');
     }
+    public function toPersonal()
+    {
+        return view('admin.personal');
+    }
+
+    public function toHardware()
+    {
+        return view('admin.hardware');
+    }
+    
 }
