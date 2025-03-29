@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminBillingController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AnadminController;
+use App\Http\Controllers\PageController;
 
 Route::get('/', function () { return view('welcome'); } );
 
@@ -23,6 +24,9 @@ Route::post('/admin/register', [AnadminController::class, 'registerPost'])->name
 
 Route::get("/register", [AuthController::class, "register"])->name('register');
 Route::post("/register", [AuthController::class, "registerPost"])->name("register.post");
+
+//Page Not Found
+Route::get("/PageNotFound", [PageController::class, "Page404"])->name("page404");
 
 //customer routes
 Route::middleware("auth")->group(function(){
