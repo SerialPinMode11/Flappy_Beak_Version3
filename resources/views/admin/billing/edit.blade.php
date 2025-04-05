@@ -110,7 +110,7 @@
             </div>
             
             <div class="mt-6 flex justify-end">
-                <button type="submit" class="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark transition-colors">
+                <button type="submit" class="bg-primary text-black px-6 py-2 rounded-md hover:bg-primary-dark transition-colors">
                     Update Billing Information
                 </button>
             </div>

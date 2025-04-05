@@ -116,7 +116,7 @@
                             <i class="fas fa-shopping-cart mr-2"></i>
                             Add to Cart
                         </button>
-                        <button type="button" onclick="buyNow()" 
+                        <button type="submit" 
                             class="flex-1 bg-secondary hover:bg-opacity-90 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center">
                             <i class="fas fa-bolt mr-2"></i>
                             Buy Now

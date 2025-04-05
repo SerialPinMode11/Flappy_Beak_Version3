@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminBillingController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AnadminController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ExpenseController;
 
 Route::get('/', function () { return view('welcome'); } );
 
@@ -53,7 +54,10 @@ Route::middleware("auth")->group(function(){
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout'); 
 
     //personal
-    Route::get('/admin/personal', [AdminController::class, 'toPersonal'])->name('admin.personal');
+    Route::get('/admin/personal', [AnadminController::class, 'index'])->name('admin.personal');
+    Route::get('/admin/personal/create', [AnadminController::class, 'create'])->name('admin.personal.create');
+    Route::post('/admin/personal/store', [AnadminController::class, 'store'])->name('admin.personal.store');
+    Route::delete('/admin/personal/{id}', [AnadminController::class, 'destroy'])->name('admin.personal.destroy');
 
     //hardware ESP32
     Route::get('/admin/hardware-esp32', [AdminController::class, 'toHardware'])->name('admin.hardware_esp32');
@@ -71,4 +75,13 @@ Route::middleware("auth")->group(function(){
     Route::get('/admin/products/{id}/edit', [AdminProductController::class, 'edit'])->name('admin.products.edit');
     Route::put('/admin/products/{id}', [AdminProductController::class, 'update'])->name('admin.products.update');
     Route::delete('/admin/products/{id}', [AdminProductController::class, 'destroy'])->name('admin.products.destroy');
+
+    //expenses table
+    Route::get('/admin/expenses', [ExpenseController::class, 'index'])->name('admin.expense.index');
+    Route::get('/admin/expenses/create', [ExpenseController::class, 'create'])->name('admin.expense.create');
+    Route::get('/admin/expenses/show{id}', [ExpenseController::class, 'show'])->name('admin.expense.show');
+    Route::get('/admin/expenses/{id}', [ExpenseController::class, 'edit'])->name('admin.expense.edit');
+    Route::post('/admin/expenses/store', [ExpenseController::class, 'store'])->name('admin.expense.store');
+    Route::put('/admin/expenses/update/{id}', [ExpenseController::class, 'update'])->name('admin.expense.update');
+    Route::delete('/admin/expenses/{id}', [ExpenseController::class, 'destroy'])->name('admin.expense.destroy');
 });

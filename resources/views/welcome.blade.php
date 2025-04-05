@@ -120,11 +120,11 @@
                             </div>
                             <span class="text-slate-500 text-sm">(42 reviews)</span>
                         </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">Premium Whole Duck</h3>
+                        <h3 class="font-bold text-lg text-teal-900 mb-1">Butchered Raw Pekin Duck Meat</h3>
                         <p class="text-slate-600 text-sm mb-3">Farm-raised, hand-processed whole duck, perfect for roasting.</p>
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">$24.99</span>
-                            <span class="text-slate-400 line-through">$32.99</span>
+                            <span class="text-emerald-600 font-bold text-xl">₱1650.00</span>
+                            <span class="text-slate-400 line-through">₱2000.00</span>
                             <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 24%</span>
                         </div>
                         <div class="flex gap-2">
@@ -165,8 +165,8 @@
                         <h3 class="font-bold text-lg text-teal-900 mb-1">Deluxe Pekin Egg Set</h3>
                         <p class="text-slate-600 text-sm mb-3">Farm-fresh duck eggs, rich in flavor and perfect for baking.</p>
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">$18.99</span>
-                            <span class="text-slate-400 line-through">$24.99</span>
+                            <span class="text-emerald-600 font-bold text-xl">₱300.00</span>
+                            <span class="text-slate-400 line-through">₱350.00</span>
                             <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 24%</span>
                         </div>
                         <div class="flex gap-2">
@@ -204,11 +204,11 @@
                             </div>
                             <span class="text-slate-500 text-sm">(29 reviews)</span>
                         </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">Drake Pekin Duck</h3>
+                        <h3 class="font-bold text-lg text-teal-900 mb-1">Adult Drake Pekin Duck</h3>
                         <p class="text-slate-600 text-sm mb-3">Healthy adult male Pekin duck for breeding or farm raising.</p>
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">$45.99</span>
-                            <span class="text-slate-400 line-through">$54.99</span>
+                            <span class="text-emerald-600 font-bold text-xl">₱2500.00</span>
+                            <span class="text-slate-400 line-through">₱3000.00</span>
                             <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 16%</span>
                         </div>
                         <div class="flex gap-2">
@@ -246,11 +246,11 @@
                             </div>
                             <span class="text-slate-500 text-sm">(35 reviews)</span>
                         </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">Hen Pekin Duck</h3>
+                        <h3 class="font-bold text-lg text-teal-900 mb-1">Adult Hen Pekin Duck</h3>
                         <p class="text-slate-600 text-sm mb-3">Healthy adult female Pekin duck, excellent egg layer.</p>
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">$48.99</span>
-                            <span class="text-slate-400 line-through">$59.99</span>
+                            <span class="text-emerald-600 font-bold text-xl">₱3300.00</span>
+                            <span class="text-slate-400 line-through">₱4000.00</span>
                             <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 18%</span>
                         </div>
                         <div class="flex gap-2">
@@ -288,11 +288,11 @@
                             </div>
                             <span class="text-slate-500 text-sm">(52 reviews)</span>
                         </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">Week-Old Duckling</h3>
+                        <h3 class="font-bold text-lg text-teal-900 mb-1">One-Week-Old Duckling</h3>
                         <p class="text-slate-600 text-sm mb-3">Adorable one-week-old Pekin duckling, healthy and active.</p>
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">$15.99</span>
-                            <span class="text-slate-400 line-through">$19.99</span>
+                            <span class="text-emerald-600 font-bold text-xl">₱3000.00</span>
+                            <span class="text-slate-400 line-through">₱3500.00</span>
                             <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 20%</span>
                         </div>
                         <div class="flex gap-2">
@@ -308,11 +308,7 @@
                 
             </div>
             
-            <div class="text-center mt-12">
-                <a href="#" onclick="redirectToLogin(event)" class="inline-block border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 font-semibold px-6 py-3 rounded-lg transition-colors">
-                    View All Products
-                </a>
-            </div>
+           
         </div>
     </section>
 
@@ -406,21 +402,6 @@
         </div>
     </section>
 
-    <!-- Newsletter -->
-    <section class="py-12 bg-emerald-600 text-white">
-        <div class="container mx-auto px-4">
-            <div class="max-w-3xl mx-auto text-center">
-                <h2 class="text-2xl font-bold mb-4">Join Our Newsletter</h2>
-                <p class="mb-6">Subscribe to receive updates on new products, special offers, and duck farming tips.</p>
-                <form class="flex flex-col sm:flex-row gap-2 max-w-lg mx-auto">
-                    <input type="email" placeholder="Enter your email address" class="flex-1 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 text-slate-800">
-                    <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-teal-900 font-semibold px-6 py-3 rounded-lg transition-colors">
-                        Subscribe
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="bg-teal-900 text-white pt-12 pb-6">
@@ -458,15 +439,15 @@
                     <ul class="space-y-2">
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-map-marker-alt mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">123 Duck Farm Road, Countryside, PH</span>
+                            <span class="text-teal-200">Barangay Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</span>
                         </li>
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-phone mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">+63 123 456 7890</span>
+                            <span class="text-teal-200">+63 977 6193 200</span>
                         </li>
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-envelope mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">info@flappybeak.com</span>
+                            <span class="text-teal-200">jmcasabar@gmail.com</span>
                         </li>
                     </ul>
                 </div>

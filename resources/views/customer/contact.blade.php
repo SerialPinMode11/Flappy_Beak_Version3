@@ -15,7 +15,7 @@
                     </div>
                     <div>
                         <h4 class="font-semibold text-xl text-neutral mb-2">Our Location</h4>
-                        <p class="text-gray-600">Ligaw Street, Macatoc, Victoria City, Oriental Mindoro</p>
+                        <p class="text-gray-600">Barangay Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</p>
                     </div>
                 </div>
                 

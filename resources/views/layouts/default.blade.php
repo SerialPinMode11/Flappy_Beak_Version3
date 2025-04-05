@@ -211,32 +211,20 @@
                     <ul class="space-y-2">
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-map-marker-alt mt-1 text-primary"></i>
-                            <span class="text-gray-300">123 Duck Farm Road, Countryside, PH</span>
+                            <span class="text-gray-300">Barangay Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</span>
                         </li>
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-phone mt-1 text-primary"></i>
-                            <span class="text-gray-300">+63 123 456 7890</span>
+                            <span class="text-gray-300">+63 977 6193 200</span>
                         </li>
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-envelope mt-1 text-primary"></i>
-                            <span class="text-gray-300">info@flappybeak.com</span>
+                            <span class="text-gray-300">jmcasabar@gmail.com</span>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Newsletter -->
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
-                    <p class="text-gray-300 text-sm mb-4">Subscribe to receive updates about our products and special offers.</p>
-                    <form class="flex">
-                        <input type="email" 
-                               placeholder="Your email" 
-                               class="flex-1 px-4 py-2 rounded-l-lg focus:outline-none text-neutral">
-                        <button class="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded-r-lg transition-colors">
-                            Subscribe
-                        </button>
-                    </form>
-                </div>
+                
             </div>
 
             <!-- Footer Bottom -->

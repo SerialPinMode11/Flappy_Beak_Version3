@@ -30,7 +30,7 @@ class AnadminController extends Controller
         $credentials = $request->only('email', 'password');
         
         if(Auth::attempt($credentials)){
-            return redirect()->intended(route ("admin.index"));
+            return redirect()->intended(route("admin.index"));
         }
 
         return back()->with('error', 'Invalid login credentials');
@@ -39,7 +39,7 @@ class AnadminController extends Controller
     public function registerPost(Request $request) {
         $request->validate([
             "name" => "required",
-            "email" => "required",
+            "email" => "required|email|unique:admins",
             "password" => "required"
         ]);
         $user = new Admin();
@@ -47,12 +47,9 @@ class AnadminController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         if ($user->save()){
-            return redirect()->route('login')->with('success', 'USer Registration Successful');
+            return redirect()->route('login')->with('success', 'User Registration Successful');
         }
         return redirect()->route('register')->with('error', 'User Registration Failed');
-
-        // Store user data in the database
-
     }
 
     /**
@@ -75,4 +72,50 @@ class AnadminController extends Controller
         
         return redirect()->route('admin.login');
     }
+
+    //Next Page Function
+    public function index(){
+        $users = Admin::latest()->paginate(10);
+
+        return view('admin.personal', compact('users'));
+    }
+
+    public function create(){
+        return view('admin.personal.create');
+    }
+
+    /**
+     * Store a newly created admin user in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            "name" => "required",
+            "email" => "required|email|unique:admins",
+            "password" => "required",
+            "role" => "required"
+        ]);
+
+        // Create new admin user
+        $admin = new Admin();
+        $admin->name = $request->name;
+        $admin->email = $request->email;
+        $admin->password = Hash::make($request->password);
+        $admin->role = $request->role;
+        $admin->save();
+
+        return redirect()->route('admin.personal')->with('success', 'Admin User added successfully!');
+    }
+
+    /**
+     * Remove the specified admin user from storage.
+     */
+    public function destroy($id)
+    {
+        $admin = Admin::findOrFail($id);
+        $admin->delete();
+
+        return redirect()->route('admin.personal')->with('success', 'Admin User deleted successfully!');
+    }
 }
+

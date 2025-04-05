@@ -13,6 +13,7 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
+    @stack('styles')
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen flex">
@@ -21,5 +22,8 @@
             @yield('content')
         </main>
     </div>
+    
+    @stack('scripts')
 </body>
 </html>
+
