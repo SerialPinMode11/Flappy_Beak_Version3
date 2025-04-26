@@ -57,4 +57,23 @@ class AdminController extends Controller
         return view('admin.hardware');
     }
     
+    public function toHardwareAnalytics()
+    {
+        return view('admin.hardware.analytics');
+    }
+
+    public function toHardwareHistory()
+    {
+        return view('admin.hardware.history');
+    }
+
+    public function toHardwareInventory()
+    {
+        return view('admin.hardware.inventory');
+    }
+
+    public function toHardwareSetting()
+    {
+        return view('admin.hardware.settings');
+    }
 }

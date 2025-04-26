@@ -47,47 +47,42 @@
             <nav class="p-4">
                 <ul class="space-y-2">
                     <li>
-                        <a href="{{route('admin.dashboard')}}" class="flex items-center p-2 text-white bg-primary rounded-lg transition-colors duration-200">
+                        <a href="#" class="flex items-center p-2 text-white bg-primary rounded-lg transition-colors duration-200">
                             <i class="fas fa-tachometer-alt mr-3"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
-                            <i class="fas fa-utensils mr-3"></i>
                             Feeding Schedule
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                        <a href="{{route('admin.dashboard')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                            <i class="fas fa-utensils mr-3"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('admin.hardwareHistory')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
                             <i class="fas fa-history mr-3"></i>
                             Feeding History
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                        <a href="{{route('admin.hardwareAnalytics')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
                             <i class="fas fa-chart-line mr-3"></i>
                             Analytics
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                        <a href="{{route('admin.hardwareSetting')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
                             <i class="fas fa-cog mr-3"></i>
                             Settings
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                        <a href="{{route('admin.hardwareInventory')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
                             <i class="fas fa-box mr-3"></i>
                             Feed Inventory
                         </a>
                     </li>
-                    <li>
-                        <a href="#" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
-                            <i class="fas fa-bell mr-3"></i>
-                            Notifications
-                        </a>
-                    </li>
+                    
                     
                 </ul>
             </nav>
@@ -113,7 +108,7 @@
                         </button>
                         <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
                             <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User Avatar" class="w-8 h-8 rounded-full">
-                            <span class="font-medium">Mr.Geronimo</span>
+                            <span class="font-medium">Mr.JM</span>
                         </button>
                     </div>
                 </div>
@@ -130,7 +125,7 @@
                         <p class="text-2xl font-bold text-gray-800" id="last-feeding-time">Today, 10:30 AM</p>
                         <p class="text-gray-500 text-sm font-medium mt-2">
                             <i class="fas fa-clock mr-1"></i>
-                            <span id="time-since-last">2 hours ago</span>
+                            <span id="time-since-last">5 hours ago</span>
                         </p>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300">
@@ -138,7 +133,7 @@
                             <h3 class="text-gray-500 text-sm font-medium">Feed Dispensed Today</h3>
                             <span class="text-primary bg-indigo-100 p-2 rounded-full"><i class="fas fa-weight"></i></span>
                         </div>
-                        <p class="text-2xl font-bold text-gray-800">2.5 kg</p>
+                        <p class="text-2xl font-bold text-gray-800">1.3 kg</p>
                         <p class="text-green-500 text-sm font-medium mt-2">
                             <i class="fas fa-arrow-up mr-1"></i>
                             15% from yesterday
@@ -192,7 +187,7 @@
                                 <option value="standard">Standard Feed</option>
                                 <option value="premium">Premium Mix</option>
                                 <option value="growth">Growth Formula</option>
-                                <option value="maintenance">Maintenance Formula</option>
+                                
                             </select>
                         </div>
                         <div class="col-span-1 flex items-end">

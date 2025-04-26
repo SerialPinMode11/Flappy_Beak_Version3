@@ -61,6 +61,10 @@ Route::middleware("auth")->group(function(){
 
     //hardware ESP32
     Route::get('/admin/hardware-esp32', [AdminController::class, 'toHardware'])->name('admin.hardware_esp32');
+    Route::get('/admin/hardware-esp32/analytics', [AdminController::class, 'toHardwareAnalytics'])->name('admin.hardwareAnalytics');
+    Route::get('/admin/hardware-esp32/history', [AdminController::class, 'toHardwareHistory'])->name('admin.hardwareHistory');
+    Route::get('/admin/hardware-esp32/setting', [AdminController::class, 'toHardwareSetting'])->name('admin.hardwareSetting');
+    Route::get('/admin/hardware-esp32/inventory', [AdminController::class, 'toHardwareInventory'])->name('admin.hardwareInventory');
    
     //biling
     Route::get('/admin/billing', [AdminBillingController::class, 'index'])->name('admin.billing.index');
