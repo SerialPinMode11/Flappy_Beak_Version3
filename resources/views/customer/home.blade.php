@@ -28,14 +28,35 @@
                         <img src="{{asset('images/Uncured_Duck_Breast.jpg')}}" alt="Raw meat"
                             class="w-1/2 rounded-lg shadow-xl" style="width: 200px;">
                     </div>
+                    <!--new push -->
+                    
+
                 </div>
-                <!-- Slider dots -->
-                <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
-                    <button class="dot active w-3 h-3 rounded-full bg-white"></button>
-                    <button class="dot w-3 h-3 rounded-full bg-white/50"></button>
-                    <button class="dot w-3 h-3 rounded-full bg-white/50"></button>
-                    <button class="dot w-3 h-3 rounded-full bg-white/50"></button>
-                    <button class="dot w-3 h-3 rounded-full bg-white/50"></button>
+                
+                
+            </div>
+
+            <div>
+                <!-- Product Navigation Tabs -->
+                <div class="mt-6 mb-8">
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-4">
+                        <a href="#" class="px-6 py-3 bg-yellow-500 text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
+                            <i class="fas fa-wine-bottle"></i>
+                            Duck Products
+                        </a>
+                        <a href="#" class="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
+                            <i class="fas fa-wine-bottle"></i>
+                            Wine Products
+                        </a>
+                        <a href="{{route('home.incubator')}}" class="px-6 py-3 bg-accent text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
+                            <i class="fas fa-temperature-high"></i>
+                            Incubator Rents
+                        </a>
+                        <a href="#" class="px-6 py-3 bg-neutral text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
+                            <i class="fas fa-piggy-bank"></i>
+                            Hog Products
+                        </a>
+                    </div>
                 </div>
             </div>
 

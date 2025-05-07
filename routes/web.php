@@ -12,6 +12,7 @@ use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AnadminController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\BookingController;
 
 Route::get('/', function () { return view('welcome'); } );
 
@@ -36,6 +37,13 @@ Route::middleware("auth")->group(function(){
     Route::get("aboutUs", [ControllerName::class, "aboutUs"])->name("about");
     //product_formation_
     Route::get('/home', [ProductController::class,'index'])->name('home');
+    Route::get('/home/incubator', [ProductController::class,'incubator'])->name('home.incubator');
+    //new modify
+    Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
+    Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/booking/confirmation/{reference}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
+    Route::get('/booking/status', [BookingController::class, 'status'])->name('booking.status');
+
     Route::get('/home/productformat/{product}', [ProductController::class,'show'])->name('customer.productformat');
     //My_Cart
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');

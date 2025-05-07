@@ -17,6 +17,13 @@ class ProductController extends Controller
         
     }
 
+    public function incubator()
+    {
+        $duckproducts = DuckProducts::all();
+        return view('customer.addblade.incubate');
+        
+    }
+
     public function destroy($id)
     {
         $product = DuckProducts::findOrFail($id);
