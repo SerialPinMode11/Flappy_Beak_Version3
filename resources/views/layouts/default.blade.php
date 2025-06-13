@@ -198,8 +198,6 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-300 hover:text-primary transition-colors">About Us</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-primary transition-colors">Contact</a></li>
                         <li><a href="#" class="text-gray-300 hover:text-primary transition-colors">FAQs</a></li>
                         <li><a href="#" class="text-gray-300 hover:text-primary transition-colors">Privacy Policy</a></li>
                     </ul>

@@ -17,7 +17,7 @@
                             <i class="fas fa-wine-bottle"></i>
                             Duck Products
                         </a>
-                        <a href="#"
+                        <a href="{{ route('wine.home') }}"
                             class="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
                             <i class="fas fa-wine-bottle"></i>
                             Wine Products
@@ -27,7 +27,7 @@
                             <i class="fas fa-temperature-high"></i>
                             Incubator Rents
                         </a>
-                        <a href="#"
+                        <a href="{{ route('hog.home') }}"
                             class="px-6 py-3 bg-neutral text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
                             <i class="fas fa-piggy-bank"></i>
                             Hog Products

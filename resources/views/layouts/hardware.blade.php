@@ -26,7 +26,7 @@
 <body class="bg-gray-50">
     <div class="min-h-screen flex">
         <!-- Sidebar -->
-        <aside class="bg-gray-800 text-white w-64 min-h-screen hidden md:block">
+        <aside class="bg-gray-800 text-white w-64 fixed h-screen hidden md:block overflow-y-auto">
             <div class="p-4 border-b border-gray-700">
                 <h2 class="text-xl font-bold text-primary">Feeding Dashboard</h2>
             </div>

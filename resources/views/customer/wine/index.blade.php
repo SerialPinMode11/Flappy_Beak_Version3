@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', 'Home Page')
+@section('title', 'Home Page - Wine Products')
 
 @section('content')
     <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
@@ -8,39 +8,11 @@
 
         <!-- Main Content -->
         <div class="flex-1">
-            <!-- Hero Slider -->
-            <div class="relative mb-12 rounded-xl overflow-hidden shadow-lg" style="height: 350px;">
-                <div class="slide active">
-                    <div class="bg-gradient-to-r from-neutral to-accent text-white p-12 flex items-center justify-between">
-                        <div class="space-y-6">
-                            <div class="flex items-center gap-4">
-                                <img src="{{asset('images/Uncured_Duck_Breast.jpg')}}" alt="Duck icon"
-                                    class="w-16 h-16 rounded-full border-4 border-white">
-                                <span class="text-xl font-semibold">Duck Raw Meat</span>
-                            </div>
-                            <h2 class="text-5xl font-bold leading-tight">Up to 10% off<br>Butchered</h2>
-                            <button
-                                class="flex items-center gap-3 text-white bg-primary hover:bg-primary-dark px-6 py-3 rounded-full transition-colors">
-                                Shop Now
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                        <img src="{{asset('images/Uncured_Duck_Breast.jpg')}}" alt="Raw meat"
-                            class="w-1/2 rounded-lg shadow-xl" style="width: 200px;">
-                    </div>
-                    <!--new push -->
-                    
-
-                </div>
-                
-                
-            </div>
-
             <div>
                 <!-- Product Navigation Tabs -->
                 <div class="mt-6 mb-8">
                     <div class="flex flex-wrap justify-center gap-2 md:gap-4">
-                        <a href="#" class="px-6 py-3 bg-yellow-500 text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
+                        <a href="{{ route('home') }}" class="px-6 py-3 bg-yellow-500 text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
                             <i class="fas fa-wine-bottle"></i>
                             Duck Products
                         </a>
@@ -74,7 +46,7 @@
 
             <!-- Products Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
-                @foreach($duckproducts as $product)
+                @foreach($wine_products as $product)
                     <!-- Product Card Template -->
                     <div class="product-card bg-white rounded-xl p-4 relative group">
 

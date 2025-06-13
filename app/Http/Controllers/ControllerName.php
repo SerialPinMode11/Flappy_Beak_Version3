@@ -10,6 +10,12 @@ class ControllerName extends Controller
     public function contactUs(){
         return view("customer.contact");
     }
+
+    public function index()
+    {
+        $contactDatas = ContactForm::paginate(10);
+        return view('admin.contacts.index', compact('contactDatas'));
+    }
     public function contactPost(Request $request){
         $validatedData = $request->validate([
             'firstname' => 'required|string|max:255',

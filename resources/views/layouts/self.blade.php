@@ -44,7 +44,7 @@
 <body class="bg-gray-50">
     <div class="min-h-screen flex">
         @include('partials.sidebar')
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+        <main class="flex-1 overflow-x-hidden overflow-y-auto  bg-gray-800 border">
             @yield('content')
         </main>
     </div>

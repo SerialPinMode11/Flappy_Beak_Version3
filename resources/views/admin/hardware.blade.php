@@ -40,7 +40,7 @@
 <body class="bg-gray-50">
     <div class="min-h-screen flex">
         <!-- Sidebar -->
-        <aside class="bg-gray-800 text-white w-64 min-h-screen hidden md:block">
+        <aside class="bg-gray-800 text-white w-64 fixed h-screen hidden md:block overflow-y-auto">
             <div class="p-4 border-b border-gray-700">
                 <h2 class="text-xl font-bold text-primary">Feeding Dashboard</h2>
             </div>
@@ -89,7 +89,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+        <main class="max-w-7x1 mx-auto py-6 sm:px-6 lg:px-10 bg-gray-100">
             <!-- Header -->
             <header class="bg-white shadow-sm">
                 <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">

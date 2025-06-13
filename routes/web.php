@@ -13,6 +13,8 @@ use App\Http\Controllers\AnadminController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\WineProductController;
+use App\Http\Controllers\HogProductController;
 
 Route::get('/', function () { return view('welcome'); } );
 
@@ -53,6 +55,12 @@ Route::middleware("auth")->group(function(){
     Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+
+    //new Products Wine
+    Route::get('/wineproducts', [WineProductController::class, 'index'])->name('wine.home');
+
+    //new Products Hog
+    Route::get('/hogproducts', [HogProductController::class, 'index'])->name('hog.home');
     
 });
 
@@ -60,6 +68,9 @@ Route::middleware("auth")->group(function(){
 Route::middleware("auth")->group(function(){
     Route::get('/admin/dashboard', [AdminBillingController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout'); 
+
+    //contact table
+    Route::get("contactforlist", [ControllerName::class, "index"])->name("contactforlist");
 
     //personal
     Route::get('/admin/personal', [AnadminController::class, 'index'])->name('admin.personal');
