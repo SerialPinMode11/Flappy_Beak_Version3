@@ -138,7 +138,7 @@
                         <a href="{{route('checkout')}}" class="relative text-neutral hover:text-primary transition-colors">
                             <i class="fas fa-credit-card text-xl"></i>
                         </a>
-                        <a href="{{ route('cart.view') }}" class="relative text-neutral hover:text-primary transition-colors">
+                        <a href="{{ route('cart.options.list') }}" class="relative text-neutral hover:text-primary transition-colors">
                             <i class="fas fa-shopping-cart text-xl"></i>
                             <span class="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
                         </a>
@@ -198,8 +198,8 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-300 hover:text-primary transition-colors">FAQs</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-primary transition-colors">Privacy Policy</a></li>
+                        <li><a href="{{ route('question.page') }}" class="text-gray-300 hover:text-primary transition-colors">FAQs</a></li>
+                        <li><a href="{{ route('privacy-policy.page') }}" class="text-gray-300 hover:text-primary transition-colors">Privacy Policy</a></li>
                     </ul>
                 </div>
 

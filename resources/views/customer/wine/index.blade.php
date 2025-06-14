@@ -61,7 +61,7 @@
                             <button
                                 class="quick-view absolute bottom-4 right-4 bg-white p-3 rounded-full shadow-md hover:bg-primary hover:text-white transition-colors">
 
-                                <a href="{{route('customer.productformat', $product->id)}}">
+                                <a href="{{route('customer.wine.view', $product->id)}}">
                                     <i class="fas fa-eye"> </i>
                                 </a>
 

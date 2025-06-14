@@ -15,6 +15,8 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\WineProductController;
 use App\Http\Controllers\HogProductController;
+use App\Http\Controllers\CartNavController;
+use App\Models\WineProduct;
 
 Route::get('/', function () { return view('welcome'); } );
 
@@ -58,9 +60,19 @@ Route::middleware("auth")->group(function(){
 
     //new Products Wine
     Route::get('/wineproducts', [WineProductController::class, 'index'])->name('wine.home');
+    Route::get('/home/wine/productformat/{product}', [WineProductController::class,'show'])->name('customer.wine.view');
+    Route::post('/wine/add-to-cart', [WineProductController::class, 'addToCart'])->name('cart.add.wine');
+    Route::delete('/wine/remove-from-cart', [WineProductController::class, 'removeFromCart'])->name('cart.remove.wine');
 
     //new Products Hog
     Route::get('/hogproducts', [HogProductController::class, 'index'])->name('hog.home');
+
+    //cart Navigation
+    Route::get('/cart/options/list', [CartNavController::class, 'CartOption'])->name('cart.options.list');
+    Route::get('/cart/option/wine', [CartNavController::class, 'toWineCart'])->name('cart.wine.view');
+    Route::get('/cart/option/hog', [CartNavController::class, 'toHogCart'])->name('cart.hog.view');
+    Route::get('/FAQs', [CartNavController::class, 'toFAQ'])->name('question.page');
+    Route::get('/Privacy-Policy', [CartNavController::class, 'toPrivacy'])->name('privacy-policy.page');
     
 });
 

@@ -22,7 +22,8 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                        
                         
                     </tr>
                 </thead>
@@ -32,8 +33,9 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $contactData->id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $contactData->firstname }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $contactData->lastname }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $contactData->email }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $contactData->message }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $contactData->email }}</td>
+                        
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             
                             <a href="" class="text-yellow-600 hover:text-yellow-900 mr-3">Reply</a>
