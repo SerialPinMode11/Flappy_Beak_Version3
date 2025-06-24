@@ -16,6 +16,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\WineProductController;
 use App\Http\Controllers\HogProductController;
 use App\Http\Controllers\CartNavController;
+use App\Http\Controllers\IncubationAdminController;
 use App\Models\WineProduct;
 
 Route::get('/', function () { return view('welcome'); } );
@@ -119,4 +120,16 @@ Route::middleware("auth")->group(function(){
     Route::post('/admin/expenses/store', [ExpenseController::class, 'store'])->name('admin.expense.store');
     Route::put('/admin/expenses/update/{id}', [ExpenseController::class, 'update'])->name('admin.expense.update');
     Route::delete('/admin/expenses/{id}', [ExpenseController::class, 'destroy'])->name('admin.expense.destroy');
+
+    //incubation table
+    Route::get('/admin/incubation-list', [IncubationAdminController::class, 'index'])->name('admin.incubation.index');   
+     Route::resource('incubation', IncubationAdminController::class)->only([
+        'index', 'show', 'edit', 'update'
+    ]);
+    
+    Route::patch('/incubation/{id}/status', [IncubationAdminController::class, 'updateStatus'])->name('incubation.update-status');
+    Route::post('/incubation/{id}/candling', [IncubationAdminController::class, 'recordCandling'])->name('incubation.record-candling');
+    Route::post('/incubation/{id}/hatching', [IncubationAdminController::class, 'recordHatching'])->name('incubation.record-hatching');
+    Route::get('/incubation-export', [IncubationAdminController::class, 'export'])->name('incubation.export');
+
 });

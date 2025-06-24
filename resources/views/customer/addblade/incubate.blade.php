@@ -8,33 +8,7 @@
 
         <!-- Main Content -->
         <div class="flex-1">
-            <div>
-                <!-- Product Navigation Tabs -->
-                <div class="mt-6 mb-8">
-                    <div class="flex flex-wrap justify-center gap-2 md:gap-4">
-                        <a href="{{route('home')}}"
-                            class="px-6 py-3 bg-primary bg-yellow-500 text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
-                            <i class="fas fa-wine-bottle"></i>
-                            Duck Products
-                        </a>
-                        <a href="{{ route('wine.home') }}"
-                            class="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
-                            <i class="fas fa-wine-bottle"></i>
-                            Wine Products
-                        </a>
-                        <a href="#"
-                            class="px-6 py-3 bg-accent text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
-                            <i class="fas fa-temperature-high"></i>
-                            Incubator Rents
-                        </a>
-                        <a href="{{ route('hog.home') }}"
-                            class="px-6 py-3 bg-neutral text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
-                            <i class="fas fa-piggy-bank"></i>
-                            Hog Products
-                        </a>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Success or Error Messages -->
             @if(session()->has('success'))

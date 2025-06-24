@@ -29,6 +29,7 @@
                     <li><a href="{{ route('admin.billing.index') }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-dollar-sign mr-3"></i>Income Generated</a></li>
                     <li><a href="{{ route('admin.expense.index')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-table mr-3"></i>Expenses Table</a></li>
                     <li><a href="{{ route('contactforlist' ) }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-industry mr-3"></i>Customer Feedback Management</a></li>
+                    <li><a href="{{ route('admin.incubation.index' ) }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-industry mr-3"></i>Incubation Book List</a></li>
                     <li><a href="{{route('admin.hardware_esp32')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-desktop mr-3"></i>Hardware</a></li>
                     <li><a href="{{route('admin.personal')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-user-circle mr-3"></i>Personal</a></li>
 

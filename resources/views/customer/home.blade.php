@@ -14,51 +14,34 @@
                     <div class="bg-gradient-to-r from-neutral to-accent text-white p-12 flex items-center justify-between">
                         <div class="space-y-6">
                             <div class="flex items-center gap-4">
-                                <img src="{{asset('images/Uncured_Duck_Breast.jpg')}}" alt="Duck icon"
+                                <img src="{{asset('images/world-based.jpg')}}" alt="Duck icon"
                                     class="w-16 h-16 rounded-full border-4 border-white">
-                                <span class="text-xl font-semibold">Duck Raw Meat</span>
+                                <span class="text-xl font-semibold">Egg Incubation Service</span>
                             </div>
-                            <h2 class="text-5xl font-bold leading-tight">Up to 10% off<br>Butchered</h2>
-                            <button
-                                class="flex items-center gap-3 text-white bg-primary hover:bg-primary-dark px-6 py-3 rounded-full transition-colors">
-                                Shop Now
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
+                            <h2 class="text-5xl font-bold leading-tight">We also offer<br>Private Incubation</h2>
+                            <a href="{{ route('home.incubator') }}"
+                                class="inline-flex items-center gap-2 bg-[#FF6B6B] hover:bg-[#e65a5a] text-white font-semibold px-6 py-3 rounded-full shadow transition duration-300 ease-in-out">
+                                Reserve Now
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+
                         </div>
-                        <img src="{{asset('images/Uncured_Duck_Breast.jpg')}}" alt="Raw meat"
-                            class="w-1/2 rounded-lg shadow-xl" style="width: 200px;">
+                        <img src="{{asset('images/Experimental.png')}}" alt="Raw meat" class="w-1/2 rounded-lg shadow-xl"
+                            style="width: 200px;">
                     </div>
                     <!--new push -->
-                    
+
 
                 </div>
-                
-                
+
+
             </div>
 
-            <div>
-                <!-- Product Navigation Tabs -->
-                <div class="mt-6 mb-8">
-                    <div class="flex flex-wrap justify-center gap-2 md:gap-4">
-                        <a href="#" class="px-6 py-3 bg-yellow-500 text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
-                            <i class="fas fa-wine-bottle"></i>
-                            Duck Products
-                        </a>
-                        <a href="{{ route('wine.home') }}" class="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
-                            <i class="fas fa-wine-bottle"></i>
-                            Wine Products
-                        </a>
-                        <a href="{{route('home.incubator')}}" class="px-6 py-3 bg-accent text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
-                            <i class="fas fa-temperature-high"></i>
-                            Incubator Rents
-                        </a>
-                        <a href="{{ route('hog.home') }}" class="px-6 py-3 bg-neutral text-white rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center gap-2">
-                            <i class="fas fa-piggy-bank"></i>
-                            Hog Products
-                        </a>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Success or Error Messages -->
             @if(session()->has('success'))

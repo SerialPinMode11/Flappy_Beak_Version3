@@ -19,8 +19,8 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @php $total = 0 @endphp
-                    @if(session('cart'))
-                        @foreach(session('cart') as $id => $details)
+                    @if(session('winecart'))
+                        @foreach(session('wcart') as $id => $details)
                             @php $total += $details['price'] * $details['quantity'] @endphp
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">

@@ -6,7 +6,8 @@
 <div class="container-fluid px-4 py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Incubation Bookings</h1>
-        <a href="{{ route('admin.bookings.export') }}" class="btn btn-success">
+        {{-- {{ route('admin.bookings.export') }} --}}
+        <a href="" class="btn btn-success">
             <i class="fas fa-file-export"></i> Export to CSV
         </a>
     </div>
@@ -88,7 +89,8 @@
             <h6 class="m-0 font-weight-bold text-primary">Filter Bookings</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.bookings.index') }}" method="GET" class="row">
+            {{-- {{ route('admin.bookings.index') }} --}}
+            <form action="" method="GET" class="row">
                 <div class="col-md-2 mb-3">
                     <label for="status">Status</label>
                     <select name="status" id="status" class="form-control">
