@@ -93,7 +93,7 @@
                         <select id="online-payment-method" name="online_payment_method" form="billing-form" class="w-full p-2 border rounded-md focus:ring-primary focus:border-primary">
                             <option value="">Select online payment method</option>
                             <option value="gcash">GCash</option>
-                            <option value="paymaya">PayMaya</option>
+                            <option value="paymaya" disabled>PayMaya</option>
                         </select>
                         @error('online_payment_method')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -102,6 +102,7 @@
             
                     <div id="reference-number-input" class="mb-4" style="display: none;">
                         <label for="reference-number" class="block text-sm font-medium text-gray-700 mb-1">Reference Number</label>
+                        <img src="{{ asset('images/G-Cash_Admin.jpg') }}" alt="G-Cash Reference" class="w-48 h-auto rounded-md shadow-md mx-auto mb-3">
                         <input type="text" id="reference-number" name="reference_number" form="billing-form" class="w-full p-2 border rounded-md focus:ring-primary focus:border-primary" placeholder="Enter reference number">
                         @error('reference_number')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

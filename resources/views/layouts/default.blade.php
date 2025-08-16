@@ -107,7 +107,7 @@
             <div class="flex items-center justify-between">
                 <!-- Logo and Brand -->
                 <a href="{{ route('home') }}" class="flex items-center space-x-3">
-                    <i class="fas fa-feather text-primary text-2xl"></i>
+                      <img src="{{ asset('images/Flappy_IoT.png') }}" alt="Flappy IoT Logo" class="w-20 h-20">
                     <h1 class="text-2xl font-bold text-neutral">
                         <span class="text-primary">JM Casabar</span> Pekin Store
                     </h1>
@@ -230,14 +230,14 @@
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <p class="text-gray-400 text-sm">&copy; 2025 Flappy Beak. All rights reserved.</p>
                     <div class="flex space-x-6 mt-4 md:mt-0">
-                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                        <a href="https://web.facebook.com/IMORTALxiiJERRY" class="text-gray-400 hover:text-primary transition-colors">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
-                            <i class="fab fa-twitter"></i>
+                        <a href="https://www.instagram.com/jerry_casabar?igsh=Y2x6enlmdHB3cmhq" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fab fa-instagram"></i>
                         </a>
                         <a href="#" class="text-gray-400 hover:text-primary transition-colors">
-                            <i class="fab fa-instagram"></i>
+                            <i class="fab fa-telegram-plane"></i>
                         </a>
                     </div>
                 </div>

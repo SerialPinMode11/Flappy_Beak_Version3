@@ -55,27 +55,27 @@
         const body = document.body;
         const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
-        function setDarkMode(isDark) {
-            body.classList.toggle('dark', isDark);
-            darkModeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-        }
+        // function setDarkMode(isDark) {
+        //     body.classList.toggle('dark', isDark);
+        //     darkModeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        //     localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+        // }
 
         // Check for saved user preference, if any, on load
-        const darkModeStorage = localStorage.getItem('darkMode');
+        // const darkModeStorage = localStorage.getItem('darkMode');
 
-        if (darkModeStorage === 'enabled') {
-            setDarkMode(true);
-        } else if (darkModeStorage === 'disabled') {
-            setDarkMode(false);
-        } else {
-            setDarkMode(prefersDarkScheme.matches);
-        }
+        // if (darkModeStorage === 'enabled') {
+        //     setDarkMode(true);
+        // } else if (darkModeStorage === 'disabled') {
+        //     setDarkMode(false);
+        // } else {
+        //     setDarkMode(prefersDarkScheme.matches);
+        // }
 
         // Add toggle event listener
-        darkModeToggle.addEventListener('click', () => {
-            setDarkMode(!body.classList.contains('dark'));
-        });
+        // darkModeToggle.addEventListener('click', () => {
+        //     setDarkMode(!body.classList.contains('dark'));
+        // });
 
         // Listen for changes to the user's preferred color scheme
         prefersDarkScheme.addListener((evt) => {

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Expense;
 use Illuminate\Http\Request;
+use App\Exports\ExpensesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ExpenseController extends Controller
 {
@@ -94,6 +96,30 @@ class ExpenseController extends Controller
         $expense->delete();
 
         return redirect()->route('admin.expense.index')->with('success', 'Expense deleted successfully!');
+    }
+
+    /**
+     * Export expenses to Excel file.
+     */
+    public function exportToExcel(Request $request)
+    {
+        $filename = 'expenses_report_' . date('Y-m-d_H-i-s') . '.xlsx';
+        
+        return Excel::download(new ExpensesExport($request), $filename);
+    }
+
+    public function export(Request $request)
+    {
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+        $category = $request->get('category');
+
+        $filename = 'expenses_report_' . date('Y-m-d_H-i-s') . '.xlsx';
+
+        return Excel::download(
+            new ExpensesExport($startDate, $endDate, $category),
+            $filename
+        );
     }
 }
 

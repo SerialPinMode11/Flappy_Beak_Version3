@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\BillingInformation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exports\BillingIncomeExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
 
 class AdminBillingController extends Controller
 {
-   
-
     //admin-dashboard
     public function dashboard()
     {
@@ -82,8 +83,6 @@ class AdminBillingController extends Controller
 
     // Rest of your controller methods...
 
-    
-
     public function index()
     {
         $billingInfo = BillingInformation::latest()->paginate(10);
@@ -119,9 +118,63 @@ class AdminBillingController extends Controller
         return redirect()->route('admin.billing.index')
             ->with('success', 'Billing information updated successfully');
     }
+
+    public function export(Request $request)
+    {
+        try {
+            $request->validate([
+                'date_from' => 'nullable|date',
+                'date_to' => 'nullable|date|after_or_equal:date_from',
+                'customer_name' => 'nullable|string|max:255',
+                'payment_method' => 'nullable|string|in:cash,online,card',
+            ]);
+
+            // Build query for completed billing records only
+            $query = BillingInformation::where('status', 'completed');
+
+            // Apply filters
+            if ($request->filled('date_from')) {
+                $query->whereDate('created_at', '>=', $request->date_from);
+            }
+
+            if ($request->filled('date_to')) {
+                $query->whereDate('created_at', '<=', $request->date_to);
+            }
+
+            if ($request->filled('customer_name')) {
+                $query->where('name', 'like', '%' . $request->customer_name . '%');
+            }
+
+            if ($request->filled('payment_method')) {
+                $query->where('payment_method', $request->payment_method);
+            }
+
+            // Generate filename with filters
+            $filename = 'income_sales_report_' . now()->format('Y-m-d_H-i-s');
+            
+            if ($request->filled('date_from') && $request->filled('date_to')) {
+                $filename .= '_' . $request->date_from . '_to_' . $request->date_to;
+            } elseif ($request->filled('date_from')) {
+                $filename .= '_from_' . $request->date_from;
+            } elseif ($request->filled('date_to')) {
+                $filename .= '_until_' . $request->date_to;
+            }
+
+            if ($request->filled('customer_name')) {
+                $filename .= '_' . str_replace(' ', '_', $request->customer_name);
+            }
+
+            if ($request->filled('payment_method')) {
+                $filename .= '_' . $request->payment_method;
+            }
+
+            $filename .= '.xlsx';
+
+            return Excel::download(new BillingIncomeExport($request->all()), $filename);
+
+        } catch (\Exception $e) {
+            Log::error('Billing export error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Export failed. Please try again.');
+        }
+    }
 }
-
-
-
-
-    

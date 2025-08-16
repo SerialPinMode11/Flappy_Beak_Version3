@@ -199,14 +199,21 @@
 
 @push('scripts')
 <script>
-    // Add any JavaScript functionality here
     document.addEventListener('DOMContentLoaded', function() {
-        // Example: Add click handlers for report generation buttons
-        const reportButtons = document.querySelectorAll('[id^="generate"]');
-        reportButtons.forEach(button => {
+        // <CHANGE> Updated expenses report button to actually call export endpoint
+        const expensesReportButton = document.getElementById('generateExpensesReport');
+        if (expensesReportButton) {
+            expensesReportButton.addEventListener('click', function() {
+                // Create and submit form to export expenses
+                window.location.href = '{{ route("admin.expense.export") }}';
+            });
+        }
+
+        // Keep existing alert functionality for other report buttons
+        const otherReportButtons = document.querySelectorAll('[id^="generate"]:not(#generateExpensesReport)');
+        otherReportButtons.forEach(button => {
             button.addEventListener('click', function() {
                 alert('Report generation initiated. Your download will begin shortly.');
-                // Actual implementation would call an endpoint to generate the report
             });
         });
     });

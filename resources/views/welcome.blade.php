@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farm-Fresh Duck Products - Flappy-Beak</title>
+    <title>Flappy-Beak - Farm-Fresh Duck Products</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -21,7 +21,7 @@
     <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                <i class="fas fa-feather-alt text-2xl text-yellow-300"></i>
+                 <img src="{{ asset('images/Flappy_IoT.png') }}" alt="Flappy IoT Logo" class="w-8 h-8">
                 <h1 class="text-2xl font-bold tracking-wide">JM Casabar Mini Farm</h1>
             </div>
             
@@ -409,17 +409,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <i class="fas fa-feather-alt text-2xl text-yellow-300"></i>
+                       <img src="{{ asset('images/Flappy_IoT.png') }}" alt="Flappy IoT Logo" class="w-8 h-8">
                         <h3 class="text-xl font-bold">Flappy-Beak</h3>
                     </div>
                     <p class="text-teal-200 mb-4">
                         Premium farm-raised Pekin duck products delivered straight to your door.
                     </p>
                     <div class="flex space-x-4">
-                        <a href="#" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-youtube"></i></a>
+                        <a href="https://web.facebook.com/IMORTALxiiJERRY" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/jerry_casabar?igsh=Y2x6enlmdHB3cmhq" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="#" class="text-teal-200 hover:text-yellow-300"><i class="fas fa-envelope"></i></a>
                     </div>
                 </div>
                 

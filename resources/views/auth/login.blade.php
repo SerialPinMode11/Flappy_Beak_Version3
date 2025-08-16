@@ -18,6 +18,9 @@
                 Welcome to Flappy-Beak
             </div>
             <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Login</h2>
+            <div class="flex justify-center mb-6">
+                <img src="{{ asset('images/Flappy_IoT.png') }}" alt="Flappy IoT Logo" class="w-20 h-20">
+            </div>
             <form method="POST" action="{{ route('login.post') }}" class="space-y-6">
                 @csrf
                 <div>

@@ -9,7 +9,9 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Duck Products Navigation -->
             <div class="bg-white p-4 rounded-lg shadow-md">
+                <a href="{{ route('cart.view') }}">
                 <img src="{{ asset('images/the-cart.jpg') }}" alt="Duck Products" class="w-full h-32 object-cover rounded mb-4">
+                </a>
                 <h3 class="text-xl font-semibold mb-4 text-primary">Your Cart</h3>
                 <a href="{{ route('cart.view') }}" class="text-neutral hover:text-primary transition-colors">View Your Products Availed</a>
             </div>

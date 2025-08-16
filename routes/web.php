@@ -90,6 +90,15 @@ Route::middleware("auth")->group(function(){
     Route::get('/admin/personal/create', [AnadminController::class, 'create'])->name('admin.personal.create');
     Route::post('/admin/personal/store', [AnadminController::class, 'store'])->name('admin.personal.store');
     Route::delete('/admin/personal/{id}', [AnadminController::class, 'destroy'])->name('admin.personal.destroy');
+    //report-generation
+    Route::get('/admin/expense/export', [ExpenseController::class, 'export'])->name('admin.expense.export');
+    Route::prefix('expense')->name('expense.')->group(function () {
+        Route::get('/', [ExpenseController::class, 'index'])->name('index');
+        Route::get('/{id}', [ExpenseController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [ExpenseController::class, 'edit'])->name('edit');
+        Route::delete('/{id}', [ExpenseController::class, 'destroy'])->name('destroy');
+        Route::get('/export/excel', [ExpenseController::class, 'export'])->name('export');
+    });
 
     //hardware ESP32
     Route::get('/admin/hardware-esp32', [AdminController::class, 'toHardware'])->name('admin.hardware_esp32');
@@ -103,6 +112,9 @@ Route::middleware("auth")->group(function(){
     Route::get('/admin/billing/{id}', [AdminBillingController::class, 'show'])->name('admin.billing.show');
     Route::get('/admin/billing/{id}/edit', [AdminBillingController::class, 'edit'])->name('admin.billing.edit');
     Route::put('/admin/billing/{id}', [AdminBillingController::class, 'update'])->name('admin.billing.update');
+    Route::get('/export/income', [AdminBillingController::class, 'export'])->name('admin.billing.export');
+    
+
     //product list
     Route::get('/admin/products', [AdminProductController::class, 'index'])->name('admin.product.index');
     Route::get('/admin/products/create', [AdminProductController::class, 'create'])->name('admin.products.create');
@@ -122,14 +134,18 @@ Route::middleware("auth")->group(function(){
     Route::delete('/admin/expenses/{id}', [ExpenseController::class, 'destroy'])->name('admin.expense.destroy');
 
     //incubation table
-    Route::get('/admin/incubation-list', [IncubationAdminController::class, 'index'])->name('admin.incubation.index');   
+    Route::get('/admin/incubation-list', [IncubationAdminController::class, 'index'])->name('admin.incubation.index');
+    Route::get('/admin/incubation/show', [IncubationAdminController::class, 'show'])->name('admin.bookings.show'); 
+      Route::get('/admin/expenses/{id}', [IncubationAdminController::class, 'edit'])->name('admin.bookings.edit');
+    Route::post('/admin/expenses/store', [IncubationAdminController::class, 'store'])->name('admin.bookings.store');
+    Route::put('/admin/expenses/update/{id}', [IncubationAdminController::class, 'update'])->name('admin.bookings.update');  
      Route::resource('incubation', IncubationAdminController::class)->only([
         'index', 'show', 'edit', 'update'
     ]);
     
-    Route::patch('/incubation/{id}/status', [IncubationAdminController::class, 'updateStatus'])->name('incubation.update-status');
-    Route::post('/incubation/{id}/candling', [IncubationAdminController::class, 'recordCandling'])->name('incubation.record-candling');
-    Route::post('/incubation/{id}/hatching', [IncubationAdminController::class, 'recordHatching'])->name('incubation.record-hatching');
-    Route::get('/incubation-export', [IncubationAdminController::class, 'export'])->name('incubation.export');
+    Route::patch('/incubation/{id}/status', [IncubationAdminController::class, 'updateStatus'])->name('admin.bookings.update-status');
+    Route::post('/incubation/{id}/candling', [IncubationAdminController::class, 'recordCandling'])->name('admin.bookings.record-candling');
+    Route::post('/incubation/{id}/hatching', [IncubationAdminController::class, 'recordHatching'])->name('admin.bookings.record-hatching');
+    Route::get('/incubation-export', [IncubationAdminController::class, 'export'])->name('admin.bookings.export');
 
 });
