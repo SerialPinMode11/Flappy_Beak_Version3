@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\IncubationBookingsExport;
+use Illuminate\Support\Facades\Log;
 
 class IncubationAdminController extends Controller
 {
@@ -80,6 +82,58 @@ class IncubationAdminController extends Controller
         
         return view('admin.incubation.index', compact('bookings', 'counts', 'serviceTypes', 'statuses'));
     }
+
+    /**
+     * Store a newly created booking
+     */
+    public function store(Request $request)
+    {
+        // Validate request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'service_type' => 'required|string',
+            'egg_quantity' => 'required|integer|min:1',
+            'start_date' => 'required|date',
+        ]);
+
+        try {
+            // Create new booking
+            $booking = new Booking();
+            $booking->name = $request->name;
+            $booking->email = $request->email;
+            $booking->phone = $request->phone;
+            $booking->address = $request->address;
+            $booking->service_type = $request->service_type;
+            $booking->egg_quantity = $request->egg_quantity;
+            $booking->egg_source = $request->egg_source;
+            $booking->start_date = $request->start_date;
+            $booking->special_instructions = $request->special_instructions;
+            $booking->status = 'pending';
+
+            // Set pricing if provided, otherwise auto-calculate
+            if ($request->total_price) {
+                $booking->total_price = $request->total_price;
+            }
+            
+            if ($request->deposit_amount) {
+                $booking->deposit_amount = $request->deposit_amount;
+            }
+
+            $booking->save();
+
+            return redirect()->route('admin.incubation.index')
+                ->with('success', 'Incubation booking created successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Incubation booking creation error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to create booking. Please try again.');
+        }
+    }
+
     /**
      * Display the specified booking
      */
@@ -117,7 +171,7 @@ class IncubationAdminController extends Controller
             'cancelled' => 'Cancelled',
         ];
         
-        return view('admin.bookings.edit', compact('booking', 'serviceTypes', 'statuses'));
+        return view('admin.incubation.edit', compact('booking', 'serviceTypes', 'statuses'));
     }
     
     /**
@@ -267,86 +321,42 @@ class IncubationAdminController extends Controller
     }
     
     /**
-     * Export bookings to CSV
+     * Export bookings to Excel with income calculation for completed bookings
      */
     public function export(Request $request)
     {
-        // Get filter parameters
-        $status = $request->input('status');
-        $serviceType = $request->input('service_type');
-        $dateFrom = $request->input('date_from');
-        $dateTo = $request->input('date_to');
-        
-        // Start query
-        $bookings = Booking::query();
-        
-        // Apply filters
-        if ($status) {
-            $bookings->where('status', $status);
-        }
-        
-        if ($serviceType) {
-            $bookings->where('service_type', $serviceType);
-        }
-        
-        if ($dateFrom) {
-            $bookings->whereDate('created_at', '>=', $dateFrom);
-        }
-        
-        if ($dateTo) {
-            $bookings->whereDate('created_at', '<=', $dateTo);
-        }
-        
-        // Get results
-        $bookings = $bookings->orderBy('created_at', 'desc')->get();
-        
-        // Generate CSV
-        $filename = 'incubation_bookings_' . date('Y-m-d') . '.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
-        ];
-        
-        $callback = function() use ($bookings) {
-            $file = fopen('php://output', 'w');
-            
-            // Add headers
-            fputcsv($file, [
-                'Reference',
-                'Customer',
-                'Email',
-                'Phone',
-                'Service Type',
-                'Eggs',
-                'Start Date',
-                'Status',
-                'Total Price',
-                'Deposit Paid',
-                'Balance Paid',
-                'Created At',
+        try {
+            // Validate form inputs
+            $request->validate([
+                'date_from' => 'nullable|date',
+                'date_to' => 'nullable|date|after_or_equal:date_from',
+                'service_type' => 'nullable|string',
             ]);
-            
-            // Add data
-            foreach ($bookings as $booking) {
-                fputcsv($file, [
-                    $booking->booking_reference,
-                    $booking->name,
-                    $booking->email,
-                    $booking->phone,
-                    $booking->service_type_name,
-                    $booking->egg_quantity,
-                    $booking->start_date ? $booking->start_date->format('Y-m-d') : '',
-                    $booking->status_name,
-                    $booking->total_price,
-                    $booking->deposit_paid ? 'Yes' : 'No',
-                    $booking->balance_paid ? 'Yes' : 'No',
-                    $booking->created_at->format('Y-m-d H:i:s'),
-                ]);
+
+            // Get filter parameters
+            $dateFrom = $request->input('date_from');
+            $dateTo = $request->input('date_to');
+            $serviceType = $request->input('service_type');
+
+            // Generate filename with filters
+            $filename = 'flappy_beak_incubation_report';
+            if ($dateFrom && $dateTo) {
+                $filename .= '_' . $dateFrom . '_to_' . $dateTo;
+            } elseif ($dateFrom) {
+                $filename .= '_from_' . $dateFrom;
+            } elseif ($dateTo) {
+                $filename .= '_until_' . $dateTo;
             }
-            
-            fclose($file);
-        };
-        
-        return response()->stream($callback, 200, $headers);
+            if ($serviceType) {
+                $filename .= '_' . $serviceType;
+            }
+            $filename .= '_' . date('Y-m-d_H-i-s') . '.xlsx';
+
+            return Excel::download(new IncubationBookingsExport($dateFrom, $dateTo, $serviceType), $filename);
+
+        } catch (\Exception $e) {
+            Log::error('Incubation bookings export error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to export bookings. Please try again.');
+        }
     }
 }

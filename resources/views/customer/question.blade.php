@@ -91,7 +91,7 @@
                     </button>
                     <div class="faq-answer">
                         <div class="px-6 pb-5 text-gray-600 leading-relaxed">
-                            <p>JM Casabar Private Farm is located in <span class="font-semibold text-gray-800">Sitio Maroyroy, Macatoc, Victoria, Mimaropa, Philippines</span>. Our farm is easily accessible and we provide detailed directions with every order confirmation.</p>
+                            <p>JM Casabar Private Farm is located in <span class="font-semibold text-gray-800">Brgy. Maroyroy, Macatoc, Victoria, Mimaropa, Philippines</span>. Our farm is easily accessible and we provide detailed directions with every order confirmation.</p>
                         </div>
                     </div>
                 </div>
@@ -130,8 +130,7 @@
                                     <ul class="space-y-1 text-blue-700">
                                         <li>• GCash</li>
                                         <li>• PayMaya</li>
-                                        <li>• Online Bank Transfers (BDO, BPI)</li>
-                                        <li>• Credit/Debit Cards</li>
+                                        
                                     </ul>
                                 </div>
                                 <div class="bg-green-50 p-4 rounded-lg border border-green-200">
@@ -141,7 +140,7 @@
                                     </h4>
                                     <ul class="space-y-1 text-green-700">
                                         <li>• Cash on Delivery (COD)</li>
-                                        <li>• Bank Deposit</li>
+                                        <li>• Online Payments</li>
                                     </ul>
                                 </div>
                             </div>
@@ -185,7 +184,7 @@
                     </button>
                     <div class="faq-answer">
                         <div class="px-6 pb-5 text-gray-600 leading-relaxed">
-                            <p class="mb-4">You will receive both <span class="font-semibold text-gray-800">email and SMS confirmation</span> once your order has been successfully placed and payment verified.</p>
+                            <p class="mb-4">You will receive both <span class="font-semibold text-gray-800">gmail and SMS confirmation</span> once your order has been successfully placed and payment verified.</p>
                             <div class="bg-green-50 p-4 rounded-lg border border-green-200">
                                 <h4 class="font-semibold text-green-800 mb-2 flex items-center">
                                     <i class="fas fa-check-circle mr-2"></i>
@@ -380,89 +379,8 @@
             </div>
         </div>
 
-        <!-- Hog Products -->
-        <div class="mb-12" data-category="hog">
-            <div class="bg-gradient-to-r from-pink-500 to-pink-600 rounded-t-2xl p-6 text-white">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-piggy-bank text-xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold">Hog Products</h2>
-                        <p class="opacity-90">Premium pork products from our naturally raised hogs</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-b-2xl shadow-lg border border-gray-200">
-                <!-- Hog FAQ Item 1 -->
-                <div class="faq-item border-b border-gray-100 last:border-b-0" data-keywords="hog products pork belly chops ground pork sausages bacon">
-                    <button class="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
-                        <span class="font-semibold text-gray-800 text-lg">What hog products do you sell?</span>
-                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center ml-4 flex-shrink-0 transition-all duration-200">
-                            <i class="fas fa-plus text-gray-600 text-sm"></i>
-                        </div>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="px-6 pb-5 text-gray-600 leading-relaxed">
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
-                                    <h4 class="font-semibold text-red-800 mb-3 flex items-center">
-                                        <i class="fas fa-cut mr-2"></i>
-                                        Fresh Cuts
-                                    </h4>
-                                    <ul class="space-y-1 text-red-700">
-                                        <li>• Pork belly</li>
-                                        <li>• Pork chops</li>
-                                        <li>• Pork shoulder</li>
-                                        <li>• Ground pork</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                                    <h4 class="font-semibold text-orange-800 mb-3 flex items-center">
-                                        <i class="fas fa-sausage mr-2"></i>
-                                        Processed Products
-                                    </h4>
-                                    <ul class="space-y-1 text-orange-700">
-                                        <li>• Specialty sausages</li>
-                                        <li>• Bacon</li>
-                                        <li>• Ham</li>
-                                        <li>• Chorizo</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Hog Products REMOVED -->
 
-                <!-- Hog FAQ Item 2 -->
-                <div class="faq-item" data-keywords="hog raising clean spacious pens natural ventilation">
-                    <button class="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
-                        <span class="font-semibold text-gray-800 text-lg">How are your hogs raised?</span>
-                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center ml-4 flex-shrink-0 transition-all duration-200">
-                            <i class="fas fa-plus text-gray-600 text-sm"></i>
-                        </div>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="px-6 pb-5 text-gray-600 leading-relaxed">
-                            <p class="mb-4">Our hogs are raised on JM Casabar Private Farm in <span class="font-semibold text-gray-800">clean, spacious pens with natural ventilation</span>, ensuring their health and well-being.</p>
-                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                                <h4 class="font-semibold text-green-800 mb-2 flex items-center">
-                                    <i class="fas fa-home mr-2"></i>
-                                    Living Conditions:
-                                </h4>
-                                <ul class="space-y-1 text-green-700">
-                                    <li>• Stress-free environment</li>
-                                    <li>• Proper nutrition</li>
-                                    <li>• Regular health monitoring</li>
-                                    <li>• Clean water access</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Incubation Services -->
         <div class="mb-12" data-category="incubation">

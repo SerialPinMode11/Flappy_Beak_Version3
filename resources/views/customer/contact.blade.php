@@ -25,7 +25,7 @@
                     </div>
                     <div>
                         <h4 class="font-semibold text-xl text-neutral mb-2">Phone Number</h4>
-                        <p class="text-gray-600">+63977 619 3200</p>
+                        <p class="text-gray-600">+63 9294 833 413</p>
                     </div>
                 </div>
                 

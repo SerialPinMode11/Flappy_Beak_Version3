@@ -72,6 +72,8 @@ Route::middleware("auth")->group(function(){
     Route::get('/cart/options/list', [CartNavController::class, 'CartOption'])->name('cart.options.list');
     Route::get('/cart/option/wine', [CartNavController::class, 'toWineCart'])->name('cart.wine.view');
     Route::get('/cart/option/hog', [CartNavController::class, 'toHogCart'])->name('cart.hog.view');
+
+    //Quik Links
     Route::get('/FAQs', [CartNavController::class, 'toFAQ'])->name('question.page');
     Route::get('/Privacy-Policy', [CartNavController::class, 'toPrivacy'])->name('privacy-policy.page');
     
@@ -136,13 +138,20 @@ Route::middleware("auth")->group(function(){
     //incubation table
     Route::get('/admin/incubation-list', [IncubationAdminController::class, 'index'])->name('admin.incubation.index');
     Route::get('/admin/incubation/show', [IncubationAdminController::class, 'show'])->name('admin.bookings.show'); 
-      Route::get('/admin/expenses/{id}', [IncubationAdminController::class, 'edit'])->name('admin.bookings.edit');
+    Route::get('/admin/expenses/{id}', [IncubationAdminController::class, 'edit'])->name('admin.bookings.edit');
     Route::post('/admin/expenses/store', [IncubationAdminController::class, 'store'])->name('admin.bookings.store');
-    Route::put('/admin/expenses/update/{id}', [IncubationAdminController::class, 'update'])->name('admin.bookings.update');  
-     Route::resource('incubation', IncubationAdminController::class)->only([
-        'index', 'show', 'edit', 'update'
-    ]);
-    
+    Route::put('/admin/expenses/update/{id}', [IncubationAdminController::class, 'update'])->name('admin.bookings.update');
+    Route::get('/admin/incubation/export/excel', [IncubationAdminController::class, 'export'])->name('admin.incubation.export');  
+    Route::prefix('incubation')->name('incubation.')->group(function () {
+            Route::get('/list', [IncubationAdminController::class, 'index'])->name('index');
+            Route::get('/create', [IncubationAdminController::class, 'create'])->name('create');
+            Route::post('/store', [IncubationAdminController::class, 'store'])->name('store');
+            Route::get('/{id}', [IncubationAdminController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [IncubationAdminController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [IncubationAdminController::class, 'update'])->name('update');
+            Route::patch('/{id}/status', [IncubationAdminController::class, 'updateStatus'])->name('update-status');
+            Route::get('/export/excel', [IncubationAdminController::class, 'export'])->name('export');
+        });
     Route::patch('/incubation/{id}/status', [IncubationAdminController::class, 'updateStatus'])->name('admin.bookings.update-status');
     Route::post('/incubation/{id}/candling', [IncubationAdminController::class, 'recordCandling'])->name('admin.bookings.record-candling');
     Route::post('/incubation/{id}/hatching', [IncubationAdminController::class, 'recordHatching'])->name('admin.bookings.record-hatching');

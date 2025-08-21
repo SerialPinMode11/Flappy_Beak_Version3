@@ -209,11 +209,11 @@
                     <ul class="space-y-2">
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-map-marker-alt mt-1 text-primary"></i>
-                            <span class="text-gray-300">Barangay Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</span>
+                            <span class="text-gray-300">Brgy. Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</span>
                         </li>
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-phone mt-1 text-primary"></i>
-                            <span class="text-gray-300">+63 977 6193 200</span>
+                            <span class="text-gray-300">+63 9294 833 413</span>
                         </li>
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-envelope mt-1 text-primary"></i>

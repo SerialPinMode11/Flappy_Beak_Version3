@@ -426,11 +426,11 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-teal-200 hover:text-yellow-300">Home</a></li>
-                        <li><a href="#products" class="text-teal-200 hover:text-yellow-300">Products</a></li>
-                        <li><a href="#about" class="text-teal-200 hover:text-yellow-300">About Us</a></li>
-                        <li><a href="#" class="text-teal-200 hover:text-yellow-300">Contact</a></li>
-                        <li><a href="#" class="text-teal-200 hover:text-yellow-300">FAQ</a></li>
+                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">Home</a></li>
+                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">Products</a></li>
+                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">About Us</a></li>
+                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">Contact</a></li>
+                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">FAQ</a></li>
                     </ul>
                 </div>
                 
@@ -439,11 +439,11 @@
                     <ul class="space-y-2">
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-map-marker-alt mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">Barangay Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</span>
+                            <span class="text-teal-200">Brgy. Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</span>
                         </li>
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-phone mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">+63 977 6193 200</span>
+                            <span class="text-teal-200">+63 9294 833 413</span>
                         </li>
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-envelope mt-1 text-yellow-300"></i>

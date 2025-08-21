@@ -12,6 +12,15 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* Added active navigation styles */
+        .nav-link-active {
+            background-color: #374151 !important;
+            color: #ff6b6b !important;
+            border-left: 4px solid #ff6b6b;
+        }
+        .nav-link-active i {
+            color: #ff6b6b !important;
+        }
     </style>
     @stack('styles')
 </head>
@@ -24,14 +33,55 @@
             </div>
             <nav class="p-4">
                 <ul class="space-y-2">
-                    <li><a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-tachometer-alt mr-3"></i>Dashboard</a></li>
-                    <li><a href="{{ route('admin.product.index') }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-box mr-3"></i>Product Stocks</a></li>
-                    <li><a href="{{ route('admin.billing.index') }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-dollar-sign mr-3"></i>Income Generated</a></li>
-                    <li><a href="{{ route('admin.expense.index')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-table mr-3"></i>Expenses Table</a></li>
-                    <li><a href="{{ route('contactforlist' ) }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-industry mr-3"></i>Customer Feedback Management</a></li>
-                    <li><a href="{{ route('admin.incubation.index' ) }}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-industry mr-3"></i>Incubation Book List</a></li>
-                    <li><a href="{{route('admin.hardware_esp32')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-desktop mr-3"></i>Hardware</a></li>
-                    <li><a href="{{route('admin.personal')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-user-circle mr-3"></i>Personal</a></li>
+                    <!-- Added active state detection for each navigation link -->
+                    <li>
+                        <a href="{{ route('admin.dashboard') }}" 
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.dashboard') ? 'nav-link-active' : '' }}">
+                            <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.product.index') }}" 
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.product.*') ? 'nav-link-active' : '' }}">
+                            <i class="fas fa-box mr-3"></i>Product Stocks
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.billing.index') }}" 
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.billing.*') ? 'nav-link-active' : '' }}">
+                            <i class="fas fa-dollar-sign mr-3"></i>Income Generated
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.expense.index')}}" 
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.expense.*') ? 'nav-link-active' : '' }}">
+                            <i class="fas fa-table mr-3"></i>Expenses Table
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('contactforlist' ) }}" 
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 {{ request()->routeIs('contactforlist') ? 'nav-link-active' : '' }}">
+                            <i class="fas fa-industry mr-3"></i>Customer Feedback Management
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.incubation.index' ) }}" 
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.incubation.*') ? 'nav-link-active' : '' }}">
+                            <i class="fas fa-industry mr-3"></i>Incubation Book List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('admin.hardware_esp32')}}" 
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.hardware_esp32') ? 'nav-link-active' : '' }}">
+                            <i class="fas fa-desktop mr-3"></i>Hardware
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('admin.personal')}}" 
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.personal') ? 'nav-link-active' : '' }}">
+                            <i class="fas fa-user-circle mr-3"></i>Personal
+                        </a>
+                    </li>
 
                     <!-- 🛑 Fix Logout Button (Using Form) -->
                     <li>

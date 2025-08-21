@@ -542,15 +542,15 @@
                             <div class="space-y-2 text-blue-700">
                                 <p class="flex items-center">
                                     <i class="fas fa-map-marker-alt mr-2 w-4"></i>
-                                    Bacoor, Calabarzon, Philippines
+                                    Brgy. Maroyroy, Macatoc, Victoria, Oriental Mindoro
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-phone mr-2 w-4"></i>
-                                    [Your phone number]
+                                    +63 9294 833 413
                                 </p>
                                 <p class="flex items-center">
                                     <i class="fas fa-envelope mr-2 w-4"></i>
-                                    [Your email address]
+                                    jmcasabar@gmail.com
                                 </p>
                             </div>
                         </div>
