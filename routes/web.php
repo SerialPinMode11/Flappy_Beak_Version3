@@ -17,6 +17,7 @@ use App\Http\Controllers\WineProductController;
 use App\Http\Controllers\HogProductController;
 use App\Http\Controllers\CartNavController;
 use App\Http\Controllers\IncubationAdminController;
+use App\Http\Controllers\FeedingHistoryController;
 use App\Models\WineProduct;
 
 Route::get('/', function () { return view('welcome'); } );
@@ -108,7 +109,11 @@ Route::middleware("auth")->group(function(){
     Route::get('/admin/hardware-esp32/history', [AdminController::class, 'toHardwareHistory'])->name('admin.hardwareHistory');
     Route::get('/admin/hardware-esp32/setting', [AdminController::class, 'toHardwareSetting'])->name('admin.hardwareSetting');
     Route::get('/admin/hardware-esp32/inventory', [AdminController::class, 'toHardwareInventory'])->name('admin.hardwareInventory');
-   
+    Route::post('/inventory/store', [AdminController::class, 'storeFeed'])->name('inventory.store');
+    Route::put('/inventory/{id}', [AdminController::class, 'updateFeed'])->name('inventory.update');
+    Route::delete('/inventory/{id}', [AdminController::class, 'destroyFeed'])->name('inventory.destroy');
+
+
     //biling
     Route::get('/admin/billing', [AdminBillingController::class, 'index'])->name('admin.billing.index');
     Route::get('/admin/billing/{id}', [AdminBillingController::class, 'show'])->name('admin.billing.show');
@@ -161,4 +166,10 @@ Route::middleware("auth")->group(function(){
     Route::post('/incubation/{id}/hatching', [IncubationAdminController::class, 'recordHatching'])->name('admin.bookings.record-hatching');
     Route::get('/incubation-export', [IncubationAdminController::class, 'export'])->name('admin.bookings.export');
 
+    //history
+    
+    Route::post('/feed-now', [AdminController::class, 'feedNow'])->name('feed.now');
+    // History page
+    Route::post('/history/store', [AdminController::class, 'store'])->name('history.store');
+    Route::delete('/history/{id}', [AdminController::class, 'destroy'])->name('history.destroy');
 });

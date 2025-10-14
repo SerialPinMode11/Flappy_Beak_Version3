@@ -8,9 +8,22 @@
 @section('content')
 <div class="py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-2xl font-semibold text-gray-900">Feeding History</h1>
+         {{-- Header with Add Manual Entry Button  --}}
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-semibold text-gray-900">Feeding History</h1>
+            <button onclick="openModal()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <i class="fas fa-plus mr-2"></i>Add Manual Entry
+            </button>
+        </div>
+
+         {{-- Success Message  --}}
+        @if(session('success'))
+            <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
         
-        <!-- Filters -->
+         {{-- Filters  --}}
         <div class="mt-4 bg-white rounded-lg shadow p-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
@@ -61,76 +74,62 @@
             </div>
         </div>
         
-        <!-- History Table -->
+         {{-- History Table  --}}
         <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-md">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cage</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duck Type</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Feed Type</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Feeder</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fed By</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @for ($i = 0; $i < 10; $i++)
+                    @forelse($histories as $history)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ date('Y-m-d H:i', strtotime('-' . $i . ' days')) }}
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ $history->fed_at->format('M d, Y h:i A') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            @php
-                                $cages = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
-                                $cage = $cages[$i % count($cages)];
-                            @endphp
-                            Cage {{ $cage }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            @php
-                                $isAdult = in_array($cage, ['A', 'B', 'C', 'D', 'E', 'F', 'G']);
-                            @endphp
-                            {{ $isAdult ? 'Adult Pekin Duck' : 'Pekin Duckling' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            @if($i % 3 == 0)
-                                Standard Feed
-                            @elseif($i % 3 == 1)
-                                Premium Mix
-                            @else
-                                Growth Formula
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ number_format(rand(5, 20) / 10, 1) }} kg
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            {{ $history->fed_by ?? 'N/A' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Completed
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            @if($i % 3 == 0)
-                                John Doe
-                            @elseif($i % 3 == 1)
-                                Jane Smith
+                            @if($history->is_manual)
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    Manual
+                                </span>
                             @else
-                                Mike Johnson
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    Auto
+                                </span>
                             @endif
                         </td>
+                        <td class="px-6 py-4 text-sm text-gray-700">
+                            {{ $history->notes ?? '-' }}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-secondary mr-3">View</a>
-                            <a href="#" class="text-green-600 hover:text-green-900">Notes</a>
+                            <form action="{{ route('history.destroy', $history->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
                         </td>
                     </tr>
-                    @endfor
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                            No feeding history found.
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
             
-            <!-- Pagination -->
+             {{-- Pagination  --}}
             <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div class="flex-1 flex justify-between sm:hidden">
                     <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
@@ -143,41 +142,17 @@
                 <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                     <div>
                         <p class="text-sm text-gray-700">
-                            Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">97</span> results
+                            Showing <span class="font-medium">{{ $histories->firstItem() ?? 0 }}</span> to <span class="font-medium">{{ $histories->lastItem() ?? 0 }}</span> of <span class="font-medium">{{ $histories->total() }}</span> results
                         </p>
                     </div>
                     <div>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Previous</span>
-                                <i class="fas fa-chevron-left h-5 w-5"></i>
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                1
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                2
-                            </a>
-                            <a href="#" aria-current="page" class="z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                3
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                4
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                5
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Next</span>
-                                <i class="fas fa-chevron-right h-5 w-5"></i>
-                            </a>
-                        </nav>
+                        {{ $histories->links() }}
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Feeding Summary -->
+         {{-- Feeding Summary  --}}
         <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
@@ -246,7 +221,7 @@
             </div>
         </div>
         
-        <!-- Monthly Feeding Chart -->
+         {{-- Monthly Feeding Chart  --}}
         <div class="mt-8 bg-white shadow rounded-lg">
             <div class="px-4 py-5 sm:px-6">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Monthly Feeding History</h3>
@@ -260,11 +235,129 @@
         </div>
     </div>
 </div>
+
+ {{-- Manual Entry Modal  --}}
+<div id="manualEntryModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-gray-900">Add Manual Feeding Entry</h3>
+            <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <form action="{{ route('history.store') }}" method="POST">
+            @csrf
+            
+             Date Input 
+            <div class="mb-4">
+                <label for="fed_date" class="block text-gray-700 text-sm font-bold mb-2">
+                    Date <span class="text-red-500">*</span>
+                </label>
+                <input 
+                    type="date" 
+                    id="fed_date" 
+                    name="fed_date" 
+                    required 
+                    value="{{ date('Y-m-d') }}"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+             Time Input 
+            <div class="mb-4">
+                <label for="fed_time" class="block text-gray-700 text-sm font-bold mb-2">
+                    Time <span class="text-red-500">*</span>
+                </label>
+                <input 
+                    type="time" 
+                    id="fed_time" 
+                    name="fed_time" 
+                    required 
+                    value="{{ date('H:i') }}"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+             Notes Input 
+            <div class="mb-4">
+                <label for="notes" class="block text-gray-700 text-sm font-bold mb-2">
+                    Notes (Optional)
+                </label>
+                <textarea 
+                    id="notes" 
+                    name="notes" 
+                    rows="3" 
+                    placeholder="Add any additional details about this feeding..."
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none"></textarea>
+            </div>
+            
+             Form Actions 
+            <div class="flex justify-end gap-3 mt-6">
+                <button 
+                    type="button" 
+                    onclick="closeModal()" 
+                    class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors">
+                    Cancel
+                </button>
+                <button 
+                    type="submit" 
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+                    <i class="fas fa-save mr-2"></i>Save Entry
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
+    // Modal Functions
+    function openModal() {
+        const modal = document.getElementById('manualEntryModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            // Set current date and time as default
+            document.getElementById('fed_date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('fed_time').value = new Date().toTimeString().slice(0, 5);
+        }
+    }
+
+    
+
+    function closeModal() {
+        const modal = document.getElementById('manualEntryModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            // Reset form
+            modal.querySelector('form').reset();
+        }
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('manualEntryModal');
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        }// Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    });
+
+    // Close modal when clicking outside
+    // document.getElementById('manualEntryModal')?.addEventListener('click', function(e) {
+    //     if (e.target === this) {
+    //         closeModal();
+    //     }
+    // });
+
     // Monthly Feeding Chart
     var monthlyFeedingOptions = {
         series: [{
