@@ -137,10 +137,13 @@ Route::middleware("auth")->group(function(){
 
     //incubation table
     Route::get('/admin/incubation-list', [IncubationAdminController::class, 'index'])->name('admin.incubation.index');
-    Route::get('/admin/incubation/show', [IncubationAdminController::class, 'show'])->name('admin.bookings.show'); 
+    Route::get('/admin/incubation/show/{id}', [IncubationAdminController::class, 'show'])->name('admin.bookings.show'); 
     Route::get('/admin/expenses/{id}', [IncubationAdminController::class, 'edit'])->name('admin.bookings.edit');
     Route::post('/admin/expenses/store', [IncubationAdminController::class, 'store'])->name('admin.bookings.store');
     Route::put('/admin/expenses/update/{id}', [IncubationAdminController::class, 'update'])->name('admin.bookings.update');
+    
+    
+    //incubation
     Route::get('/admin/incubation/export/excel', [IncubationAdminController::class, 'export'])->name('admin.incubation.export');  
     Route::prefix('incubation')->name('incubation.')->group(function () {
             Route::get('/list', [IncubationAdminController::class, 'index'])->name('index');
@@ -152,6 +155,7 @@ Route::middleware("auth")->group(function(){
             Route::patch('/{id}/status', [IncubationAdminController::class, 'updateStatus'])->name('update-status');
             Route::get('/export/excel', [IncubationAdminController::class, 'export'])->name('export');
         });
+    
     Route::patch('/incubation/{id}/status', [IncubationAdminController::class, 'updateStatus'])->name('admin.bookings.update-status');
     Route::post('/incubation/{id}/candling', [IncubationAdminController::class, 'recordCandling'])->name('admin.bookings.record-candling');
     Route::post('/incubation/{id}/hatching', [IncubationAdminController::class, 'recordHatching'])->name('admin.bookings.record-hatching');

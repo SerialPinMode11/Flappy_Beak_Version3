@@ -27,36 +27,22 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        .slide {
-            display: none;
-            transition: all 0.5s ease;
+        /* FIX: CSS for the Mobile Navigation Toggle */
+        #mobile-menu-toggle {
+            display: none; /* Hide the checkbox */
         }
 
-        .slide.active {
-            display: block;
+        .mobile-nav {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
         }
-
-        .dot {
-            transition: all 0.3s ease;
+        
+        /* When the checkbox is checked, show the mobile nav menu */
+        #mobile-menu-toggle:checked ~ header ~ .mobile-nav {
+            max-height: 500px; /* A height large enough to show all links */
         }
-
-        .dot.active {
-            background-color: #FF6B6B;
-        }
-
-        .quick-view {
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .product-card:hover .quick-view {
-            opacity: 1;
-        }
-
-        .star-rating {
-            color: #FFD700;
-        }
-
+        
         .product-card {
             transition: all 0.3s ease;
         }
@@ -66,41 +52,21 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        /* Add smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Improve header shadow */
         .header-shadow {
             box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04);
-        }
-
-        /* Add loading animation */
-        .loading {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .loading::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
         }
     </style>
 </head>
 
 <body class="bg-gray-50 flex flex-col min-h-screen">
+
+    <!-- FIX: Hidden checkbox to control mobile menu state -->
+    <input type="checkbox" id="mobile-menu-toggle" class="hidden">
+
     <!-- Header -->
     <header class="bg-white header-shadow sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4">
@@ -142,10 +108,10 @@
                             <i class="fas fa-shopping-cart text-xl"></i>
                             <span class="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
                         </a>
-                        <!-- Mobile Menu Button -->
-                        <button class="md:hidden text-neutral hover:text-primary transition-colors">
+                        <!-- FIX: Mobile Menu Button is now a LABEL for the checkbox -->
+                        <label for="mobile-menu-toggle" class="md:hidden text-neutral hover:text-primary transition-colors cursor-pointer">
                             <i class="fas fa-bars text-xl"></i>
-                        </button>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -164,8 +130,8 @@
         </div>
     </header>
 
-    <!-- Mobile Navigation Menu (Hidden by Default) -->
-    <div class="hidden md:hidden bg-white border-t border-gray-100">
+    <!-- FIX: Mobile Navigation Menu is now controlled by the checkbox -->
+    <div class="mobile-nav md:hidden bg-white border-t border-gray-100">
         <nav class="container mx-auto px-4 py-2">
             <a href="{{route('home')}}" class="block py-2 text-neutral hover:text-primary transition-colors">Home</a>
             <a href="{{route('contact')}}" class="block py-2 text-neutral hover:text-primary transition-colors">Contact Us</a>

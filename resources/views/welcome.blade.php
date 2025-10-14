@@ -14,6 +14,359 @@
             background-color: #f8fafc;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
+
+        /* Enhanced Responsive Styles */
+        
+        /* Mobile First Approach - Extra Small devices (portrait phones, less than 576px) */
+        @media (max-width: 575.98px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            /* Header adjustments */
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .mobile-header-top {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .mobile-nav {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .mobile-nav a {
+                font-size: 0.875rem;
+                padding: 0.5rem;
+            }
+            
+            .mobile-search {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            
+            .mobile-search input {
+                width: 100% !important;
+                font-size: 0.875rem;
+            }
+            
+            /* Hero section */
+            .hero-title {
+                font-size: 2rem !important;
+                line-height: 1.2;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+                line-height: 1.5;
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .hero-buttons a {
+                text-align: center;
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .hero-image {
+                margin-top: 2rem;
+                max-height: 250px !important;
+            }
+            
+            /* Product cards */
+            .product-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem;
+            }
+            
+            .product-card {
+                max-width: 100%;
+            }
+            
+            .product-card img {
+                height: 200px;
+            }
+            
+            .product-price {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            
+            .product-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .product-buttons button:last-child {
+                width: 100%;
+            }
+            
+            /* About section */
+            .about-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .about-image {
+                order: -1;
+                margin-bottom: 2rem;
+            }
+            
+            .about-stats {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem;
+            }
+            
+            .about-stats > div {
+                padding: 1rem;
+            }
+            
+            .about-stats .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            /* Features section */
+            .features-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem;
+            }
+            
+            /* Footer */
+            .footer-grid {
+                grid-template-columns: 1fr !important;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .footer-links {
+                justify-content: center;
+            }
+        }
+        
+        /* Small devices (landscape phones, 576px and up) */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .about-stats {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        
+        /* Medium devices (tablets, 768px and up) */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .mobile-nav {
+                display: none !important;
+            }
+        }
+        
+        /* Large devices (desktops, 992px and up) */
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+        }
+        
+        /* Extra large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+        }
+        
+        /* Utility classes for better responsiveness */
+        .responsive-text-sm {
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        }
+        
+        .responsive-text-base {
+            font-size: clamp(1rem, 3vw, 1.125rem);
+        }
+        
+        .responsive-text-lg {
+            font-size: clamp(1.125rem, 3.5vw, 1.25rem);
+        }
+        
+        .responsive-text-xl {
+            font-size: clamp(1.25rem, 4vw, 1.5rem);
+        }
+        
+        .responsive-text-2xl {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+        
+        .responsive-text-3xl {
+            font-size: clamp(2rem, 6vw, 3rem);
+        }
+        
+        .responsive-padding {
+            padding: clamp(1rem, 5vw, 2rem);
+        }
+        
+        .responsive-margin {
+            margin: clamp(1rem, 5vw, 2rem);
+        }
+        
+        /* Image responsiveness */
+        .responsive-img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        
+        /* Button responsiveness */
+        .responsive-btn {
+            padding: clamp(0.5rem, 2vw, 1rem) clamp(1rem, 4vw, 2rem);
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        }
+        
+        /* Card responsiveness */
+        .responsive-card {
+            padding: clamp(1rem, 3vw, 1.5rem);
+        }
+        
+        /* Navigation fixes for mobile */
+        @media (max-width: 767.98px) {
+            .desktop-nav {
+                display: none !important;
+            }
+            
+            .mobile-menu-toggle {
+                display: block !important;
+            }
+            
+            .mobile-nav.active {
+                display: flex !important;
+            }
+            
+            .header-actions {
+                gap: 0.5rem;
+            }
+            
+            .header-actions button,
+            .header-actions a {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .cart-icon,
+            .wishlist-icon {
+                font-size: 1.25rem;
+            }
+        }
+        
+        /* Improved touch targets for mobile */
+        @media (max-width: 767.98px) {
+            button, 
+            a, 
+            input[type="submit"], 
+            input[type="button"] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .product-card .quick-view {
+                opacity: 1; /* Always visible on mobile */
+                position: relative !important;
+                bottom: auto !important;
+                right: auto !important;
+                margin-top: 0.5rem;
+                width: 100%;
+                border-radius: 0.5rem;
+            }
+        }
+        
+        /* Loading performance improvements */
+        .product-card img,
+        .hero-image,
+        .about-image {
+            transition: transform 0.3s ease;
+        }
+        
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            .product-card img,
+            .hero-image,
+            button,
+            a {
+                transition: none;
+            }
+            
+            .product-card:hover img {
+                transform: none;
+            }
+        }
+        
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .product-card {
+                border: 2px solid currentColor;
+            }
+            
+            .bg-emerald-50,
+            .bg-white {
+                background-color: transparent;
+            }
+        }
+        
+        /* Dark mode considerations (if needed in future) */
+        @media (prefers-color-scheme: dark) {
+            .hero-pattern {
+                background-color: #ffffff;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen bg-slate-50 font-sans">
