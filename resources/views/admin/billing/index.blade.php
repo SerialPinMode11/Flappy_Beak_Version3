@@ -2,7 +2,7 @@
 @section('title', 'Billing Information - Admin Dashboard')
 @section('content')
 
-<!-- Enhanced print-specific CSS styles with improved table formatting and column widths -->
+<!-- Updated print styles to receipt format with custom fonts and spacing -->
 <style>
 @media print {
     body * {
@@ -16,105 +16,116 @@
         left: 0;
         top: 0;
         width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        font-family: 'Courier New', monospace;
         font-size: 12px;
+        line-height: 1.6;
     }
     .no-print {
         display: none !important;
     }
-    /* Hide status and action columns in print */
-    .status-column,
-    .action-column {
-        display: none !important;
-    }
-    .print-header {
+    
+    /* Receipt header styles */
+    .receipt-header {
         text-align: center;
         margin-bottom: 30px;
-        border-bottom: 2px solid #000;
-        padding-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px dashed #000;
     }
-    .print-title {
+    .receipt-business-name {
         font-size: 24px;
         font-weight: bold;
-        margin-bottom: 10px;
-        color: #000;
-    }
-    .print-info {
-        font-size: 14px;
+        font-family: Arial, sans-serif;
         margin-bottom: 5px;
-        color: #000;
+        letter-spacing: 1px;
     }
-    .print-total {
-        margin-top: 20px;
-        text-align: right;
+    .receipt-title {
         font-size: 16px;
         font-weight: bold;
-        border-top: 2px solid #000;
-        padding-top: 10px;
-    }
-    /* Improved table formatting with better column widths and spacing */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0;
-        font-size: 11px;
-    }
-    th, td {
-        border: 1px solid #000;
-        padding: 6px 4px;
-        text-align: left;
-        vertical-align: top;
-        word-wrap: break-word;
-    }
-    th {
-        background-color: #f5f5f5;
-        font-weight: bold;
-        font-size: 10px;
+        margin: 10px 0;
         text-transform: uppercase;
     }
-    /* Specific column width optimization for better date visibility */
-    th:nth-child(1), td:nth-child(1) { /* ID */
-        width: 8%;
-        text-align: center;
+    .receipt-meta {
+        font-size: 11px;
+        margin: 3px 0;
+        color: #333;
     }
-    th:nth-child(2), td:nth-child(2) { /* Customer */
-        width: 25%;
+    
+    /* Receipt item styles */
+    .receipt-items {
+        margin: 20px 0;
     }
-    th:nth-child(3), td:nth-child(3) { /* Address */
-        width: 30%;
-        font-size: 10px;
+    .receipt-item {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed #ccc;
+        page-break-inside: avoid;
     }
-    th:nth-child(4), td:nth-child(4) { /* Payment Method */
-        width: 15%;
-        font-size: 10px;
+    .receipt-item:last-child {
+        border-bottom: 2px dashed #000;
     }
-    th:nth-child(5), td:nth-child(5) { /* Amount */
-        width: 12%;
-        text-align: right;
-        font-weight: bold;
-    }
-    th:nth-child(6), td:nth-child(6) { /* Date */
-        width: 15%;
-        white-space: nowrap;
-        font-size: 10px;
-    }
-    /* Better text formatting for customer info */
-    .customer-name {
-        font-weight: bold;
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 4px 0;
         font-size: 11px;
     }
-    .customer-email {
-        font-size: 9px;
-        color: #666;
-        margin-top: 2px;
-    }
-    /* Payment method formatting */
-    .payment-main {
+    .receipt-label {
         font-weight: bold;
+        width: 140px;
+        flex-shrink: 0;
     }
-    .payment-details {
-        font-size: 9px;
-        color: #666;
-        margin-top: 1px;
+    .receipt-value {
+        flex: 1;
+        text-align: left;
+    }
+    .receipt-amount {
+        font-weight: bold;
+        font-size: 13px;
+        text-align: right;
+        margin-top: 5px;
+    }
+    
+    /* Receipt footer/total styles */
+    .receipt-total-section {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 2px solid #000;
+    }
+    .receipt-total-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+        font-size: 13px;
+    }
+    .receipt-total-row.grand-total {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #000;
+    }
+    
+    /* Receipt footer */
+    .receipt-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 2px dashed #000;
+        font-size: 10px;
+    }
+    
+    /* Hide table in print view */
+    .billing-table {
+        display: none !important;
+    }
+}
+
+/* Screen-only: Hide receipt view */
+@media screen {
+    .receipt-view {
+        display: none;
     }
 }
 </style>
@@ -122,8 +133,12 @@
 <header class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-800">Billing Information</h1>
-        <!-- Added person selector and enhanced print button -->
+        <!-- Added month/year filter for print function -->
         <div class="flex space-x-3 items-center">
+            <div class="no-print">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Filter by Month:</label>
+                <input type="month" id="filterMonth" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
             <div class="no-print">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Printed by:</label>
                 <select id="printedBy" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -135,7 +150,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                 </svg>
-                Print Table
+                Print Receipt
             </button>
             <button onclick="openExportModal()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 no-print">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,59 +162,6 @@
     </div>
 </header>
 
-<!-- Added export modal for filtering income reports -->
-<div id="exportModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-        </div>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <form action="{{ route('admin.billing.export') }}" method="GET">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Export Income Sales Report</h3>
-                            <p class="text-sm text-gray-600 mb-4">This will export all completed billing records and calculate total income.</p>
-                            
-                            <div class="grid grid-cols-1 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
-                                    <input type="date" name="date_from" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
-                                    <input type="date" name="date_to" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name (Optional)</label>
-                                    <input type="text" name="customer_name" placeholder="Enter customer name" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method (Optional)</label>
-                                    <select name="payment_method" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <option value="">All Payment Methods</option>
-                                        <option value="cash">Cash</option>
-                                        <option value="online">Online</option>
-                                        <option value="card">Card</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        Export Excel
-                    </button>
-                    <button type="button" onclick="closeExportModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <!-- Added success message display -->
     @if(session('success'))
@@ -209,15 +171,40 @@
     @endif
 
     <div class="bg-white shadow-sm rounded-lg overflow-hidden printable-area">
-        <!-- Added comprehensive print header -->
-        <div class="print-header" style="display: none;">
-            <div class="print-title">Flappy-Beak Income Generated Report</div>
-            <div class="print-info">Date Printed: <span id="printDate"></span></div>
-            <div class="print-info">Printed by: <span id="printPerson"></span></div>
-            <div class="print-info">Report Type: Complete Income Records Only</div>
+        <!-- Added receipt format view for printing -->
+        <div class="receipt-view">
+            <div class="receipt-header">
+                <div class="receipt-business-name">FLAPPY-BEAK</div>
+                <div class="receipt-title">Monthly Revenue Income Report</div>
+                <div class="receipt-meta">Date Printed: <span id="printDate"></span></div>
+                <div class="receipt-meta">Printed by: <span id="printPerson"></span></div>
+                <div class="receipt-meta">Report Period: <span id="reportPeriod">All Time</span></div>
+                <div class="receipt-meta">Status: Completed Orders Only</div>
+            </div>
+            
+            <div class="receipt-items" id="receiptItems">
+                <!-- Items will be populated by JavaScript -->
+            </div>
+            
+            <div class="receipt-total-section">
+                <div class="receipt-total-row">
+                    <span>Total Records:</span>
+                    <span id="receiptTotalRecords">0</span>
+                </div>
+                <div class="receipt-total-row grand-total">
+                    <span>GRAND TOTAL:</span>
+                    <span>₱<span id="receiptGrandTotal">0.00</span></span>
+                </div>
+            </div>
+            
+            <div class="receipt-footer">
+                <div>Thank you for your business!</div>
+                <div>This is a computer-generated report</div>
+            </div>
         </div>
         
-        <div class="overflow-x-auto">
+        <!-- Added billing-table class to hide table during print -->
+        <div class="overflow-x-auto billing-table">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
@@ -226,16 +213,24 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                        <!-- Added status-column class to hide in print -->
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider status-column">Status</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <!-- Added action-column class to hide in print -->
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider action-column">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($billingInfo as $info)
-                    <tr class="billing-row" data-status="{{ $info->status }}" data-amount="{{ $info->total_amount }}">
+                    <tr class="billing-row" 
+                        data-status="{{ $info->status }}" 
+                        data-amount="{{ $info->total_amount }}"
+                        data-date="{{ $info->created_at->format('Y-m-d') }}"
+                        data-customer="{{ $info->name }}"
+                        data-email="{{ $info->email }}"
+                        data-address="{{ $info->address }}, {{ $info->city }}, {{ $info->zip }}"
+                        data-payment="{{ ucfirst($info->payment_method) }}"
+                        data-online-payment="{{ $info->online_payment_method ?? '' }}"
+                        data-reference="{{ $info->reference_number ?? '' }}"
+                        data-id="{{ $info->id }}">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $info->id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <!-- Added CSS classes for better print formatting -->
@@ -277,17 +272,11 @@
                     @empty
                     <tr>
                         <!-- Updated colspan to match visible columns in print -->
-                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">No billing information found</td>
+                        <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">No billing information found</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
-        </div>
-        
-        <!-- Added total calculation section for print -->
-        <div class="print-total" style="display: none;">
-            <div>Total Completed Income: ₱<span id="totalAmount">0.00</span></div>
-            <div style="font-size: 14px; margin-top: 5px;">Total Records: <span id="totalRecords">0</span></div>
         </div>
     </div>
     <div class="mt-4 no-print">
@@ -295,57 +284,144 @@
     </div>
 </div>
 
-<!-- Enhanced JavaScript with total calculation and print header functionality -->
+<!-- Completely rewritten printTable() function with monthly filtering and receipt generation -->
 <script>
 function printTable() {
-    // Get selected person
     const selectedPerson = document.getElementById('printedBy').value;
+    const filterMonth = document.getElementById('filterMonth').value;
     
-    // Set current date
+    // Set current date and time
     const currentDate = new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: true
     });
     
-    // Calculate total for completed records
+    // Determine report period
+    let reportPeriod = 'All Time';
+    let filterYear = null;
+    let filterMonthNum = null;
+    
+    if (filterMonth) {
+        const [year, month] = filterMonth.split('-');
+        filterYear = parseInt(year);
+        filterMonthNum = parseInt(month);
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+        reportPeriod = `${monthNames[filterMonthNum - 1]} ${filterYear}`;
+    }
+    
+    // Calculate total and build receipt items
     let totalAmount = 0;
     let totalRecords = 0;
     const rows = document.querySelectorAll('.billing-row');
+    const receiptItemsContainer = document.getElementById('receiptItems');
+    receiptItemsContainer.innerHTML = '';
     
     rows.forEach(row => {
         const status = row.getAttribute('data-status');
+        const dateStr = row.getAttribute('data-date');
         const amount = parseFloat(row.getAttribute('data-amount'));
         
-        if (status === 'completed') {
-            totalAmount += amount;
-            totalRecords++;
+        // Only process completed orders
+        if (status !== 'completed') return;
+        
+        // Apply monthly filter if set
+        if (filterMonth) {
+            const rowDate = new Date(dateStr);
+            const rowYear = rowDate.getFullYear();
+            const rowMonth = rowDate.getMonth() + 1;
+            
+            if (rowYear !== filterYear || rowMonth !== filterMonthNum) {
+                return; // Skip this row
+            }
         }
+        
+        // Add to totals
+        totalAmount += amount;
+        totalRecords++;
+        
+        // Build receipt item
+        const customer = row.getAttribute('data-customer');
+        const email = row.getAttribute('data-email');
+        const address = row.getAttribute('data-address');
+        const payment = row.getAttribute('data-payment');
+        const onlinePayment = row.getAttribute('data-online-payment');
+        const reference = row.getAttribute('data-reference');
+        const id = row.getAttribute('data-id');
+        
+        // Format date
+        const formattedDate = new Date(dateStr).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        
+        // Create receipt item HTML
+        let paymentDetails = payment;
+        if (onlinePayment) {
+            paymentDetails += ` - ${onlinePayment}`;
+            if (reference) {
+                paymentDetails += ` (Ref: ${reference})`;
+            }
+        }
+        
+        const itemHTML = `
+            <div class="receipt-item">
+                <div class="receipt-row">
+                    <span class="receipt-label">Order ID:</span>
+                    <span class="receipt-value">#${id}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Date:</span>
+                    <span class="receipt-value">${formattedDate}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Customer:</span>
+                    <span class="receipt-value">${customer}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Email:</span>
+                    <span class="receipt-value">${email}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Address:</span>
+                    <span class="receipt-value">${address}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Payment Method:</span>
+                    <span class="receipt-value">${paymentDetails}</span>
+                </div>
+                <div class="receipt-amount">Amount: ₱${amount.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}</div>
+            </div>
+        `;
+        
+        receiptItemsContainer.innerHTML += itemHTML;
     });
     
-    // Update print header and total
+    // Check if any records found
+    if (totalRecords === 0) {
+        receiptItemsContainer.innerHTML = '<div style="text-align: center; padding: 20px; font-size: 14px;">No completed orders found for the selected period.</div>';
+    }
+    
+    // Update receipt header and footer
     document.getElementById('printDate').textContent = currentDate;
     document.getElementById('printPerson').textContent = selectedPerson;
-    document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('en-US', {
+    document.getElementById('reportPeriod').textContent = reportPeriod;
+    document.getElementById('receiptTotalRecords').textContent = totalRecords;
+    document.getElementById('receiptGrandTotal').textContent = totalAmount.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
-    document.getElementById('totalRecords').textContent = totalRecords;
     
-    // Show print elements
-    document.querySelector('.print-header').style.display = 'block';
-    document.querySelector('.print-total').style.display = 'block';
-    
-    // Print the page
+    // Trigger print
     window.print();
-    
-    // Hide print elements after printing
-    setTimeout(() => {
-        document.querySelector('.print-header').style.display = 'none';
-        document.querySelector('.print-total').style.display = 'none';
-    }, 1000);
 }
 
 function openExportModal() {

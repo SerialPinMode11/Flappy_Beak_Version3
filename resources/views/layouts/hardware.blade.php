@@ -215,7 +215,7 @@
                             <!-- User Profile -->
                             <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200" type="button">
                                 <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User Avatar" class="w-8 h-8 rounded-full">
-                                <span class="font-medium hidden sm:block">Mr.JM</span>
+                                <span class="font-medium hidden sm:block">JM Casabar</span>
                             </button>
                         </div>
                     </div>

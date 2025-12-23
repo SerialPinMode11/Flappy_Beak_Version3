@@ -168,6 +168,11 @@
                 </div>
                 <!-- Replaced CSV export with Excel export and added print functionality -->
                 <div class="flex items-center space-x-3">
+                    <!-- Added month/year picker for filtering print results -->
+                    <div class="no-print">
+                        <input type="month" id="printMonth" class="px-3 py-2 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-foreground text-sm" value="">
+                    </div>
+                    
                     <!-- Person selection for printing -->
                     <div class="no-print">
                         <select id="printPerson" class="px-3 py-2 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-foreground text-sm">
@@ -585,6 +590,13 @@ function closeExportModal() {
     document.getElementById('exportModal').classList.remove('flex');
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    document.getElementById('printMonth').value = `${year}-${month}`;
+});
+
 function printTable() {
     const now = new Date();
     const printDate = now.toLocaleDateString('en-US', { 
@@ -597,51 +609,187 @@ function printTable() {
         hour12: true
     });
     const selectedPerson = document.getElementById('printPerson').value;
+    const selectedMonth = document.getElementById('printMonth').value;
     
-    document.getElementById('printDate').textContent = printDate;
-    document.getElementById('printPersonName').textContent = selectedPerson;
+    // Parse the selected month
+    const [year, month] = selectedMonth.split('-');
+    const monthName = new Date(year, month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     
-    let totalCompletedIncome = 0;
-    
+    // Filter bookings by selected month and completed status
     const rows = document.querySelectorAll('tbody tr');
+    let filteredBookings = [];
+    let totalIncome = 0;
+    
     rows.forEach(row => {
         const cells = row.querySelectorAll('td');
-        if (cells.length > 6) {
-            // Check if status contains 'completed' (case insensitive)
-            const statusCell = cells[6]; // Status column
-            if (statusCell) {
-                const statusSpans = statusCell.querySelectorAll('span');
-                let isCompleted = false;
+        if (cells.length > 7) {
+            const statusCell = cells[6];
+            const createdDateCell = cells[7];
+            const priceCell = cells[5];
+            
+            // Check if status is completed
+            const statusSpans = statusCell.querySelectorAll('span');
+            let isCompleted = false;
+            statusSpans.forEach(span => {
+                if (span.textContent.toLowerCase().includes('completed')) {
+                    isCompleted = true;
+                }
+            });
+            
+            if (isCompleted && createdDateCell && priceCell) {
+                // Parse date and check if it matches selected month
+                const dateText = createdDateCell.textContent.trim();
+                const bookingDate = new Date(dateText);
+                const bookingMonth = String(bookingDate.getMonth() + 1).padStart(2, '0');
+                const bookingYear = bookingDate.getFullYear();
                 
-                // Check all status spans for 'completed' text
-                statusSpans.forEach(span => {
-                    if (span.textContent.toLowerCase().includes('completed')) {
-                        isCompleted = true;
-                    }
-                });
-                
-                if (isCompleted) {
-                    // Get total price from the 6th column (index 5)
-                    const priceCell = cells[5];
-                    if (priceCell) {
-                        const priceText = priceCell.textContent.trim();
-                        const price = parseFloat(priceText.replace('₱', '').replace(/,/g, ''));
-                        if (!isNaN(price)) {
-                            totalCompletedIncome += price;
-                        }
+                if (`${bookingYear}-${bookingMonth}` === selectedMonth) {
+                    // Extract booking details
+                    const reference = cells[0].textContent.trim();
+                    const customerName = cells[1].querySelector('.text-sm.font-medium')?.textContent.trim() || '';
+                    const customerEmail = cells[1].querySelectorAll('.text-sm.text-muted-foreground')[0]?.textContent.trim() || '';
+                    const service = cells[2].textContent.trim();
+                    const eggs = cells[3].textContent.trim();
+                    const price = parseFloat(priceCell.textContent.trim().replace('₱', '').replace(/,/g, ''));
+                    const date = dateText;
+                    
+                    if (!isNaN(price)) {
+                        filteredBookings.push({
+                            reference,
+                            customerName,
+                            customerEmail,
+                            service,
+                            eggs,
+                            price,
+                            date
+                        });
+                        totalIncome += price;
                     }
                 }
             }
         }
     });
     
-    document.getElementById('totalIncome').textContent = totalCompletedIncome.toLocaleString('en-US', { 
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2 
-    });
+    // Create receipt content
+    let receiptHTML = `
+        <div style="font-family: 'Courier New', monospace; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
+            <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
+                <h1 style="font-size: 22px; margin: 0 0 10px 0; font-weight: bold; letter-spacing: 2px;">FLAPPY-BEAK</h1>
+                <h2 style="font-size: 16px; margin: 0 0 10px 0;">INCUBATION SERVICE REVENUE REPORT</h2>
+                <p style="margin: 5px 0; font-size: 13px;">Report Period: ${monthName}</p>
+                <p style="margin: 5px 0; font-size: 12px;">Date Printed: ${printDate}</p>
+                <p style="margin: 5px 0; font-size: 12px;">Printed by: ${selectedPerson}</p>
+                <p style="margin: 5px 0; font-size: 11px; font-style: italic;">Status: Completed Bookings Only</p>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+    `;
     
-    // Print the page
-    window.print();
+    if (filteredBookings.length === 0) {
+        receiptHTML += `
+            <div style="text-align: center; padding: 40px 20px; border: 2px dashed #999;">
+                <p style="font-size: 14px; color: #666;">No completed bookings found for ${monthName}</p>
+            </div>
+        `;
+    } else {
+        filteredBookings.forEach((booking, index) => {
+            receiptHTML += `
+                <div style="border-bottom: 1px dashed #666; padding: 15px 0; page-break-inside: avoid;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: bold; font-size: 13px;">TRANSACTION #${index + 1}</span>
+                        <span style="font-size: 12px;">${booking.date}</span>
+                    </div>
+                    <div style="margin-bottom: 3px;">
+                        <span style="font-size: 11px; color: #555;">REF:</span>
+                        <span style="font-size: 12px; margin-left: 5px;">${booking.reference}</span>
+                    </div>
+                    <div style="margin-bottom: 3px;">
+                        <span style="font-size: 11px; color: #555;">CUSTOMER:</span>
+                        <span style="font-size: 12px; margin-left: 5px;">${booking.customerName}</span>
+                    </div>
+                    <div style="margin-bottom: 3px;">
+                        <span style="font-size: 11px; color: #555;">EMAIL:</span>
+                        <span style="font-size: 12px; margin-left: 5px;">${booking.customerEmail}</span>
+                    </div>
+                    <div style="margin-bottom: 3px;">
+                        <span style="font-size: 11px; color: #555;">SERVICE:</span>
+                        <span style="font-size: 12px; margin-left: 5px;">${booking.service}</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <span style="font-size: 11px; color: #555;">EGGS QTY:</span>
+                        <span style="font-size: 12px; margin-left: 5px;">${booking.eggs}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; padding-top: 5px; border-top: 1px solid #999;">
+                        <span>AMOUNT:</span>
+                        <span>₱${booking.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        receiptHTML += `
+            <div style="margin-top: 25px; padding-top: 15px; border-top: 2px solid #000;">
+                <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px;">
+                    <span style="font-weight: bold;">TOTAL TRANSACTIONS:</span>
+                    <span>${filteredBookings.length}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; padding: 10px; background-color: #f0f0f0;">
+                    <span>GRAND TOTAL:</span>
+                    <span>₱${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    receiptHTML += `
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding-top: 15px; border-top: 1px dashed #999; font-size: 11px; color: #666;">
+                <p style="margin: 5px 0;">Thank you for your business!</p>
+                <p style="margin: 5px 0;">This is a computer-generated report</p>
+            </div>
+        </div>
+    `;
+    
+    // Create a new window for printing
+    const printWindow = window.open('', '', 'width=800,height=600');
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Flappy-Beak Incubation Revenue Report - ${monthName}</title>
+            <style>
+                @page {
+                    size: A4;
+                    margin: 0.5in;
+                }
+                body {
+                    margin: 0;
+                    padding: 0;
+                    font-family: 'Courier New', monospace;
+                }
+                @media print {
+                    body {
+                        print-color-adjust: exact;
+                        -webkit-print-color-adjust: exact;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            ${receiptHTML}
+        </body>
+        </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // Wait for content to load before printing
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 250);
 }
 </script>
 @endsection

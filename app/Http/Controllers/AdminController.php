@@ -64,7 +64,7 @@ class AdminController extends Controller
     
     public function toHardwareAnalytics()
     {
-        return view('admin.hardware.analytics');
+        return view('admin.hardware.analyticTobe');
     }
 
 

@@ -177,7 +177,7 @@
                         </div>
                         <div class="flex items-center space-x-2">
                             <img src="https://i.pravatar.cc/150?u=jm" alt="User Avatar" class="w-9 h-9 rounded-full">
-                            <span class="font-semibold text-gray-700 hidden sm:block">Mr.JM</span>
+                            <span class="font-semibold text-gray-700 hidden sm:block">JM Casabar</span>
                         </div>
                     </div>
                 </div>
@@ -207,7 +207,8 @@
                     <div class="bg-primary-light text-primary p-2 rounded-lg"><i class="fas fa-box"></i></div>
                 </div>
                 <div class="bg-white p-5 rounded-xl shadow-sm flex justify-between items-start">
-                    <div>
+                    {{-- Please Change This --}}
+                    <div> 
                         <p class="text-sm font-medium text-gray-500">Feed Inventory</p>
                         <p class="text-2xl font-bold text-gray-800 mt-1">78%</p>
                         <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
@@ -353,66 +354,7 @@
                 </div>
             </div>
 
-            <!-- Recent Feeding Activity -->
-            <div class="bg-white rounded-xl shadow-sm">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Recent Feeding Activity</h3><a href="#"
-                            class="text-primary hover:text-indigo-700 text-sm font-medium">View All</a>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="text-left border-b-2 border-gray-200">
-                                    <th class="pb-3 font-semibold text-sm text-gray-600">Date & Time</th>
-                                    <th class="pb-3 font-semibold text-sm text-gray-600">Feed Type</th>
-                                    <th class="pb-3 font-semibold text-sm text-gray-600">Amount</th>
-                                    <th class="pb-3 font-semibold text-sm text-gray-600">Method</th>
-                                    <th class="pb-3 font-semibold text-sm text-gray-600">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b">
-                                    <td class="py-4 text-sm">Today, 10:30 AM</td>
-                                    <td class="py-4 text-sm">Standard Feed</td>
-                                    <td class="py-4 text-sm">0.8 kg</td>
-                                    <td class="py-4 text-sm">Scheduled</td>
-                                    <td class="py-4"><span
-                                            class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Completed</span>
-                                    </td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-4 text-sm">Today, 8:00 AM</td>
-                                    <td class="py-4 text-sm">Premium Mix</td>
-                                    <td class="py-4 text-sm">0.5 kg</td>
-                                    <td class="py-4 text-sm">Manual</td>
-                                    <td class="py-4"><span
-                                            class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Completed</span>
-                                    </td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-4 text-sm">Yesterday, 6:00 PM</td>
-                                    <td class="py-4 text-sm">Standard Feed</td>
-                                    <td class="py-4 text-sm">1.0 kg</td>
-                                    <td class="py-4 text-sm">Scheduled</td>
-                                    <td class="py-4"><span
-                                            class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Completed</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-4 text-sm">Yesterday, 1:00 PM</td>
-                                    <td class="py-4 text-sm">Growth Formula</td>
-                                    <td class="py-4 text-sm">0.5 kg</td>
-                                    <td class="py-4 text-sm">Scheduled</td>
-                                    <td class="py-4"><span
-                                            class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Completed</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+
         </main>
     </div>
 
