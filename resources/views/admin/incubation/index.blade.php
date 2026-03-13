@@ -332,35 +332,35 @@
                     Showing {{ $bookings->firstItem() ?? 0 }} to {{ $bookings->lastItem() ?? 0 }} of {{ $bookings->total() }} bookings
                 </span>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
+            <div>
+                <table class="w-full table-fixed">
                     <thead class="bg-muted">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Reference</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Customer</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Service</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Eggs</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Start Date</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Price</th>
+                            <th class="w-40 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Reference</th>
+                            <th class="w-56 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Customer</th>
+                            <th class="w-48 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Service</th>
+                            <th class="w-20 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Eggs</th>
+                            <th class="w-32 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Start Date</th>
+                            <th class="w-32 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Price</th>
                             <!-- Added status-column class to hide in print -->
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider status-column">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Created</th>
+                            <th class="w-28 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider status-column">Status</th>
+                            <th class="w-32 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Created</th>
                             <!-- Added action-column class to hide in print -->
-                            <th class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider action-column">Actions</th>
+                            <th class="w-24 px-4 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider action-column">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-border">
                         @forelse($bookings as $booking)
                             <tr class="hover:bg-muted/50 transition-colors duration-150">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-card-foreground">
-                                    {{ $booking->booking_reference }}
+                                <td class="px-4 py-4 text-sm font-medium text-card-foreground break-words">
+                                    <span class="block">{{ $booking->booking_reference }}</span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-card-foreground">{{ $booking->name }}</div>
-                                    <div class="text-sm text-muted-foreground">{{ $booking->email }}</div>
-                                    <div class="text-sm text-muted-foreground">{{ $booking->phone }}</div>
+                                <td class="px-4 py-4 align-top">
+                                    <div class="text-sm font-medium text-card-foreground truncate" title="{{ $booking->name }}">{{ $booking->name }}</div>
+                                    <div class="text-sm text-muted-foreground truncate" title="{{ $booking->email }}">{{ $booking->email }}</div>
+                                    <div class="text-sm text-muted-foreground truncate" title="{{ $booking->phone }}">{{ $booking->phone }}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-4 py-4 align-top">
                                     @php
                                         $serviceColors = [
                                             'jm_casabar' => 'bg-chart-4/10 text-chart-4',
@@ -370,22 +370,24 @@
                                         ];
                                         $color = $serviceColors[$booking->service_type] ?? 'bg-muted text-muted-foreground';
                                     @endphp
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $color }}">
-                                        {{ $booking->service_type_name }}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-center {{ $color }}">
+                                        <span class="leading-snug break-words max-w-[11rem]">
+                                            {{ $booking->service_type_name }}
+                                        </span>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-card-foreground">
                                     {{ $booking->egg_quantity }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-card-foreground">
                                     {{ $booking->start_date ? $booking->start_date->format('M d, Y') : 'Not set' }}
                                 </td>
                                 <!-- Added total price column -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-card-foreground">
                                     ₱{{ number_format($booking->total_price, 2) }}
                                 </td>
                                 <!-- Added status-column class to hide in print -->
-                                <td class="px-6 py-4 whitespace-nowrap status-column">
+                                <td class="px-4 py-4 whitespace-nowrap status-column">
                                     @php
                                         $statusColors = [
                                             'pending' => 'bg-chart-1/10 text-chart-1',
@@ -417,11 +419,11 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-card-foreground">
                                     {{ $booking->created_at->format('M d, Y') }}
                                 </td>
                                 <!-- Added action-column class to hide in print -->
-                                <td class="px-6 py-4 whitespace-nowrap action-column">
+                                <td class="px-4 py-4 whitespace-nowrap action-column">
                                     <div class="flex items-center space-x-2">
                                         <a href="{{ route('admin.bookings.show', $booking->id) }}" class="inline-flex items-center p-2 bg-chart-4/10 text-chart-4 rounded-lg hover:bg-chart-4/20 transition-colors duration-200">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -71,9 +71,8 @@
                     </button>
                 </div>
             </div>
-            {{-- this way --}}
             <div class="mt-8 text-center">
-                <a href="{{ url('/') }} " class="inline-flex items-center text-sm text-blue-400 hover:text-blue-300">
+                <a href="{{ url('/') }}" class="inline-flex items-center text-sm text-blue-400 hover:text-blue-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>

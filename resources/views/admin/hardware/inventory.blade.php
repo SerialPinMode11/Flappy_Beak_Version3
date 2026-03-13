@@ -101,30 +101,30 @@
                     </div>
                 </div>
                 <div class="mt-4 flex flex-col">
-                    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <div class="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
+                        <div class="inline-block w-full py-2 align-middle md:px-6 lg:px-8">
                             <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                                <table class="min-w-full divide-y divide-gray-300">
+                                <table class="w-full table-fixed divide-y divide-gray-300">
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th scope="col"
-                                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                class="w-56 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
                                                 Feed Name</th>
                                             <th scope="col"
-                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
+                                                class="w-32 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
                                             <th scope="col"
-                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Quantity
+                                                class="w-28 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Quantity
                                             </th>
                                             <th scope="col"
-                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Unit</th>
+                                                class="w-20 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Unit</th>
                                             <th scope="col"
                                                 class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Location
                                             </th>
                                             <th scope="col"
-                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status
+                                                class="w-32 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status
                                             </th>
                                             <th scope="col"
-                                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Expiry
+                                                class="w-32 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Expiry
                                                 Date</th>
                                             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                                 <span class="sr-only">Actions</span>
@@ -135,15 +135,16 @@
                                         @forelse($feeds as $feed)
                                             <tr>
                                                 <td
-                                                    class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                                    class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 truncate"
+                                                    title="{{ $feed->feed_name }}">
                                                     {{ $feed->feed_name }}</td>
-                                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $feed->type }}
+                                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 truncate" title="{{ $feed->type }}">{{ $feed->type }}
                                                 </td>
                                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                     {{ number_format($feed->quantity, 0) }}</td>
                                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $feed->unit }}
                                                 </td>
-                                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 truncate" title="{{ $feed->location ?? 'N/A' }}">
                                                     {{ $feed->location ?? 'N/A' }}</td>
                                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                     @if($feed->status == 'In Stock')

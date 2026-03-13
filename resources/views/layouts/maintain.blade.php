@@ -39,10 +39,10 @@
             <div class="flex items-center justify-between">
                 <h1 class="text-3xl font-bold text-primary">JM Casabar Pekin Store</h1>
                 <nav class="hidden md:flex space-x-8">
-                    <a href="#" class="text-neutral hover:text-primary transition-colors">Home</a>
-                    <a href="" class="text-neutral hover:text-primary transition-colors">Contact</a>
-                    <a href="" class="text-neutral hover:text-primary transition-colors">About</a>
-                    <a href="" class="text-primary font-semibold hover:text-accent transition-colors">Sign Up</a>
+                    <a href="{{ url('/') }}" class="text-neutral hover:text-primary transition-colors">Home</a>
+                    <a href="{{ route('contact') }}" class="text-neutral hover:text-primary transition-colors">Contact</a>
+                    <a href="{{ route('about') }}" class="text-neutral hover:text-primary transition-colors">About</a>
+                    <a href="{{ route('register') }}" class="text-primary font-semibold hover:text-accent transition-colors">Sign Up</a>
                 </nav>
             </div>
             <div class="mt-4 flex items-center justify-between">
@@ -109,6 +109,7 @@
             </div>
         </div>
     </footer>
-    
+
+    @include('partials.toast-container')
 </body>
 </html>

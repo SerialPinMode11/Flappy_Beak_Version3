@@ -54,15 +54,19 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center space-x-2">
                         <div class="flex items-center">
-                            <i class="fas fa-star text-yellow-400"></i>
-                            <i class="fas fa-star text-yellow-400"></i>
-                            <i class="fas fa-star text-yellow-400"></i>
-                            <i class="fas fa-star text-yellow-400"></i>
-                            <i class="fas fa-star-half-alt text-yellow-400"></i>
-                            <span class="ml-2 text-sm text-gray-500">(4.5)</span>
+                            @php
+                                $headerAvg = $averageRating;
+                                $headerFull = (int) floor($headerAvg);
+                                $headerHalf = ($headerAvg - $headerFull) >= 0.5;
+                                $headerEmpty = 5 - $headerFull - ($headerHalf ? 1 : 0);
+                            @endphp
+                            @for ($i = 0; $i < $headerFull; $i++) <i class="fas fa-star text-yellow-400"></i> @endfor
+                            @if ($headerHalf) <i class="fas fa-star-half-alt text-yellow-400"></i> @endif
+                            @for ($i = 0; $i < $headerEmpty; $i++) <i class="far fa-star text-yellow-400"></i> @endfor
+                            <span class="ml-2 text-sm text-gray-500">({{ number_format($averageRating, 1) }})</span>
                         </div>
                         <span class="text-sm text-gray-500">|</span>
-                        <a href="#reviews" class="text-sm text-primary hover:underline">24 Reviews</a>
+                        <a href="#reviews" onclick="document.getElementById('tab-reviews-btn').click(); return false;" class="text-sm text-primary hover:underline">{{ $reviewsCount }} Review{{ $reviewsCount !== 1 ? 's' : '' }}</a>
                     </div>
                     <button class="text-gray-400 hover:text-primary transition-colors">
                         <i class="far fa-heart text-xl"></i>
@@ -88,7 +92,7 @@
                     <p class="text-gray-600 leading-relaxed">{{ $product->product_description }}</p>
                 </div>
 
-                <form method="POST" action="{{ route('cart.add') }}" class="space-y-6">
+                <form id="add-to-cart-form" method="POST" action="{{ route('cart.add') }}" class="space-y-6">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     
@@ -111,12 +115,12 @@
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button type="submit" 
+                        <button type="button" id="add-to-cart-button"
                             class="flex-1 bg-primary hover:bg-opacity-90 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center">
                             <i class="fas fa-shopping-cart mr-2"></i>
                             Add to Cart
                         </button>
-                        <button type="submit" 
+                        <button type="button" id="buy-now-button"
                             class="flex-1 bg-secondary hover:bg-opacity-90 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center">
                             <i class="fas fa-bolt mr-2"></i>
                             Buy Now
@@ -156,8 +160,8 @@
                     <button onclick="openTab(event, 'specifications')" class="tab-button px-6 py-3 text-gray-500 hover:text-primary">
                         Specifications
                     </button>
-                    <button onclick="openTab(event, 'reviews')" class="tab-button px-6 py-3 text-gray-500 hover:text-primary">
-                        Reviews (24)
+                    <button id="tab-reviews-btn" onclick="openTab(event, 'reviews')" class="tab-button px-6 py-3 text-gray-500 hover:text-primary">
+                        Reviews ({{ $reviewsCount }})
                     </button>
                 </div>
 
@@ -223,79 +227,102 @@
 
                 <div id="reviews" class="tab-content hidden py-6">
                     <div class="mb-8">
-                        <div class="flex items-center mb-4">
-                            <div class="flex-1">
+                        <div class="flex items-center flex-wrap gap-4 mb-4">
+                            <div class="flex-1 min-w-0">
                                 <h3 class="text-lg font-semibold text-neutral">Customer Reviews</h3>
                                 <div class="flex items-center mt-2">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-star text-yellow-400"></i>
-                                        <i class="fas fa-star text-yellow-400"></i>
-                                        <i class="fas fa-star text-yellow-400"></i>
-                                        <i class="fas fa-star text-yellow-400"></i>
-                                        <i class="fas fa-star-half-alt text-yellow-400"></i>
+                                    @php
+                                        $avg = $averageRating;
+                                        $full = (int) floor($avg);
+                                        $half = ($avg - $full) >= 0.5;
+                                        $empty = 5 - $full - ($half ? 1 : 0);
+                                    @endphp
+                                    <div class="flex items-center text-yellow-400">
+                                        @for ($i = 0; $i < $full; $i++) <i class="fas fa-star"></i> @endfor
+                                        @if ($half) <i class="fas fa-star-half-alt"></i> @endif
+                                        @for ($i = 0; $i < $empty; $i++) <i class="far fa-star"></i> @endfor
                                     </div>
-                                    <span class="ml-2 text-sm text-gray-500">Based on 24 reviews</span>
+                                    <span class="ml-2 text-sm text-gray-500">Based on {{ $reviewsCount }} review{{ $reviewsCount !== 1 ? 's' : '' }}</span>
                                 </div>
                             </div>
-                            <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
-                                Write a Review
-                            </button>
+                            @if (!$userHasReviewed)
+                                <button type="button" id="write-review-btn" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors font-medium">
+                                    Write a Review
+                                </button>
+                            @else
+                                <span class="text-sm text-gray-500 italic">You have already reviewed this product.</span>
+                            @endif
+                        </div>
+
+                        <!-- Review form modal -->
+                        <div id="review-modal" class="fixed inset-0 z-[9998] hidden" aria-modal="true" role="dialog">
+                            <div class="absolute inset-0 bg-black/50" id="review-modal-backdrop"></div>
+                            <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-2xl shadow-xl p-6 z-10 max-h-[90vh] overflow-y-auto">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-semibold text-neutral">Write a Review</h3>
+                                    <button type="button" id="review-modal-close" class="text-gray-400 hover:text-gray-600 p-1">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                <form method="POST" action="{{ route('customer.product.review.store', $product) }}">
+                                    @csrf
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Your rating</label>
+                                        <div class="flex gap-1" id="rating-stars">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <button type="button" class="rating-star p-1 text-2xl text-gray-300 hover:text-yellow-400 focus:outline-none" data-rating="{{ $i }}" aria-label="{{ $i }} star{{ $i > 1 ? 's' : '' }}">
+                                                    <i class="far fa-star"></i>
+                                                </button>
+                                            @endfor
+                                        </div>
+                                        <input type="hidden" name="rating" id="rating-input" value="5" required>
+                                        @error('rating')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-6">
+                                        <label for="review-comment" class="block text-sm font-medium text-gray-700 mb-2">Your review</label>
+                                        <textarea id="review-comment" name="comment" rows="4" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Share your experience with this product (min 10 characters)..." required minlength="10" maxlength="2000">{{ old('comment') }}</textarea>
+                                        @error('comment')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                        <p class="text-xs text-gray-500 mt-1">Minimum 10 characters.</p>
+                                    </div>
+                                    <div class="flex gap-3 justify-end">
+                                        <button type="button" id="review-modal-cancel" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium">Cancel</button>
+                                        <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-90 font-medium">Submit Review</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                         
-                        <!-- Sample Reviews -->
+                        <!-- Reviews list -->
                         <div class="space-y-6">
-                            <div class="border-b pb-6">
-                                <div class="flex items-start mb-4">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
-                                            JD
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <h4 class="font-semibold text-neutral">Juan Dela Cruz</h4>
-                                        <div class="flex items-center mt-1">
-                                            <div class="flex items-center text-yellow-400">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
+                            @forelse($reviews as $review)
+                                <div class="border-b border-gray-100 pb-6 last:border-0">
+                                    <div class="flex items-start mb-4">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-sm">
+                                                {{ $review->author_initials }}
                                             </div>
-                                            <span class="ml-2 text-sm text-gray-500">2 weeks ago</span>
                                         </div>
-                                    </div>
-                                </div>
-                                <p class="text-gray-600">
-                                    Excellent quality duck! Very healthy and active. The delivery was prompt and the duck arrived in perfect condition.
-                                    Would definitely recommend to others.
-                                </p>
-                            </div>
-                            
-                            <div class="border-b pb-6">
-                                <div class="flex items-start mb-4">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-semibold">
-                                            MR
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <h4 class="font-semibold text-neutral">Maria Reyes</h4>
-                                        <div class="flex items-center mt-1">
-                                            <div class="flex items-center text-yellow-400">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="far fa-star"></i>
+                                        <div class="ml-4 flex-1 min-w-0">
+                                            <h4 class="font-semibold text-neutral">{{ $review->user->name }}</h4>
+                                            <div class="flex items-center mt-1">
+                                                <div class="flex items-center text-yellow-400">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <i class="{{ $i <= $review->rating ? 'fas' : 'far' }} fa-star"></i>
+                                                    @endfor
+                                                </div>
+                                                <span class="ml-2 text-sm text-gray-500">{{ $review->created_at->diffForHumans() }}</span>
                                             </div>
-                                            <span class="ml-2 text-sm text-gray-500">1 month ago</span>
                                         </div>
                                     </div>
+                                    <p class="text-gray-600 whitespace-pre-wrap">{{ $review->comment }}</p>
                                 </div>
-                                <p class="text-gray-600">
-                                    Good quality duck, growing well and healthy. Customer service was helpful with my questions about care requirements.
-                                </p>
-                            </div>
+                            @empty
+                                <p class="text-gray-500 py-8 text-center">No reviews yet. Be the first to review this product!</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -344,12 +371,6 @@
 
 @push('scripts')
 <script>
-    function buyNow() {
-        const form = document.querySelector('form');
-        form.action = "{{ route('checkout') }}";
-        form.submit();
-    }
-
     function incrementQuantity() {
         const input = document.getElementById('quantity');
         input.value = parseInt(input.value) + 1;
@@ -380,6 +401,109 @@
     // Set default tab
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementsByClassName("tab-button")[0].click();
+
+        // Review modal
+        var reviewModal = document.getElementById('review-modal');
+        var writeReviewBtn = document.getElementById('write-review-btn');
+        if (reviewModal && writeReviewBtn) {
+            function openReviewModal() {
+                reviewModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                setRatingStars(5);
+                document.getElementById('rating-input').value = 5;
+            }
+            function closeReviewModal() {
+                reviewModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+            writeReviewBtn.addEventListener('click', openReviewModal);
+            document.getElementById('review-modal-close')?.addEventListener('click', closeReviewModal);
+            document.getElementById('review-modal-cancel')?.addEventListener('click', closeReviewModal);
+            document.getElementById('review-modal-backdrop')?.addEventListener('click', closeReviewModal);
+        }
+
+        // Star rating
+        function setRatingStars(value) {
+            var stars = document.querySelectorAll('#rating-stars .rating-star');
+            var input = document.getElementById('rating-input');
+            if (!input) return;
+            input.value = value;
+            stars.forEach(function(btn, i) {
+                var star = btn.querySelector('i');
+                if (star) {
+                    star.className = (i + 1) <= value ? 'fas fa-star' : 'far fa-star';
+                }
+            });
+        }
+        document.querySelectorAll('#rating-stars .rating-star').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                setRatingStars(parseInt(this.getAttribute('data-rating'), 10));
+            });
+        });
+
+        // Add to Cart & Buy Now with toast feedback
+        const cartForm = document.getElementById('add-to-cart-form');
+        const addToCartButton = document.getElementById('add-to-cart-button');
+        const buyNowButton = document.getElementById('buy-now-button');
+
+        async function submitCart(redirectToCheckout) {
+            if (!cartForm) return;
+            try {
+                const formData = new FormData(cartForm);
+                const response = await fetch("{{ route('cart.add') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    let message = 'Failed to add product to cart.';
+                    try {
+                        const data = await response.json();
+                        if (data.message) message = data.message;
+                    } catch (e) {}
+                    if (window.showToast) {
+                        window.showToast(message, 'error');
+                    } else {
+                        alert(message);
+                    }
+                    return;
+                }
+
+                if (redirectToCheckout) {
+                    window.location.href = "{{ route('checkout') }}";
+                } else {
+                    if (window.showToast) {
+                        window.showToast('Product added to cart successfully!', 'success');
+                    } else {
+                        alert('Product added to cart successfully!');
+                    }
+                }
+            } catch (error) {
+                if (window.showToast) {
+                    window.showToast('Something went wrong. Please try again.', 'error');
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            }
+        }
+
+        if (addToCartButton) {
+            addToCartButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                submitCart(false);
+            });
+        }
+
+        if (buyNowButton) {
+            buyNowButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                submitCart(true);
+            });
+        }
     });
 </script>
 @endpush

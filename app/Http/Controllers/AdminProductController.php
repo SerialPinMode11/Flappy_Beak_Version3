@@ -9,6 +9,7 @@ class AdminProductController extends Controller
     public function index()
     {
         $products = DuckProducts::paginate(10);
+        // View path is resources/views/admin/products/index.blade.php
         return view('admin.products.index', compact('products'));
     }
 
@@ -26,14 +27,19 @@ class AdminProductController extends Controller
             'product_price' => 'required|numeric|min:0',
             'product_description' => 'required',
             'product_stock' => 'required|integer|min:0',
+            'category' => 'nullable|in:duck,egg,wine',
         ]);
+        $validatedData['category'] = $validatedData['category'] ?? 'duck';
 
         $imagePath = $request->file('product_image')->store('products', 'public');
-        $validatedData['product_image'] = $imagePath;
+        // Store with 'storage/' prefix so asset() works: asset($product->product_image)
+        $validatedData['product_image'] = 'storage/' . $imagePath;
 
-        DuckProducts::create($validatedData);
+        // Create product first, then back-fill product_id from the primary key
+        $product = DuckProducts::create($validatedData);
+        $product->update(['product_id' => $product->id]);
 
-        return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
+        return redirect()->route('admin.product.index')->with('success', 'Product created successfully.');
     }
 
     public function show($id)
@@ -57,18 +63,20 @@ class AdminProductController extends Controller
             'product_price' => 'required|numeric|min:0',
             'product_description' => 'required',
             'product_stock' => 'required|integer|min:0',
+            'category' => 'nullable|in:duck,egg,wine',
         ]);
+        $validatedData['category'] = $validatedData['category'] ?? 'duck';
 
         $product = DuckProducts::findOrFail($id);
 
         if ($request->hasFile('product_image')) {
             $imagePath = $request->file('product_image')->store('products', 'public');
-            $validatedData['product_image'] = $imagePath;
+            $validatedData['product_image'] = 'storage/' . $imagePath;
         }
 
         $product->update($validatedData);
 
-        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('admin.product.index')->with('success', 'Product updated successfully.');
     }
 
     public function destroy($id)
@@ -76,6 +84,6 @@ class AdminProductController extends Controller
         $product = DuckProducts::findOrFail($id);
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('admin.product.index')->with('success', 'Product deleted successfully.');
     }
 }

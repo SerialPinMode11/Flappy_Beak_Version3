@@ -136,11 +136,20 @@
                     </li>
                     <!-- Income Generated -->
                     <li>
-                        <a href="{{ route('admin.billing.index') }}" 
-                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.billing.*') ? 'nav-link-active' : '' }}"
-                           onclick="closeMobileSidebar()">
-                            <i class="fas fa-dollar-sign mr-3"></i>Income Generated
-                        </a>
+                        <div class="space-y-1">
+                            <a href="{{ route('admin.billing.index') }}" 
+                               class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.billing.*') ? 'nav-link-active' : '' }}"
+                               onclick="closeMobileSidebar()">
+                                <i class="fas fa-dollar-sign mr-3"></i>Income Generated
+                            </a>
+                            @if(request()->routeIs('admin.billing.*'))
+                                <a href="{{ route('admin.billing.trash') }}" 
+                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.billing.trash') ? 'nav-link-active' : '' }}"
+                                   onclick="closeMobileSidebar()">
+                                    <i class="fas fa-trash-alt mr-2"></i>Trash
+                                </a>
+                            @endif
+                        </div>
                     </li>
                     <!-- Expenses Table -->
                     <li>
@@ -185,9 +194,9 @@
 
                     <!-- Logout Button -->
                     <li>
-                        <form method="POST" action="{{ route('admin.logout') }}" class="w-full">
+                        <form id="admin-logout-form" method="POST" action="{{ route('admin.logout') }}" class="w-full">
                             @csrf
-                            <button type="submit" class="flex items-center w-full p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item">
+                            <button type="button" id="admin-logout-trigger" class="flex items-center w-full p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item">
                                 <i class="fas fa-sign-out-alt mr-3"></i> Logout
                             </button>
                         </form>
@@ -308,6 +317,58 @@
         });
     </script>
     
+    {{-- Global toast notifications for admin pages --}}
+    @include('partials.toast-container')
+
+    {{-- Tailwind modal for important admin errors --}}
+    @if(session('error'))
+        <div id="admin-error-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+                <div class="px-6 py-4 border-b flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>
+                        <h2 class="text-lg font-semibold text-gray-800">Operation Failed</h2>
+                    </div>
+                    <button type="button" id="admin-error-modal-close" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="px-6 py-4">
+                    <p class="text-sm text-gray-700 whitespace-pre-line break-words">
+                        {{ session('error') }}
+                    </p>
+                </div>
+                <div class="px-6 py-3 border-t flex justify-end">
+                    <button type="button"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                            onclick="window.adminCloseErrorModal && window.adminCloseErrorModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+        <script>
+            (function () {
+                const modal = document.getElementById('admin-error-modal');
+                if (!modal) return;
+
+                window.adminCloseErrorModal = function () {
+                    modal.remove();
+                };
+
+                document.getElementById('admin-error-modal-close')?.addEventListener('click', window.adminCloseErrorModal);
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) {
+                        window.adminCloseErrorModal();
+                    }
+                });
+            })();
+        </script>
+    @endif
+
+    @include('partials.admin-logout-modal')
     @stack('scripts')
 </body>
 </html>

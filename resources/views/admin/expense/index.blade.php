@@ -208,36 +208,93 @@
         </div>
         
         <div class="table-container">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="w-full table-fixed divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expense Type</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider no-print">Actions</th>
+                        <th scope="col" class="w-16 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th scope="col" class="w-40 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expense Type</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                        <th scope="col" class="w-32 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th scope="col" class="w-32 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" class="w-40 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th scope="col" class="w-48 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                        <th scope="col" class="w-24 px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider no-print">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($expenses as $expense)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $expense->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $expense->expense_type }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $expense->description }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 expense-amount">₱{{ number_format($expense->amount, 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($expense->date)->format('M d, Y') }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $expense->category }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $expense->notes }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium no-print">
-                            <a href="{{ route('expense.show', $expense->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                            <a href="{{ route('expense.edit', $expense->id) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 text-center">{{ $expense->id }}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 truncate" title="{{ $expense->expense_type }}">{{ $expense->expense_type }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">
+                            @php
+                                $fullDescription = $expense->description;
+                                $shortDescription = \Illuminate\Support\Str::limit($fullDescription, 60);
+                            @endphp
+                            <div class="flex items-center gap-2">
+                                <span class="truncate" title="{{ $fullDescription }}">{{ $shortDescription }}</span>
+                                @if(strlen($fullDescription) > 60)
+                                    <button type="button"
+                                            class="text-blue-500 text-xs hover:underline"
+                                            onclick="openExpenseTextModal('expense-description-{{ $expense->id }}', 'Description')">
+                                        See more
+                                    </button>
+                                @endif
+                            </div>
+                            @if(strlen($fullDescription) > 60)
+                                <div id="expense-description-{{ $expense->id }}" class="hidden">
+                                    {{ $fullDescription }}
+                                </div>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 expense-amount">₱{{ number_format($expense->amount, 2) }}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{{ \Carbon\Carbon::parse($expense->date)->format('M d, Y') }}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 truncate" title="{{ $expense->category }}">{{ $expense->category }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">
+                            @php
+                                $fullNotes = $expense->notes;
+                                $shortNotes = \Illuminate\Support\Str::limit($fullNotes, 40);
+                            @endphp
+                            @if($fullNotes)
+                                <div class="flex items-center gap-2">
+                                    <span class="truncate" title="{{ $fullNotes }}">{{ $shortNotes }}</span>
+                                    @if(strlen($fullNotes) > 40)
+                                        <button type="button"
+                                                class="text-blue-500 text-xs hover:underline"
+                                                onclick="openExpenseTextModal('expense-notes-{{ $expense->id }}', 'Notes')">
+                                            See more
+                                        </button>
+                                    @endif
+                                </div>
+                                @if(strlen($fullNotes) > 40)
+                                    <div id="expense-notes-{{ $expense->id }}" class="hidden">
+                                        {{ $fullNotes }}
+                                    </div>
+                                @endif
+                            @else
+                                <span class="text-xs text-gray-400">—</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium no-print text-center">
+                            <a href="{{ route('expense.show', $expense->id) }}"
+                               class="inline-flex items-center justify-center text-indigo-600 hover:text-indigo-900 mx-1"
+                               title="View details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ route('expense.edit', $expense->id) }}"
+                               class="inline-flex items-center justify-center text-yellow-500 hover:text-yellow-600 mx-1"
+                               title="Edit expense">
+                                <i class="fas fa-edit"></i>
+                            </a>
                             <form action="{{ route('expense.destroy', $expense->id) }}" method="POST" class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this expense?')">Delete</button>
+                                <button type="submit"
+                                        class="inline-flex items-center justify-center text-red-600 hover:text-red-700 mx-1"
+                                        onclick="return confirm('Are you sure you want to delete this expense?')"
+                                        title="Delete expense">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>
@@ -325,5 +382,45 @@ document.getElementById('exportModal').addEventListener('click', function(e) {
         closeExportModal();
     }
 });
+
+function openExpenseTextModal(sourceId, title) {
+    const source = document.getElementById(sourceId);
+    if (!source) return;
+    const message = source.textContent || source.innerText || '';
+
+    const existing = document.getElementById('expense-text-modal');
+    if (existing) existing.remove();
+
+    const wrapper = document.createElement('div');
+    wrapper.id = 'expense-text-modal';
+    wrapper.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/50';
+    wrapper.innerHTML = `
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full mx-4">
+            <div class="px-6 py-4 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-800">${title}</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeExpenseTextModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="px-6 py-4">
+                <p class="text-sm text-gray-700 whitespace-pre-line break-words">${message}</p>
+            </div>
+            <div class="px-6 py-3 border-t flex justify-end">
+                <button type="button"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                        onclick="closeExpenseTextModal()">
+                    Close
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(wrapper);
+}
+
+function closeExpenseTextModal() {
+    const modal = document.getElementById('expense-text-modal');
+    if (modal) modal.remove();
+}
 </script>
 @endsection

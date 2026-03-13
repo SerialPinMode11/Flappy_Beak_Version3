@@ -31,7 +31,7 @@
         <!-- Page Title -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-neutral">Create New Product</h1>
-            <p class="text-gray-600 mt-2">Add a new duck product to your inventory</p>
+            <p class="text-gray-600 mt-2">Add a new product to your inventory</p>
         </div>
 
         <!-- Create Product Form -->
@@ -63,6 +63,21 @@
                         @enderror
                     </div>
 
+                    <!-- Category (for home page filter: Duck / Egg / Wine) -->
+                    <div class="mb-6">
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="category" name="category" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                            <option value="duck" {{ old('category', 'duck') === 'duck' ? 'selected' : '' }}>Duck</option>
+                            <option value="egg" {{ old('category') === 'egg' ? 'selected' : '' }}>Egg</option>
+                            <option value="wine" {{ old('category') === 'wine' ? 'selected' : '' }}>Wine</option>
+                        </select>
+                        <p class="mt-1 text-xs text-gray-500">Used for filtering on the home page.</p>
+                        @error('category')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <!-- Product Name -->
                     <div class="mb-6">
                         <label for="product_name" class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
@@ -74,15 +89,16 @@
                         @enderror
                     </div>
 
-                    <!-- Product ID -->
+                    <!-- Product ID (auto-assigned from database) -->
                     <div class="mb-6">
-                        <label for="product_id" class="block text-sm font-medium text-gray-700 mb-2">Product ID</label>
-                        <input type="text" id="product_id" name="product_id" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                            placeholder="Enter product ID" value="{{ old('product_id') }}" required>
-                        @error('product_id')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Product ID</label>
+                        <input type="text"
+                               class="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                               value="Will be generated automatically"
+                               disabled>
+                        <p class="mt-1 text-xs text-gray-500">
+                            This ID will match the product's primary key in the database after you create it.
+                        </p>
                     </div>
 
                     <!-- Product Price -->
@@ -124,14 +140,14 @@
                     </div>
 
                     <!-- Form Actions -->
-                    <div class="flex justify-end space-x-4">
+                    <div class="mt-6 flex justify-end space-x-4">
                         <a href="{{ route('admin.product.index') }}" 
-                            class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                           class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
                             Cancel
                         </a>
                         <button type="submit" 
-                            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-colors">
-                            Create Product
+                                class="px-8 py-3 bg-primary text-gray-700 font-semibold rounded-lg shadow hover:bg-opacity-90 transition-colors">
+                            Save Product
                         </button>
                     </div>
                 </form>

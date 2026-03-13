@@ -95,5 +95,41 @@
             </div>
         </div>
     </div>
+
+    @if(is_array($billing->items) && count($billing->items) > 0)
+    <div class="mt-8 bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-lg font-semibold mb-4">Purchased Products</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Line Total</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($billing->items as $item)
+                    <tr>
+                        <td class="px-4 py-2 text-sm text-gray-700">
+                            {{ $item['name'] ?? 'Product' }}
+                        </td>
+                        <td class="px-4 py-2 text-sm text-gray-700 text-right">
+                            ₱{{ number_format($item['price'] ?? 0, 2) }}
+                        </td>
+                        <td class="px-4 py-2 text-sm text-gray-700 text-right">
+                            {{ $item['quantity'] ?? 0 }}
+                        </td>
+                        <td class="px-4 py-2 text-sm text-gray-700 text-right">
+                            ₱{{ number_format($item['total'] ?? 0, 2) }}
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
 </div>
 @endsection

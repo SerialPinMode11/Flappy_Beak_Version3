@@ -108,7 +108,49 @@
                     </div>
                 </div>
             </div>
-            
+
+            {{-- Purchased products for this billing (read-only) --}}
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold mb-3">Purchased Products</h3>
+
+                @if(is_array($billing->items) && count($billing->items) > 0)
+                    <div class="border border-gray-200 rounded-xl overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Product</th>
+                                    <th class="px-4 py-2 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+                                    <th class="px-4 py-2 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Qty</th>
+                                    <th class="px-4 py-2 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Line Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach($billing->items as $item)
+                                    <tr>
+                                        <td class="px-4 py-2 text-sm text-gray-700">
+                                            {{ $item['name'] ?? 'Product' }}
+                                        </td>
+                                        <td class="px-4 py-2 text-sm text-gray-700 text-right">
+                                            ₱{{ number_format($item['price'] ?? 0, 2) }}
+                                        </td>
+                                        <td class="px-4 py-2 text-sm text-gray-700 text-right">
+                                            {{ $item['quantity'] ?? 0 }}
+                                        </td>
+                                        <td class="px-4 py-2 text-sm text-gray-700 text-right">
+                                            ₱{{ number_format($item['total'] ?? 0, 2) }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500">
+                        No product details are stored for this billing record. New orders will automatically include the purchased products here.
+                    </p>
+                @endif
+            </div>
+
             <div class="mt-6 flex justify-end">
                 <button type="submit" class="bg-primary text-black px-6 py-2 rounded-md hover:bg-primary-dark transition-colors">
                     Update Billing Information

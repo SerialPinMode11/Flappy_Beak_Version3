@@ -89,6 +89,12 @@ class AdminBillingController extends Controller
         return view('admin.billing.index', compact('billingInfo'));
     }
 
+    public function trash()
+    {
+        $billingInfo = BillingInformation::onlyTrashed()->latest()->paginate(10);
+        return view('admin.billing.trash', compact('billingInfo'));
+    }
+
     public function show($id)
     {
         $billing = BillingInformation::findOrFail($id);
@@ -113,7 +119,20 @@ class AdminBillingController extends Controller
         ]);
 
         $billing = BillingInformation::findOrFail($id);
-        $billing->update($request->all());
+        $data = $request->all();
+
+        // If items JSON is provided, try to decode it to an array
+        if (!empty($data['items'])) {
+            $decoded = json_decode($data['items'], true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $data['items'] = $decoded;
+            } else {
+                // Keep original value so the user can correct it; don't break update
+                unset($data['items']);
+            }
+        }
+
+        $billing->update($data);
 
         return redirect()->route('admin.billing.index')
             ->with('success', 'Billing information updated successfully');
@@ -176,5 +195,32 @@ class AdminBillingController extends Controller
             Log::error('Billing export error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Export failed. Please try again.');
         }
+    }
+
+    public function destroy($id)
+    {
+        $billing = BillingInformation::findOrFail($id);
+        $billing->delete();
+
+        return redirect()->route('admin.billing.index')
+            ->with('success', 'Billing record moved to trash.');
+    }
+
+    public function restore($id)
+    {
+        $billing = BillingInformation::onlyTrashed()->findOrFail($id);
+        $billing->restore();
+
+        return redirect()->route('admin.billing.trash')
+            ->with('success', 'Billing record restored successfully.');
+    }
+
+    public function forceDelete($id)
+    {
+        $billing = BillingInformation::onlyTrashed()->findOrFail($id);
+        $billing->forceDelete();
+
+        return redirect()->route('admin.billing.trash')
+            ->with('success', 'Billing record permanently deleted.');
     }
 }

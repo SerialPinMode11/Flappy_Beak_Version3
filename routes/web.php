@@ -36,11 +36,14 @@ Route::post("/register", [AuthController::class, "registerPost"])->name("registe
 //Page Not Found
 Route::get("/PageNotFound", [PageController::class, "Page404"])->name("page404");
 
-//customer routes
+// Public pages (no login required)
+Route::get("/contactUs", [ControllerName::class, "contactUs"])->name("contact");
+Route::post("contactUs", [ControllerName::class, "contactPost"])->name("contact.post");
+Route::get("aboutUs", [ControllerName::class, "aboutUs"])->name("about");
+
+//customer routes (login required)
 Route::middleware("auth")->group(function(){
-    Route::get("/contactUs", [ControllerName::class, "contactUs"])->name("contact");
-    Route::post("contactUs", [ControllerName::class, "contactPost"])->name("contact.post");
-    Route::get("aboutUs", [ControllerName::class, "aboutUs"])->name("about");
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     //product_formation_
     Route::get('/home', [ProductController::class,'index'])->name('home');
     Route::get('/home/incubator', [ProductController::class,'incubator'])->name('home.incubator');
@@ -51,6 +54,7 @@ Route::middleware("auth")->group(function(){
     Route::get('/booking/status', [BookingController::class, 'status'])->name('booking.status');
 
     Route::get('/home/productformat/{product}', [ProductController::class,'show'])->name('customer.productformat');
+    Route::post('/home/productformat/{product}/reviews', [ProductController::class,'storeReview'])->name('customer.product.review.store');
     //My_Cart
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
@@ -58,6 +62,9 @@ Route::middleware("auth")->group(function(){
     //Checkout
     Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::post('/checkout/create-payment-intent', [CheckoutController::class, 'createPaymentIntent'])->name('checkout.create-payment-intent');
+    Route::post('/checkout/save-billing', [CheckoutController::class, 'saveBillingToSession'])->name('checkout.save-billing');
+    Route::get('/checkout/return', [CheckoutController::class, 'returnFromStripe'])->name('checkout.return');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 
     //new Products Wine
@@ -116,9 +123,13 @@ Route::middleware("auth")->group(function(){
 
     //biling
     Route::get('/admin/billing', [AdminBillingController::class, 'index'])->name('admin.billing.index');
+    Route::get('/admin/billing/trash', [AdminBillingController::class, 'trash'])->name('admin.billing.trash');
     Route::get('/admin/billing/{id}', [AdminBillingController::class, 'show'])->name('admin.billing.show');
     Route::get('/admin/billing/{id}/edit', [AdminBillingController::class, 'edit'])->name('admin.billing.edit');
     Route::put('/admin/billing/{id}', [AdminBillingController::class, 'update'])->name('admin.billing.update');
+    Route::delete('/admin/billing/{id}', [AdminBillingController::class, 'destroy'])->name('admin.billing.destroy');
+    Route::post('/admin/billing/{id}/restore', [AdminBillingController::class, 'restore'])->name('admin.billing.restore');
+    Route::delete('/admin/billing/{id}/force-delete', [AdminBillingController::class, 'forceDelete'])->name('admin.billing.forceDelete');
     Route::get('/export/income', [AdminBillingController::class, 'export'])->name('admin.billing.export');
     
 

@@ -4,17 +4,60 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DuckProducts;
-use Illuminate\Support\Str; // Add this import for the Str class
+use App\Models\ProductReview;
+use App\Models\WineProduct;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $duckproducts = DuckProducts::all();
-        return view('customer.home',[
-            'duckproducts' => $duckproducts
+        $category = $request->get('category', 'all');
+
+        $duckProducts = DuckProducts::orderBy('created_at', 'desc')->get();
+        $wineProducts = WineProduct::orderBy('created_at', 'desc')->get();
+
+        $products = collect();
+
+        // Duck products: categorize by product name (Egg / Wine / Duck)
+        foreach ($duckProducts as $p) {
+            $name = $p->product_name ?? '';
+            $type = 'duck';
+            if (stripos($name, 'egg') !== false) {
+                $type = 'egg';
+            } elseif (stripos($name, 'wine') !== false) {
+                $type = 'wine';
+            }
+            $products->push((object) [
+                'type' => $type,
+                'product' => $p,
+                'detailRoute' => 'customer.productformat',
+                'detailParam' => $p->id,
+            ]);
+        }
+
+        // Wine products table: all are wine, link to wine detail page
+        foreach ($wineProducts as $p) {
+            $products->push((object) [
+                'type' => 'wine',
+                'product' => $p,
+                'detailRoute' => 'customer.wine.view',
+                'detailParam' => $p->id,
+            ]);
+        }
+
+        // Sort so all products are in one list (e.g. by created_at), then filter by category
+        $products = $products->sortByDesc(fn ($item) => $item->product->created_at ?? 0)->values();
+
+        if ($category !== 'all') {
+            $products = $products->filter(fn ($item) => $item->type === $category)->values();
+        }
+
+        return view('customer.home', [
+            'products' => $products,
+            'currentCategory' => $category,
         ]);
-        
     }
 
     public function incubator()
@@ -42,8 +85,41 @@ class ProductController extends Controller
 
     public function show(DuckProducts $product)
     {
-            // $product = Product::where('id', $product->id)->first();
-            return view('customer.productformat',['product' => $product]);
+        $product->load(['reviews.user']);
+        $reviews = $product->reviews;
+        $reviewsCount = $reviews->count();
+        $averageRating = $reviewsCount > 0 ? round($reviews->avg('rating'), 1) : 0;
+        $userHasReviewed = Auth::check() && $reviews->where('user_id', Auth::id())->isNotEmpty();
+
+        return view('customer.productformat', [
+            'product' => $product,
+            'reviews' => $reviews,
+            'reviewsCount' => $reviewsCount,
+            'averageRating' => $averageRating,
+            'userHasReviewed' => $userHasReviewed,
+        ]);
+    }
+
+    public function storeReview(Request $request, DuckProducts $product)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|min:10|max:2000',
+        ]);
+
+        $existing = ProductReview::where('duck_product_id', $product->id)->where('user_id', Auth::id())->first();
+        if ($existing) {
+            return redirect()->back()->with('error', 'You have already reviewed this product. You can edit your review later.');
+        }
+
+        ProductReview::create([
+            'duck_product_id' => $product->id,
+            'user_id' => Auth::id(),
+            'rating' => (int) $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        return redirect()->back()->with('success', 'Thank you! Your review has been posted.');
     }
 
     public function edit($id)

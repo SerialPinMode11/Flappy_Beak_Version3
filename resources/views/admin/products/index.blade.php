@@ -16,35 +16,47 @@
         </div>
     @endif
     <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="w-full table-fixed divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th scope="col" class="w-16 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th scope="col" class="w-24 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th scope="col" class="w-32 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                        <th scope="col" class="w-24 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                        <th scope="col" class="w-24 px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($products as $product)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $product->product_id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">{{ $product->id }}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">
                             <img src="{{ asset( $product->product_image) }}" alt="{{ $product->product_name }}" class="h-10 w-10 rounded-full">
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $product->product_name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₱{{ number_format($product->product_price, 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $product->product_stock }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('admin.products.show', $product->product_id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                            <a href="{{ route('admin.products.edit', $product->product_id) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
-                            <form action="{{ route('admin.products.destroy', $product->product_id) }}" method="POST" class="inline-block">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 truncate" title="{{ $product->product_name }}">{{ $product->product_name }}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">₱{{ number_format($product->product_price, 2) }}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ $product->product_stock }}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-center">
+                            <a href="{{ route('admin.products.show', $product->id) }}"
+                               class="inline-flex items-center justify-center text-indigo-600 hover:text-indigo-900 mx-1"
+                               title="View product">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ route('admin.products.edit', $product->id) }}"
+                               class="inline-flex items-center justify-center text-yellow-500 hover:text-yellow-600 mx-1"
+                               title="Edit product">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
+                                <button type="submit"
+                                        class="inline-flex items-center justify-center text-red-600 hover:text-red-700 mx-1"
+                                        onclick="return confirm('Are you sure you want to delete this product?')"
+                                        title="Delete product">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>

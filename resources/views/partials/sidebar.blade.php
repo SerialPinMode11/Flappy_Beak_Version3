@@ -12,11 +12,11 @@
             <li><a href="{{route('admin.hardware_esp32')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-desktop mr-3"></i>Hardware</a></li>
             <li><a href="{{route('admin.personal')}}" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"><i class="fas fa-user-circle mr-3"></i>Personal</a></li>
 
-            <!-- 🛑 Fix Logout Button (Using Form) -->
+            <!-- Logout with confirmation modal -->
             <li>
-                <form method="POST" action="{{ route('admin.logout') }}" class="w-full">
+                <form id="admin-logout-form" method="POST" action="{{ route('admin.logout') }}" class="w-full">
                     @csrf
-                    <button type="submit" class="flex items-center w-full p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                    <button type="button" id="admin-logout-trigger" class="flex items-center w-full p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200">
                         <i class="fas fa-sign-out-alt mr-3"></i> Logout
                     </button>
                 </form>

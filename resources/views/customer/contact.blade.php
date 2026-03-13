@@ -60,6 +60,18 @@
 
             <form method="POST" action="{{ route ('contact.post') }}" class="bg-white rounded-2xl shadow-lg p-8 space-y-8">
                 @csrf
+                @if(session('success'))
+                    <div class="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2" role="alert">
+                        <i class="fas fa-check-circle flex-shrink-0"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="p-4 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm flex items-center gap-2" role="alert">
+                        <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                @endif
                 <div class="grid md:grid-cols-2 gap-8">
                     <div>
                         <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
