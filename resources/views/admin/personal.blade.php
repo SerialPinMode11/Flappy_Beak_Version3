@@ -106,11 +106,10 @@
                             <td class="px-6 py-4 text-sm text-gray-300">{{ $user->email }}</td>
                             <td class="px-6 py-4 text-sm text-gray-300">{{ $user->role ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <form action="{{ route('admin.personal.destroy', ['id' => $user->id]) }}" method="POST" class="inline">
+                                <form action="{{ route('admin.personal.destroy', ['id' => $user->id]) }}" method="POST" class="inline" data-confirm="Are you sure you want to delete this admin user?">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-400 hover:text-red-300 transition-colors duration-150" 
-                                        onclick="return confirm('Are you sure you want to delete this admin user?')">
+                                    <button type="submit" class="text-red-400 hover:text-red-300 transition-colors duration-150">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

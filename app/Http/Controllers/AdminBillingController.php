@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\BillingInformation;
+use App\Models\Booking;
+use App\Models\ContactForm;
+use App\Models\DuckProducts;
+use App\Models\Expense;
+use App\Models\FeedInventory;
+use App\Models\WineProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Exports\BillingIncomeExport;
@@ -11,73 +17,101 @@ use Illuminate\Support\Facades\Log;
 
 class AdminBillingController extends Controller
 {
+    public function latestCompletedNotification()
+    {
+        $latest = BillingInformation::where('status', 'completed')
+            ->latest()
+            ->first();
+
+        if (!$latest) {
+            return response()->json(['latest' => null]);
+        }
+
+        return response()->json([
+            'latest' => [
+                'id' => $latest->id,
+                'name' => $latest->name,
+                'email' => $latest->email,
+                'total_amount' => (float) $latest->total_amount,
+                'created_at' => optional($latest->created_at)->toDateTimeString(),
+            ],
+        ]);
+    }
+
     //admin-dashboard
     public function dashboard()
     {
-        // Total sales from completed orders
+        // Core order metrics
         $totalSales = BillingInformation::where('status', 'completed')->sum('total_amount');
-        
-        // Count all customers
-        $totalCustomers = BillingInformation::count();
-        
-        // Count completed customers
+        $totalOrders = BillingInformation::count();
         $completedCustomers = BillingInformation::where('status', 'completed')->count();
-        
-        // Monthly sales data
+        $pendingOrders = BillingInformation::where('status', 'pending')->count();
+        $processingOrders = BillingInformation::where('status', 'processing')->count();
+        $cancelledOrders = BillingInformation::where('status', 'cancelled')->count();
+
+        // Finance summary
+        $todayRevenue = BillingInformation::where('status', 'completed')
+            ->whereDate('created_at', now()->toDateString())
+            ->sum('total_amount');
+        $totalExpenses = Expense::sum('amount');
+        $netRevenue = $totalSales - $totalExpenses;
+
+        // Monthly sales data for chart
         $monthlySales = BillingInformation::where('status', 'completed')
             ->selectRaw('MONTH(created_at) as month, SUM(total_amount) as total')
             ->groupBy('month')
             ->orderBy('month')
             ->get();
-            
-        // If no monthly sales data, create dummy data for testing
-        if ($monthlySales->isEmpty()) {
-            $monthlySales = collect([
-                ['month' => 3, 'total' => 1650.00]
-            ]);
-        }
-            
-        // Get successful purchases by customer (completed status)
-        $successfulPurchases = BillingInformation::where('status', 'completed')
-            ->select('name', DB::raw('SUM(total_amount) as total_amount'))
-            ->groupBy('name')
-            ->orderBy('total_amount', 'desc')
-            ->get();
-            
-        // Get all purchases by customer (all statuses)
-        $allPurchases = BillingInformation::select('name', 'status', DB::raw('SUM(total_amount) as total_amount'))
-            ->groupBy('name', 'status')
-            ->orderBy('name')
-            ->get();
-            
-        // Get unique customer names for the charts - FIXED THIS LINE
-        $customerNames = BillingInformation::distinct('name')->pluck('name')->toArray();
-        
-        // Get purchase counts by status
+
+        // Orders by status for chart
         $purchasesByStatus = BillingInformation::select('status', DB::raw('COUNT(*) as count'))
             ->groupBy('status')
             ->get();
-            
-        // If no status data, create dummy data for testing
-        if ($purchasesByStatus->isEmpty()) {
-            $purchasesByStatus = collect([
-                ['status' => 'completed', 'count' => $completedCustomers],
-                ['status' => 'pending', 'count' => $totalCustomers - $completedCustomers]
-            ]);
-        }
 
-        // Debug the data being passed to the view
-        // dd($customerNames, $allPurchases);
+        // Module summaries
+        $duckProductCount = DuckProducts::count();
+        $wineProductCount = WineProduct::count();
+        $totalProducts = $duckProductCount + $wineProductCount;
+        $lowStockProducts = DuckProducts::where('product_stock', '<=', 5)->count()
+            + WineProduct::where('product_stock', '<=', 5)->count();
+
+        $contactMessages = ContactForm::count();
+        $recentContactMessages = ContactForm::whereDate('created_at', '>=', now()->subDays(7)->toDateString())->count();
+
+        $incubationTotal = Booking::count();
+        $incubationActive = Booking::whereIn('status', ['pending', 'confirmed', 'in_progress', 'candling', 'lockdown', 'hatching'])->count();
+
+        $feedInventoryCount = FeedInventory::count();
+        $feedLowStock = FeedInventory::whereIn('status', ['Low Stock', 'Out of Stock'])->count();
+
+        // Recent activity sections
+        $recentOrders = BillingInformation::latest()->take(5)->get();
+        $recentExpenses = Expense::latest()->take(5)->get();
 
         return view('admin.dashboard', compact(
-            'totalSales', 
-            'totalCustomers', 
-            'completedCustomers', 
+            'totalSales',
+            'totalOrders',
+            'completedCustomers',
+            'pendingOrders',
+            'processingOrders',
+            'cancelledOrders',
+            'todayRevenue',
+            'totalExpenses',
+            'netRevenue',
             'monthlySales',
-            'successfulPurchases',
-            'allPurchases',
-            'customerNames',
-            'purchasesByStatus'
+            'purchasesByStatus',
+            'totalProducts',
+            'duckProductCount',
+            'wineProductCount',
+            'lowStockProducts',
+            'contactMessages',
+            'recentContactMessages',
+            'incubationTotal',
+            'incubationActive',
+            'feedInventoryCount',
+            'feedLowStock',
+            'recentOrders',
+            'recentExpenses'
         ));
     }
 

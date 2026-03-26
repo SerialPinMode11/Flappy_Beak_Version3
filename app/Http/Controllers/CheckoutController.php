@@ -77,11 +77,13 @@ class CheckoutController extends Controller
         $total = 0;
         $cart = session()->get('cart', []);
         $items = [];
-        foreach ($cart as $id => $details) {
+        foreach ($cart as $key => $details) {
             $lineTotal = $details['price'] * $details['quantity'];
             $total += $lineTotal;
             $items[] = [
-                'product_id' => $id,
+                'product_key' => $key,
+                'type' => $details['type'] ?? null,
+                'product_id' => $details['id'] ?? null,
                 'name' => $details['name'] ?? ($details['product_name'] ?? 'Product'),
                 'price' => $details['price'],
                 'quantity' => $details['quantity'],
@@ -129,23 +131,19 @@ class CheckoutController extends Controller
 
         // Decrease stock for purchased products
         foreach ($items as $item) {
-            $productId = $item['product_id'];
+            $productId = (int) ($item['product_id'] ?? 0);
             $qty = (int) ($item['quantity'] ?? 0);
             if ($qty <= 0) {
                 continue;
             }
 
-            // Try duck products first
-            $duck = DuckProducts::find($productId);
-            if ($duck) {
-                $duck->decrement('product_stock', $qty);
-                continue;
-            }
-
-            // Then try wine products
-            $wine = WineProduct::find($productId);
-            if ($wine) {
-                $wine->decrement('product_stock', $qty);
+            $type = $item['type'] ?? null;
+            if ($type === 'wine') {
+                $wine = WineProduct::find($productId);
+                if ($wine) $wine->decrement('product_stock', $qty);
+            } else {
+                $duck = DuckProducts::find($productId);
+                if ($duck) $duck->decrement('product_stock', $qty);
             }
         }
 
@@ -207,11 +205,13 @@ class CheckoutController extends Controller
         $total = 0;
         $cart = session()->get('cart', []);
         $items = [];
-        foreach ($cart as $id => $details) {
+        foreach ($cart as $key => $details) {
             $lineTotal = $details['price'] * $details['quantity'];
             $total += $lineTotal;
             $items[] = [
-                'product_id' => $id,
+                'product_key' => $key,
+                'type' => $details['type'] ?? null,
+                'product_id' => $details['id'] ?? null,
                 'name' => $details['name'] ?? ($details['product_name'] ?? 'Product'),
                 'price' => $details['price'],
                 'quantity' => $details['quantity'],
@@ -237,21 +237,19 @@ class CheckoutController extends Controller
         ]);
         // Decrease stock for purchased products (Stripe redirect flow)
         foreach ($items as $item) {
-            $productId = $item['product_id'];
+            $productId = (int) ($item['product_id'] ?? 0);
             $qty = (int) ($item['quantity'] ?? 0);
             if ($qty <= 0) {
                 continue;
             }
 
-            $duck = DuckProducts::find($productId);
-            if ($duck) {
-                $duck->decrement('product_stock', $qty);
-                continue;
-            }
-
-            $wine = WineProduct::find($productId);
-            if ($wine) {
-                $wine->decrement('product_stock', $qty);
+            $type = $item['type'] ?? null;
+            if ($type === 'wine') {
+                $wine = WineProduct::find($productId);
+                if ($wine) $wine->decrement('product_stock', $qty);
+            } else {
+                $duck = DuckProducts::find($productId);
+                if ($duck) $duck->decrement('product_stock', $qty);
             }
         }
         session()->forget('cart');

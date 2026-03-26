@@ -275,12 +275,11 @@
                                title="Edit billing">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('admin.billing.destroy', $info->id) }}" method="POST" class="inline-block">
+                            <form action="{{ route('admin.billing.destroy', $info->id) }}" method="POST" class="inline-block" data-confirm="Move this billing record to trash?">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
                                         class="inline-flex items-center justify-center text-red-600 hover:text-red-700 mx-1"
-                                        onclick="return confirm('Move this billing record to trash?')"
                                         title="Move to trash">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>

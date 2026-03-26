@@ -48,12 +48,11 @@
                                title="Edit product">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="inline-block">
+                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="inline-block" data-confirm="Are you sure you want to delete this product?">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
                                         class="inline-flex items-center justify-center text-red-600 hover:text-red-700 mx-1"
-                                        onclick="return confirm('Are you sure you want to delete this product?')"
                                         title="Delete product">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>

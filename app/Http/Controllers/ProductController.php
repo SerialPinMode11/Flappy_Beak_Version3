@@ -48,7 +48,10 @@ class ProductController extends Controller
         }
 
         // Sort so all products are in one list (e.g. by created_at), then filter by category
-        $products = $products->sortByDesc(fn ($item) => $item->product->created_at ?? 0)->values();
+        $products = $products->sortByDesc(function ($item) {
+            $createdAt = $item->product->created_at ?? null;
+            return $createdAt ? $createdAt->getTimestamp() : 0;
+        })->values();
 
         if ($category !== 'all') {
             $products = $products->filter(fn ($item) => $item->type === $category)->values();

@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-3xl font-bold">Edit Billing Information</h2>
-        <a href="{{ route('admin.billing.index') }}" class="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors">
+        <a href="{{ route('admin.billing.index') }}" class="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors text-gray-800">
             Back to List
         </a>
     </div>
@@ -152,7 +152,7 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <button type="submit" class="bg-primary text-black px-6 py-2 rounded-md hover:bg-primary-dark transition-colors">
+                <button type="submit" class="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark transition-colors">
                     Update Billing Information
                 </button>
             </div>

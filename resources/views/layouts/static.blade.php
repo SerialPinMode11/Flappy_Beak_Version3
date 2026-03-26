@@ -12,6 +12,116 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
+        /* Theme (Light default, Dark when body.dark) */
+        body {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+
+        /* Light mode sidebar should follow light theme */
+        body:not(.dark) #sidebar {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        body:not(.dark) #sidebar .text-gray-300,
+        body:not(.dark) #sidebar .text-gray-400,
+        body:not(.dark) #sidebar a {
+            color: #374151 !important;
+        }
+
+        body:not(.dark) #sidebar a:hover,
+        body:not(.dark) #sidebar button:hover {
+            background-color: #f3f4f6 !important;
+            color: #111827 !important;
+        }
+
+        body:not(.dark) #sidebar .border-gray-700 {
+            border-color: #e5e7eb !important;
+        }
+
+        /* Dark mode */
+        body.dark {
+            background-color: #0b1220;
+            color: #e5e7eb;
+        }
+
+        body.dark #sidebar {
+            background-color: #0f172a !important;
+            color: #e5e7eb !important;
+            border-right: 1px solid #1f2937;
+        }
+
+        body.dark .bg-white { background-color: #0f172a !important; }
+        body.dark .bg-gray-50 { background-color: #0b1220 !important; }
+        body.dark .bg-gray-100 { background-color: #0b1220 !important; }
+        body.dark .text-gray-900,
+        body.dark .text-gray-800,
+        body.dark .text-gray-700,
+        body.dark .text-gray-600,
+        body.dark .text-gray-500 { color: #e5e7eb !important; }
+        body.dark .border-gray-200,
+        body.dark .border-gray-300 { border-color: #1f2937 !important; }
+
+        body.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+            border-color: #1f2937 !important;
+        }
+
+        /* Global admin content theming for consistent readability */
+        body:not(.dark) main,
+        body:not(.dark) header,
+        body:not(.dark) .printable-area {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+
+        body.dark main,
+        body.dark header,
+        body.dark .printable-area {
+            background-color: #0b1220 !important;
+            color: #e5e7eb !important;
+        }
+
+        body.dark .shadow-sm,
+        body.dark .shadow-md,
+        body.dark .shadow-lg {
+            box-shadow: none !important;
+        }
+
+        body.dark input,
+        body.dark select,
+        body.dark textarea {
+            background-color: #0f172a !important;
+            color: #e5e7eb !important;
+            border-color: #334155 !important;
+        }
+
+        body.dark input::placeholder,
+        body.dark textarea::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        body.dark a {
+            color: inherit;
+        }
+
+        body.dark .text-indigo-600,
+        body.dark .hover\:text-indigo-900:hover {
+            color: #93c5fd !important;
+        }
+
+        body.dark .text-yellow-500,
+        body.dark .hover\:text-yellow-600:hover {
+            color: #fcd34d !important;
+        }
+
+        body.dark .text-red-600,
+        body.dark .hover\:text-red-700:hover {
+            color: #f87171 !important;
+        }
+
         /* Added active navigation styles */
         .nav-link-active {
             background-color: #374151 !important;
@@ -19,6 +129,16 @@
             border-left: 4px solid #ff6b6b;
         }
         .nav-link-active i {
+            color: #ff6b6b !important;
+        }
+
+        /* Active nav should respect light mode */
+        body:not(.dark) .nav-link-active {
+            background-color: #eef2ff !important;
+            color: #111827 !important;
+            border-left: 4px solid #ff6b6b;
+        }
+        body:not(.dark) .nav-link-active i {
             color: #ff6b6b !important;
         }
 
@@ -177,11 +297,35 @@
                     </li>
                     <!-- Hardware -->
                     <li>
-                        <a href="{{route('admin.hardware_esp32')}}" 
-                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardware_esp32') ? 'nav-link-active' : '' }}"
-                           onclick="closeMobileSidebar()">
-                            <i class="fas fa-desktop mr-3"></i>Hardware
-                        </a>
+                        <div class="space-y-1">
+                            <a href="{{ route('admin.hardware_esp32') }}" 
+                               class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardware_esp32') || request()->routeIs('admin.hardwareAnalytics') || request()->routeIs('admin.hardwareHistory') || request()->routeIs('admin.hardwareSetting') || request()->routeIs('admin.hardwareInventory') ? 'nav-link-active' : '' }}"
+                               onclick="closeMobileSidebar()">
+                                <i class="fas fa-desktop mr-3"></i>Hardware
+                            </a>
+                            @if(request()->routeIs('admin.hardware_esp32') || request()->routeIs('admin.hardwareAnalytics') || request()->routeIs('admin.hardwareHistory') || request()->routeIs('admin.hardwareSetting') || request()->routeIs('admin.hardwareInventory'))
+                                <a href="{{ route('admin.hardwareHistory') }}"
+                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardwareHistory') ? 'nav-link-active' : '' }}"
+                                   onclick="closeMobileSidebar()">
+                                    <i class="fas fa-history mr-2"></i>Feeding History
+                                </a>
+                                <a href="{{ route('admin.hardwareAnalytics') }}"
+                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardwareAnalytics') ? 'nav-link-active' : '' }}"
+                                   onclick="closeMobileSidebar()">
+                                    <i class="fas fa-chart-line mr-2"></i>Analytics
+                                </a>
+                                <a href="{{ route('admin.hardwareInventory') }}"
+                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardwareInventory') ? 'nav-link-active' : '' }}"
+                                   onclick="closeMobileSidebar()">
+                                    <i class="fas fa-boxes mr-2"></i>Feed Inventory
+                                </a>
+                                <a href="{{ route('admin.hardwareSetting') }}"
+                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardwareSetting') ? 'nav-link-active' : '' }}"
+                                   onclick="closeMobileSidebar()">
+                                    <i class="fas fa-cog mr-2"></i>Settings
+                                </a>
+                            @endif
+                        </div>
                     </li>
                     <!-- Personal -->
                     <li>
@@ -224,25 +368,30 @@
                             <h1 class="text-xl md:text-2xl font-semibold text-gray-800">@yield('header-title', 'Dashboard Overview')</h1>
                         </div>
 
-                        <!-- Right: Search + Notifications + User -->
+                        <!-- Right: Search + Theme + Notifications + User -->
                         <div class="flex items-center space-x-4 header-user">
                             <!-- Search Bar -->
                             <div class="relative header-search">
                                 <input type="search" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full sm:w-auto">
                                 <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                             </div>
+
+                            <!-- Theme Toggle -->
+                            <button id="darkModeToggle" type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200" title="Toggle dark mode">
+                                <i class="fas fa-moon text-gray-600 text-xl"></i>
+                            </button>
                             
                             <!-- Notifications -->
-                            <button class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+                            <button id="adminNotificationsBtn" type="button" class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200" title="Notifications">
                                 <i class="fas fa-bell text-gray-600 text-xl"></i>
-                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                                <span id="adminNotificationsDot" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 items-center justify-center">1</span>
                             </button>
                             
                             <!-- User Profile -->
-                            <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+                            <a href="{{ route('admin.profile.edit') }}" class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
                                 <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User Avatar" class="w-8 h-8 rounded-full">
-                                <span class="font-medium hidden sm:block">JM Casabar</span>
-                            </button>
+                                <span class="font-medium hidden sm:block">{{ session('admin_name', 'Admin') }}</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -257,6 +406,83 @@
     
     <!-- JavaScript for Mobile Navigation -->
     <script>
+        // Theme toggle (shared localStorage key with other admin layouts)
+        (function () {
+            const body = document.body;
+            const btn = document.getElementById('darkModeToggle');
+
+            function apply(isDark) {
+                body.classList.toggle('dark', isDark);
+                const icon = btn?.querySelector('i');
+                if (icon) {
+                    icon.className = isDark ? 'fas fa-sun text-yellow-400 text-xl' : 'fas fa-moon text-gray-600 text-xl';
+                }
+            }
+
+            const saved = localStorage.getItem('darkMode') === 'true';
+            apply(saved);
+
+            btn?.addEventListener('click', function () {
+                const next = !body.classList.contains('dark');
+                localStorage.setItem('darkMode', next);
+                apply(next);
+            });
+        })();
+
+        // Notifications (poll latest completed purchase)
+        (function () {
+            const btn = document.getElementById('adminNotificationsBtn');
+            const dot = document.getElementById('adminNotificationsDot');
+            if (!btn || !dot) return;
+
+            const url = "{{ route('admin.notifications.latest') }}";
+            const storageKey = 'adminLastNotifiedCompletedBillingId';
+            let latestMessage = null;
+
+            function setDot(show) {
+                dot.classList.toggle('hidden', !show);
+                dot.classList.toggle('flex', show);
+            }
+
+            async function poll() {
+                try {
+                    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (!data?.latest?.id) return;
+
+                    const last = parseInt(localStorage.getItem(storageKey) || '0', 10);
+                    const current = parseInt(String(data.latest.id), 10);
+                    if (Number.isFinite(current) && current > last) {
+                        latestMessage = data.latest;
+                        setDot(true);
+                        // Show toast immediately
+                        const msg = `New completed purchase: #${data.latest.id} • ${data.latest.name} • ₱${Number(data.latest.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                        window.showToast?.(msg, 'success');
+                        localStorage.setItem(storageKey, String(current));
+                    }
+                } catch (e) {
+                    // ignore
+                }
+            }
+
+            btn.addEventListener('click', function () {
+                if (!latestMessage) {
+                    window.showToast?.('No new notifications.', 'info');
+                    return;
+                }
+
+                const details = `Customer: ${latestMessage.name}\nEmail: ${latestMessage.email}\nAmount: ₱${Number(latestMessage.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}\nDate: ${latestMessage.created_at}`;
+                window.showToast?.(details, 'info');
+                latestMessage = null;
+                setDot(false);
+            });
+
+            // initial + interval polling
+            poll();
+            setInterval(poll, 15000);
+        })();
+
         function toggleMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -369,6 +595,7 @@
     @endif
 
     @include('partials.admin-logout-modal')
+    @include('partials.confirm-modal')
     @stack('scripts')
 </body>
 </html>

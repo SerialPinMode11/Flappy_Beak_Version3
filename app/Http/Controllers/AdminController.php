@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\FeedingHistory;
 use App\Models\FeedInventory;
+use App\Models\Admin;
 
 use Illuminate\Http\Request;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -23,6 +25,8 @@ class AdminController extends Controller
         if ($email === $this->validEmail && $password === $this->validPassword) {
             // Successful login
             $request->session()->put('admin_logged_in', true);
+            $request->session()->put('admin_email', $this->validEmail);
+            $request->session()->put('admin_name', 'JM Casabar');
             return redirect()->route('admin.dashboard');
         } else {
             // Failed login
@@ -41,7 +45,59 @@ class AdminController extends Controller
     public function logout(Request $request)
     {
         $request->session()->forget('admin_logged_in');
+        $request->session()->forget('admin_email');
+        $request->session()->forget('admin_name');
         return redirect()->route('login')->with('success', 'You have been logged out successfully.');
+    }
+
+    public function editProfile(Request $request)
+    {
+        $email = $request->session()->get('admin_email', $this->validEmail);
+        $admin = Admin::where('email', $email)->first();
+
+        return view('admin.profile.edit', [
+            'admin' => $admin,
+            'adminEmail' => $email,
+            'adminName' => $request->session()->get('admin_name', 'Admin'),
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $email = $request->session()->get('admin_email', $this->validEmail);
+        $admin = Admin::where('email', $email)->first();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        // If admin record doesn't exist yet, create it (keeps your seeded/hardcoded flow working)
+        if (!$admin) {
+            $admin = new Admin();
+            $admin->role = 'super-admin';
+        }
+
+        // Avoid duplicate email on update
+        $existing = Admin::where('email', $validated['email'])
+            ->when($admin->exists, fn ($q) => $q->where('id', '!=', $admin->id))
+            ->exists();
+        if ($existing) {
+            return back()->with('error', 'Email is already used by another admin.')->withInput();
+        }
+
+        $admin->name = $validated['name'];
+        $admin->email = $validated['email'];
+        if (!empty($validated['password'])) {
+            $admin->password = Hash::make($validated['password']);
+        }
+        $admin->save();
+
+        $request->session()->put('admin_email', $admin->email);
+        $request->session()->put('admin_name', $admin->name);
+
+        return back()->with('success', 'Profile updated successfully.');
     }
 
     public function tologin()
@@ -59,7 +115,7 @@ class AdminController extends Controller
 
     public function toHardware()
     {
-        return view('admin.hardware');
+        return redirect()->route('admin.hardwareHistory');
     }
     
     public function toHardwareAnalytics()

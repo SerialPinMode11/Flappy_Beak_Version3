@@ -15,10 +15,58 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        /* Theme (Light default, Dark when body.dark) */
+        body {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+
+        /* Light mode sidebar should match light theme */
+        body:not(.dark) #sidebar {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        body:not(.dark) #sidebar .text-gray-300,
+        body:not(.dark) #sidebar .text-gray-400,
+        body:not(.dark) #sidebar a {
+            color: #374151 !important;
+        }
+
+        body:not(.dark) #sidebar a:hover,
+        body:not(.dark) #sidebar button:hover {
+            background-color: #f3f4f6 !important;
+            color: #111827 !important;
+        }
+
+        body:not(.dark) #sidebar .border-gray-700 {
+            border-color: #e5e7eb !important;
+        }
+
+        body:not(.dark) .nav-link-active {
+            background-color: #eef2ff !important;
+            color: #111827 !important;
+            border-left: 4px solid #ff6b6b;
+        }
+
         .dark {
             background-color: #1a202c;
             color: #e2e8f0;
         }
+
+        .dark #sidebar {
+            background-color: #0f172a !important;
+            color: #e2e8f0 !important;
+            border-right: 1px solid #1f2937;
+        }
+
+        /* Override Tailwind light backgrounds in dark mode */
+        .dark .bg-white { background-color: #111827 !important; }
+        .dark .bg-gray-50 { background-color: #0b1220 !important; }
+        .dark .bg-gray-100 { background-color: #0b1220 !important; }
+        .dark .border-gray-200 { border-color: #1f2937 !important; }
+        .dark .border-gray-300 { border-color: #334155 !important; }
 
         .dark .bg-white {
             background-color: #2d3748;
@@ -33,12 +81,23 @@
             color: #cbd5e0 !important;
         }
 
+        .dark .text-gray-900,
+        .dark .text-gray-500,
+        .dark .text-gray-400 {
+            color: #e2e8f0 !important;
+        }
+
         .dark input,
         .dark textarea,
         .dark select {
-            background-color: #4a5568 !important;
+            background-color: #0f172a !important;
             color: #e2e8f0 !important;
-            border-color: #718096 !important;
+            border-color: #334155 !important;
+        }
+
+        .dark input::placeholder,
+        .dark textarea::placeholder {
+            color: #94a3b8 !important;
         }
 
         .transition-bg {
@@ -97,6 +156,16 @@
         .dark .admin-table td {
             border-bottom: 1px solid #4b5563;
             color: #f9fafb;
+        }
+
+        .dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+            border-color: #334155 !important;
+        }
+
+        .dark .border-gray-200,
+        .dark .border-gray-300,
+        .dark .border-gray-700 {
+            border-color: #334155 !important;
         }
 
         /* Report card styles */
@@ -711,5 +780,6 @@
         }
     </script>
     @include('partials.admin-logout-modal')
+    @include('partials.confirm-modal')
 </body>
 </html>

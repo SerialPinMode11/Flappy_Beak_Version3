@@ -83,23 +83,4 @@
     </div>
 </div>
 
-@php
-    // Hardcoded credentials
-    $validEmail = 'jmcasabarsuccess@gmail.com';
-    $validPassword = '0147K!0147.';
-
-    if (request()->isMethod('post')) {
-        $email = request('email');
-        $password = request('password');
-
-        if ($email === $validEmail && $password === $validPassword) {
-            session()->flash('success', 'Login successful!');
-            // Redirect to dashboard or home page
-            return redirect()->route('admin.dashboard');
-        } else {
-            session()->flash('error', 'Invalid credentials. Please try again.');
-        }
-    }
-@endphp
-
 @endsection

@@ -1,9 +1,9 @@
-@extends('layouts.hardware')
+@extends('layouts.static')
 
-@section('styles')
+@push('styles')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-@endsection
+@endpush
 
 @section('content')
     <div class="py-6">
@@ -170,7 +170,7 @@
                                                     @if($feed->quantity == 0)
                                                         <form action="{{ route('inventory.destroy', $feed->id) }}" method="POST"
                                                             class="inline"
-                                                            onsubmit="return confirm('Are you sure you want to delete this feed item?');">
+                                                            data-confirm="Are you sure you want to delete this feed item?">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="text-red-600 hover:text-red-900">

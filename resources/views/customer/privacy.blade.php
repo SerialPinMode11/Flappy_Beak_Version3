@@ -93,10 +93,10 @@
                                 Data Controller Information
                             </h4>
                             <div class="text-gray-700 space-y-1">
-                                <p><strong>Company:</strong> JM Casabar Private Farm</p>
-                                <p><strong>Address:</strong> Bacoor, Calabarzon, Philippines</p>
-                                <p><strong>Contact:</strong> [Your contact information]</p>
-                                <p><strong>Data Protection Officer:</strong> [DPO contact if applicable]</p>
+                                <p><strong>Company:</strong> JM Casabar Pekin Store (JM Casabar Mini Farm)</p>
+                                <p><strong>Address:</strong> Brgy. Maroyroy, Macatoc, Oriental Mindoro, Luzon, Philippines</p>
+                                <p><strong>Contact:</strong> +63 9294 833 413 · jmcasabar@gmail.com</p>
+                                <p><strong>Data Protection Officer:</strong> Please contact us at <a href="mailto:jmcasabar@gmail.com" class="text-blue-600 hover:underline">jmcasabar@gmail.com</a></p>
                             </div>
                         </div>
                     </div>

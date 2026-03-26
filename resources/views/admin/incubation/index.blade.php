@@ -210,74 +210,34 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 printable-area">
-        <!-- Redesigned dashboard cards with modern styling and semantic tokens -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 no-print">
-            <div class="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-shadow duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-muted-foreground uppercase tracking-wide">Total Bookings</p>
-                        <p class="text-3xl font-bold text-card-foreground mt-2">{{ $counts['total'] }}</p>
-                    </div>
-                    <div class="p-3 bg-chart-4/10 rounded-lg">
-                        <svg class="w-6 h-6 text-chart-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
+        <!-- Simplified summary strip -->
+        <div class="bg-card rounded-xl border border-border p-4 mb-6 no-print">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                    <p class="text-xs uppercase text-muted-foreground">Total</p>
+                    <p class="text-2xl font-bold text-card-foreground">{{ $counts['total'] }}</p>
                 </div>
-            </div>
-
-            <div class="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-shadow duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-muted-foreground uppercase tracking-wide">Pending Bookings</p>
-                        <p class="text-3xl font-bold text-card-foreground mt-2">{{ $counts['pending'] }}</p>
-                    </div>
-                    <div class="p-3 bg-chart-1/10 rounded-lg">
-                        <svg class="w-6 h-6 text-chart-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
+                <div>
+                    <p class="text-xs uppercase text-muted-foreground">Pending</p>
+                    <p class="text-2xl font-bold text-card-foreground">{{ $counts['pending'] }}</p>
                 </div>
-            </div>
-
-            <div class="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-shadow duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-muted-foreground uppercase tracking-wide">Active Incubations</p>
-                        <p class="text-3xl font-bold text-card-foreground mt-2">{{ $counts['active'] }}</p>
-                    </div>
-                    <div class="p-3 bg-chart-2/10 rounded-lg">
-                        <svg class="w-6 h-6 text-chart-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
+                <div>
+                    <p class="text-xs uppercase text-muted-foreground">Active</p>
+                    <p class="text-2xl font-bold text-card-foreground">{{ $counts['active'] }}</p>
                 </div>
-            </div>
-
-            <div class="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-shadow duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-muted-foreground uppercase tracking-wide">Completed</p>
-                        <p class="text-3xl font-bold text-card-foreground mt-2">{{ $counts['completed'] }}</p>
-                    </div>
-                    <div class="p-3 bg-chart-3/10 rounded-lg">
-                        <svg class="w-6 h-6 text-chart-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
+                <div>
+                    <p class="text-xs uppercase text-muted-foreground">Completed</p>
+                    <p class="text-2xl font-bold text-card-foreground">{{ $counts['completed'] }}</p>
                 </div>
             </div>
         </div>
 
-        <!-- Modern filter section with improved styling -->
-        <div class="bg-card rounded-xl border border-border mb-8 no-print">
-            <div class="px-6 py-4 border-b border-border">
-                <h3 class="text-lg font-semibold text-card-foreground">Filter Bookings</h3>
-            </div>
-            <div class="p-6">
-                <form action="" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+        <!-- Simplified quick filters -->
+        <div class="bg-card rounded-xl border border-border mb-6 no-print">
+            <div class="p-4">
+                <form action="" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
                     <div class="space-y-2">
-                        <label for="status" class="text-sm font-medium text-card-foreground">Status</label>
+                        <label for="status" class="text-xs font-medium text-muted-foreground uppercase">Status</label>
                         <select name="status" id="status" class="w-full px-3 py-2 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-foreground">
                             <option value="">All Statuses</option>
                             @foreach($statuses as $value => $label)
@@ -289,7 +249,7 @@
                     </div>
                     
                     <div class="space-y-2">
-                        <label for="service_type" class="text-sm font-medium text-card-foreground">Service Type</label>
+                        <label for="service_type" class="text-xs font-medium text-muted-foreground uppercase">Service</label>
                         <select name="service_type" id="service_type" class="w-full px-3 py-2 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-foreground">
                             <option value="">All Types</option>
                             @foreach($serviceTypes as $value => $label)
@@ -301,24 +261,23 @@
                     </div>
                     
                     <div class="space-y-2">
-                        <label for="date_from" class="text-sm font-medium text-card-foreground">Date From</label>
+                        <label for="date_from" class="text-xs font-medium text-muted-foreground uppercase">From</label>
                         <input type="date" name="date_from" id="date_from" class="w-full px-3 py-2 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-foreground" value="{{ request('date_from') }}">
                     </div>
                     
                     <div class="space-y-2">
-                        <label for="date_to" class="text-sm font-medium text-card-foreground">Date To</label>
+                        <label for="date_to" class="text-xs font-medium text-muted-foreground uppercase">To</label>
                         <input type="date" name="date_to" id="date_to" class="w-full px-3 py-2 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-foreground" value="{{ request('date_to') }}">
                     </div>
                     
                     <div class="space-y-2">
-                        <label for="search" class="text-sm font-medium text-card-foreground">Search</label>
+                        <label for="search" class="text-xs font-medium text-muted-foreground uppercase">Search</label>
                         <input type="text" name="search" id="search" class="w-full px-3 py-2 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-foreground" placeholder="Name, Email, Reference..." value="{{ request('search') }}">
                     </div>
                     
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 font-medium">
-                            Apply Filters
-                        </button>
+                    <div class="flex items-end gap-2">
+                        <button type="submit" class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 font-medium">Apply</button>
+                        <a href="{{ route('admin.incubation.index') }}" class="w-full text-center px-4 py-2 bg-secondary text-secondary-foreground rounded-lg border border-border hover:bg-muted transition-colors duration-200 font-medium">Reset</a>
                     </div>
                 </form>
             </div>

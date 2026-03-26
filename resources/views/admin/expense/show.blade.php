@@ -72,10 +72,10 @@
         </div>
         
         <div class="mt-6 pt-6 border-t">
-            <form action="{{ route('admin.expense.destroy', ['id' => $expense->id]) }}" method="POST" class="inline">
+            <form action="{{ route('admin.expense.destroy', ['id' => $expense->id]) }}" method="POST" class="inline" data-confirm="Are you sure you want to delete this expense?">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg" onclick="return confirm('Are you sure you want to delete this expense?')">
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
                     <i class="fas fa-trash mr-2"></i> Delete Expense
                 </button>
             </form>

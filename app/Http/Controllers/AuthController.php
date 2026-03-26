@@ -36,6 +36,8 @@ class AuthController extends Controller
         if ($request->email === $validEmail && $request->password === $validPassword) {
             // Successful login with hardcoded credentials
             $request->session()->put('admin_logged_in', true);
+            $request->session()->put('admin_email', $validEmail);
+            $request->session()->put('admin_name', 'JM Casabar');
             return redirect()->route('admin.dashboard');
         }
         return redirect()->back()->with("error", "Invalid email or password");

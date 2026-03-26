@@ -60,12 +60,11 @@
                                     <i class="fas fa-undo-alt"></i>
                                 </button>
                             </form>
-                            <form action="{{ route('admin.billing.forceDelete', $info->id) }}" method="POST" class="inline-block">
+                            <form action="{{ route('admin.billing.forceDelete', $info->id) }}" method="POST" class="inline-block" data-confirm="Permanently delete this billing record? This cannot be undone.">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
                                         class="inline-flex items-center justify-center text-red-600 hover:text-red-700 mx-1"
-                                        onclick="return confirm('Permanently delete this billing record? This cannot be undone.')"
                                         title="Delete forever">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>

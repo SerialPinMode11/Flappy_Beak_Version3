@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Flappy-Beak - Farm-Fresh Duck Products</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -374,15 +375,15 @@
     <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                 <img src="{{ asset('images/Flappy_IoT.png') }}" alt="Flappy IoT Logo" class="w-8 h-8">
+                 <img src="{{ asset('images/fav-icon.png') }}" alt="Flappy IoT Logo" class="w-8 h-8">
                 <h1 class="text-2xl font-bold tracking-wide">JM Casabar Mini Farm</h1>
             </div>
             
             <div class="hidden md:flex items-center space-x-6">
-                <a href="#" onclick="redirectToLogin(event)" class="hover:text-yellow-300 transition-colors font-medium">Home</a>
-                <a href="#products" onclick="redirectToLogin(event)" class="hover:text-yellow-300 transition-colors font-medium">Products</a>
-                <a href="#about" onclick="redirectToLogin(event)" class="hover:text-yellow-300 transition-colors font-medium">About Us</a>
-                <a href="#" onclick="redirectToLogin(event)" class="hover:text-yellow-300 transition-colors font-medium">Contact</a>
+                <a href="{{ url('/') }}" class="hover:text-yellow-300 transition-colors font-medium">Home</a>
+                <a href="#products" class="hover:text-yellow-300 transition-colors font-medium">Products</a>
+                <a href="#about" class="hover:text-yellow-300 transition-colors font-medium">About Us</a>
+                <a href="{{ route('contact') }}" class="hover:text-yellow-300 transition-colors font-medium">Contact</a>
             </div>
             
             <div class="flex items-center space-x-4">
@@ -392,10 +393,6 @@
                         <i class="fas fa-search text-gray-500"></i>
                     </button>
                 </div>
-                <button class="hover:text-yellow-300 transition-colors relative">
-                    <i class="far fa-heart text-xl" onclick="redirectToLogin(event)"></i>
-                    <span class="absolute -top-2 -right-2 bg-yellow-400 text-xs text-teal-800 font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
-                </button>
                 <button class="hover:text-yellow-300 transition-colors relative">
                     <i class="fas fa-shopping-cart text-xl" onclick="redirectToLogin(event)"></i>
                     <span class="absolute -top-2 -right-2 bg-yellow-400 text-xs text-teal-800 font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
@@ -421,10 +418,10 @@
                         straight from our family farm to your table.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#products" onclick="redirectToLogin(event)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md text-center">
+                        <a href="#products" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md text-center">
                             Shop Now
                         </a>
-                        <a href="#about" onclick="redirectToLogin(event)" class="border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 font-semibold px-6 py-3 rounded-lg transition-colors text-center">
+                        <a href="#about" class="border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 font-semibold px-6 py-3 rounded-lg transition-colors text-center">
                             Learn More
                         </a>
                     </div>
@@ -448,218 +445,80 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                
-                <!-- Product Card 1 -->
-                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group">
-                    <div class="relative">
-                        <span class="absolute top-3 left-3 bg-emerald-600 text-white text-sm px-3 py-1 rounded-full font-medium z-10">
-                            Best Seller
-                        </span>
-                        <div class="overflow-hidden">
-                            <img src="{{asset('images/pekin-raw-meat.jpg')}}" alt="Whole Butchered Duck Meat" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <button class="quick-view absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-emerald-600 hover:text-white transition-colors duration-300 opacity-0 group-hover:opacity-100 z-10">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <div class="p-5 border-t">
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
+                @php
+                    $items = $products ?? collect();
+                @endphp
+
+                @forelse($items as $item)
+                    @php
+                        $p = $item->product;
+                        $badge = $item->type === 'wine' ? 'Wine' : ($item->type === 'egg' ? 'Egg' : 'Duck');
+                        $badgeClass = $item->type === 'wine' ? 'bg-purple-600' : ($item->type === 'egg' ? 'bg-yellow-400 text-teal-900' : 'bg-emerald-600');
+                        $img = $p->product_image ? asset($p->product_image) : asset('images/pekin-young-alive.jpg');
+                    @endphp
+
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group js-product-card {{ $loop->index >= 8 ? 'hidden' : '' }}">
+                        <div class="relative">
+                            <span class="absolute top-3 left-3 {{ $badgeClass }} text-white text-sm px-3 py-1 rounded-full font-medium z-10">
+                                {{ $badge }}
+                            </span>
+                            <div class="overflow-hidden">
+                                <img src="{{ $img }}" alt="{{ $p->product_name }}" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
                             </div>
-                            <span class="text-slate-500 text-sm">(42 reviews)</span>
+                            <a href="{{ route('login') }}" class="quick-view absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-emerald-600 hover:text-white transition-colors duration-300 opacity-0 group-hover:opacity-100 z-10" aria-label="Quick view">
+                                <i class="fas fa-eye"></i>
+                            </a>
                         </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">Butchered Raw Pekin Duck Meat</h3>
-                        <p class="text-slate-600 text-sm mb-3">Farm-raised, hand-processed whole duck, perfect for roasting.</p>
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">₱1650.00</span>
-                            <span class="text-slate-400 line-through">₱2000.00</span>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 24%</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="redirectToLogin()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg transition-colors duration-300 flex items-center justify-center">
-                                <i class="fas fa-cart-plus mr-2"></i> Add to Cart
-                            </button>
-                            <button onclick="redirectToLogin()" class="w-12 border border-emerald-600 text-emerald-600 py-2 rounded-lg hover:bg-emerald-50 transition-colors duration-300">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product Card 2 -->
-                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group">
-                    <div class="relative">
-                        <span class="absolute top-3 left-3 bg-yellow-400 text-teal-900 text-sm px-3 py-1 rounded-full font-medium z-10">
-                            Fresh
-                        </span>
-                        <div class="overflow-hidden">
-                            <img src="{{asset('images/pekin-white-egg.jpg')}}" alt="Pekin Duck Eggs" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <button class="quick-view absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-emerald-600 hover:text-white transition-colors duration-300 opacity-0 group-hover:opacity-100 z-10" onclick="redirectToLogin()">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <div class="p-5 border-t">
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                        <div class="p-5 border-t">
+                            <h3 class="font-bold text-lg text-teal-900 mb-1 truncate" title="{{ $p->product_name }}">{{ $p->product_name }}</h3>
+                            <p class="text-slate-600 text-sm mb-3">
+                                {{ \Illuminate\Support\Str::limit($p->product_description ?? '', 90) }}
+                            </p>
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-emerald-600 font-bold text-xl">₱{{ number_format($p->product_price ?? 0, 2) }}</span>
+                                <div class="flex gap-2">
+                                    <button type="button"
+                                            class="w-10 h-10 flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-300 js-add-to-cart"
+                                            data-type="{{ $item->type === 'wine' ? 'wine' : 'duck' }}"
+                                            data-id="{{ $p->id }}"
+                                            aria-label="Add to cart">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <span class="text-slate-500 text-sm">(38 reviews)</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">Deluxe Pekin Egg Set</h3>
-                        <p class="text-slate-600 text-sm mb-3">Farm-fresh duck eggs, rich in flavor and perfect for baking.</p>
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">₱300.00</span>
-                            <span class="text-slate-400 line-through">₱350.00</span>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 24%</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="redirectToLogin()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg transition-colors duration-300 flex items-center justify-center">
-                                <i class="fas fa-cart-plus mr-2"></i> Add to Cart
-                            </button>
-                            <button onclick="redirectToLogin()" class="w-12 border border-emerald-600 text-emerald-600 py-2 rounded-lg hover:bg-emerald-50 transition-colors duration-300">
-                                <i class="far fa-heart"></i>
-                            </button>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Product Card 3 -->
-                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group">
-                    <div class="relative">
-                        <span class="absolute top-3 left-3 bg-emerald-600 text-white text-sm px-3 py-1 rounded-full font-medium z-10">
-                            Limited
-                        </span>
-                        <div class="overflow-hidden">
-                            <img src="{{asset('images/Male_Pekin_Duck.jpg')}}" alt="Drake Pekin Duck" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <button class="quick-view absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-emerald-600 hover:text-white transition-colors duration-300 opacity-0 group-hover:opacity-100 z-10">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                @empty
+                    <div class="col-span-full text-center py-12 text-slate-600">
+                        No products available yet.
                     </div>
-                    <div class="p-5 border-t">
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </div>
-                            <span class="text-slate-500 text-sm">(29 reviews)</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">Adult Drake Pekin Duck</h3>
-                        <p class="text-slate-600 text-sm mb-3">Healthy adult male Pekin duck for breeding or farm raising.</p>
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">₱2500.00</span>
-                            <span class="text-slate-400 line-through">₱3000.00</span>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 16%</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="redirectToLogin()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg transition-colors duration-300 flex items-center justify-center">
-                                <i class="fas fa-cart-plus mr-2"></i> Add to Cart
-                            </button>
-                            <button onclick="redirectToLogin()" class="w-12 border border-emerald-600 text-emerald-600 py-2 rounded-lg hover:bg-emerald-50 transition-colors duration-300">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product Card 4 -->
-                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group">
-                    <div class="relative">
-                        <span class="absolute top-3 left-3 bg-emerald-600 text-white text-sm px-3 py-1 rounded-full font-medium z-10">
-                            Popular
-                        </span>
-                        <div class="overflow-hidden">
-                            <img src="{{asset('images/Female_Pekin_Duck.jpg')}}" alt="Hen Pekin Duck" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <button class="quick-view absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-emerald-600 hover:text-white transition-colors duration-300 opacity-0 group-hover:opacity-100 z-10">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <div class="p-5 border-t">
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                            <span class="text-slate-500 text-sm">(35 reviews)</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">Adult Hen Pekin Duck</h3>
-                        <p class="text-slate-600 text-sm mb-3">Healthy adult female Pekin duck, excellent egg layer.</p>
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">₱3300.00</span>
-                            <span class="text-slate-400 line-through">₱4000.00</span>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 18%</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="redirectToLogin()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg transition-colors duration-300 flex items-center justify-center">
-                                <i class="fas fa-cart-plus mr-2"></i> Add to Cart
-                            </button>
-                            <button onclick="redirectToLogin()" class="w-12 border border-emerald-600 text-emerald-600 py-2 rounded-lg hover:bg-emerald-50 transition-colors duration-300">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product Card 5 -->
-                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group">
-                    <div class="relative">
-                        <span class="absolute top-3 left-3 bg-yellow-400 text-teal-900 text-sm px-3 py-1 rounded-full font-medium z-10">
-                            Cute!
-                        </span>
-                        <div class="overflow-hidden">
-                            <img src="{{asset('images/pekin-young-alive.jpg')}}" alt="Pekin Duckling" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <button class="quick-view absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-emerald-600 hover:text-white transition-colors duration-300 opacity-0 group-hover:opacity-100 z-10">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <div class="p-5 border-t">
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <span class="text-slate-500 text-sm">(52 reviews)</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-teal-900 mb-1">One-Week-Old Duckling</h3>
-                        <p class="text-slate-600 text-sm mb-3">Adorable one-week-old Pekin duckling, healthy and active.</p>
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="text-emerald-600 font-bold text-xl">₱3000.00</span>
-                            <span class="text-slate-400 line-through">₱3500.00</span>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Save 20%</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="redirectToLogin()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg transition-colors duration-300 flex items-center justify-center">
-                                <i class="fas fa-cart-plus mr-2"></i> Add to Cart
-                            </button>
-                            <button onclick="redirectToLogin()" class="w-12 border border-emerald-600 text-emerald-600 py-2 rounded-lg hover:bg-emerald-50 transition-colors duration-300">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
+                @endforelse
             </div>
+
+            @if(($items ?? collect())->count() > 8)
+                <div class="mt-10 flex justify-center">
+                    <div class="relative inline-block text-left">
+                        <button type="button" id="see-more-button"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg shadow hover:bg-emerald-700 transition-colors"
+                                aria-haspopup="true" aria-expanded="false">
+                            See More
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+
+                        <div id="see-more-menu"
+                             class="hidden absolute left-1/2 -translate-x-1/2 mt-3 w-56 rounded-xl bg-white shadow-lg ring-1 ring-black/5 overflow-hidden z-20">
+                            <button type="button" id="show-all-products"
+                                    class="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50">
+                                Show all products
+                            </button>
+                            <button type="button" id="show-less-products"
+                                    class="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50">
+                                Show fewer (8)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
             
            
         </div>
@@ -746,7 +605,7 @@
                 
                 <div class="bg-emerald-50 p-6 rounded-xl text-center">
                     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-heart text-emerald-600 text-2xl"></i>
+                        <i class="fas fa-leaf text-emerald-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-teal-900 mb-2">Ethically Raised</h3>
                     <p class="text-slate-600">Our ducks enjoy spacious, clean living conditions with proper care.</p>
@@ -769,21 +628,30 @@
                         Premium farm-raised Pekin duck products delivered straight to your door.
                     </p>
                     <div class="flex space-x-4">
-                        <a href="https://web.facebook.com/IMORTALxiiJERRY" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/jerry_casabar?igsh=Y2x6enlmdHB3cmhq" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-teal-200 hover:text-yellow-300"><i class="fab fa-telegram-plane"></i></a>
-                        <a href="#" class="text-teal-200 hover:text-yellow-300"><i class="fas fa-envelope"></i></a>
+                        <a href="https://web.facebook.com/IMORTALxiiJERRY" class="text-teal-200 hover:text-yellow-300" target="_blank" rel="noopener" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/jerry_casabar?igsh=Y2x6enlmdHB3cmhq" class="text-teal-200 hover:text-yellow-300" target="_blank" rel="noopener" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="tel:+639294833413" class="text-teal-200 hover:text-yellow-300" aria-label="Call">
+                            <i class="fas fa-phone"></i>
+                        </a>
+                        <a href="mailto:jmcasabar@gmail.com" class="text-teal-200 hover:text-yellow-300" aria-label="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
                     </div>
                 </div>
                 
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
                     <ul class="space-y-2">
-                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">Home</a></li>
-                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">Products</a></li>
-                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">About Us</a></li>
-                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">Contact</a></li>
-                        <li><a href='{{route('login')}}' class="text-teal-200 hover:text-yellow-300">FAQ</a></li>
+                        <li><a href="{{ url('/') }}" class="text-teal-200 hover:text-yellow-300">Home</a></li>
+                        <li><a href="{{ url('/') }}#products" class="text-teal-200 hover:text-yellow-300">Products</a></li>
+                        <li><a href="{{ url('/') }}#about" class="text-teal-200 hover:text-yellow-300">About Us</a></li>
+                        <li><a href="{{ route('contact') }}" class="text-teal-200 hover:text-yellow-300">Contact</a></li>
+                        <li><a href="{{ route('question.page') }}" class="text-teal-200 hover:text-yellow-300">FAQ</a></li>
+                        <li><a href="{{ route('privacy-policy.page') }}" class="text-teal-200 hover:text-yellow-300">Privacy Policy</a></li>
                     </ul>
                 </div>
                 
@@ -828,11 +696,104 @@
         </div>
     </footer>
 
+    @include('partials.toast-container')
+
     <script>
-        function redirectToLogin() {
-            event.preventDefault(); // Prevent default anchor behavior
-            window.location.href = '{{route('login')}}';
-        }
+        // "See More" dropdown for products
+        (function () {
+            const btn = document.getElementById('see-more-button');
+            const menu = document.getElementById('see-more-menu');
+            const showAll = document.getElementById('show-all-products');
+            const showLess = document.getElementById('show-less-products');
+            const cards = Array.from(document.querySelectorAll('.js-product-card'));
+
+            if (!btn || !menu || !cards.length) return;
+
+            function openMenu() {
+                menu.classList.remove('hidden');
+                btn.setAttribute('aria-expanded', 'true');
+            }
+            function closeMenu() {
+                menu.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+            }
+            function showAllProducts() {
+                cards.forEach(c => c.classList.remove('hidden'));
+            }
+            function showLessProducts() {
+                cards.forEach((c, idx) => {
+                    if (idx < 8) c.classList.remove('hidden');
+                    else c.classList.add('hidden');
+                });
+                const productsSection = document.getElementById('products');
+                if (productsSection) productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (menu.classList.contains('hidden')) openMenu();
+                else closeMenu();
+            });
+            showAll?.addEventListener('click', function () {
+                showAllProducts();
+                closeMenu();
+            });
+            showLess?.addEventListener('click', function () {
+                showLessProducts();
+                closeMenu();
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeMenu();
+            });
+        })();
+
+        // Guest add-to-cart (keeps cart in session; checkout still requires login)
+        (function () {
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const buttons = Array.from(document.querySelectorAll('.js-add-to-cart'));
+            if (!buttons.length) return;
+
+            async function addToCart(type, id) {
+                const url = type === 'wine' ? "{{ route('cart.add.wine') }}" : "{{ route('cart.add') }}";
+                const body = new URLSearchParams();
+                body.set('product_id', String(id));
+                body.set('quantity', '1');
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json',
+                    },
+                    body: body.toString(),
+                });
+
+                if (res.ok) {
+                    window.showToast?.('Added to cart. You can checkout after logging in.', 'success');
+                    return;
+                }
+
+                let msg = 'Failed to add to cart.';
+                try {
+                    const data = await res.json();
+                    if (data?.message) msg = data.message;
+                } catch (e) {}
+                window.showToast?.(msg, 'error');
+            }
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const type = this.getAttribute('data-type');
+                    const id = this.getAttribute('data-id');
+                    addToCart(type, id);
+                });
+            });
+        })();
     </script>
 </body>
 </html>

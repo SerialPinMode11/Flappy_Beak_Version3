@@ -1,6 +1,6 @@
-@extends('layouts.hardware')
+@extends('layouts.static')
 
-@section('styles')
+@push('styles')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -87,7 +87,7 @@
                         linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
         }
     </style>
-@endsection
+@endpush
 
 @section('content')
     <div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50">

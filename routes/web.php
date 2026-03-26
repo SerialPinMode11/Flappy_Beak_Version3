@@ -18,9 +18,46 @@ use App\Http\Controllers\HogProductController;
 use App\Http\Controllers\CartNavController;
 use App\Http\Controllers\IncubationAdminController;
 use App\Http\Controllers\FeedingHistoryController;
+use App\Models\DuckProducts;
 use App\Models\WineProduct;
 
-Route::get('/', function () { return view('welcome'); } );
+Route::get('/', function () {
+    // Public landing page: show the same real products as customer home (no auth required)
+    $duckProducts = DuckProducts::orderBy('created_at', 'desc')->get();
+    $wineProducts = WineProduct::orderBy('created_at', 'desc')->get();
+
+    $products = collect();
+
+    foreach ($duckProducts as $p) {
+        $name = $p->product_name ?? '';
+        $type = 'duck';
+        if (stripos($name, 'egg') !== false) {
+            $type = 'egg';
+        } elseif (stripos($name, 'wine') !== false) {
+            $type = 'wine';
+        }
+        $products->push((object) [
+            'type' => $type,
+            'product' => $p,
+        ]);
+    }
+
+    foreach ($wineProducts as $p) {
+        $products->push((object) [
+            'type' => 'wine',
+            'product' => $p,
+        ]);
+    }
+
+    $products = $products->sortByDesc(function ($item) {
+        $createdAt = $item->product->created_at ?? null;
+        return $createdAt ? $createdAt->getTimestamp() : 0;
+    })->values();
+
+    return view('welcome', [
+        'products' => $products,
+    ]);
+});
 
 Route::get("/login", [AuthController::class, "login"])->name('login');
 Route::post("/login", [AuthController::class, "loginPost"])->name("login.post");
@@ -40,6 +77,11 @@ Route::get("/PageNotFound", [PageController::class, "Page404"])->name("page404")
 Route::get("/contactUs", [ControllerName::class, "contactUs"])->name("contact");
 Route::post("contactUs", [ControllerName::class, "contactPost"])->name("contact.post");
 Route::get("aboutUs", [ControllerName::class, "aboutUs"])->name("about");
+Route::get('/FAQs', [CartNavController::class, 'toFAQ'])->name('question.page');
+Route::get('/Privacy-Policy', [CartNavController::class, 'toPrivacy'])->name('privacy-policy.page');
+// Public cart add (keeps items in session even for guests)
+Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/wine/add-to-cart', [WineProductController::class, 'addToCart'])->name('cart.add.wine');
 
 //customer routes (login required)
 Route::middleware("auth")->group(function(){
@@ -56,7 +98,6 @@ Route::middleware("auth")->group(function(){
     Route::get('/home/productformat/{product}', [ProductController::class,'show'])->name('customer.productformat');
     Route::post('/home/productformat/{product}/reviews', [ProductController::class,'storeReview'])->name('customer.product.review.store');
     //My_Cart
-    Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
     Route::delete('/remove-from-cart', [CartController::class, 'removeFromCart'])->name('cart.remove');
     //Checkout
@@ -70,7 +111,6 @@ Route::middleware("auth")->group(function(){
     //new Products Wine
     Route::get('/wineproducts', [WineProductController::class, 'index'])->name('wine.home');
     Route::get('/home/wine/productformat/{product}', [WineProductController::class,'show'])->name('customer.wine.view');
-    Route::post('/wine/add-to-cart', [WineProductController::class, 'addToCart'])->name('cart.add.wine');
     Route::delete('/wine/remove-from-cart', [WineProductController::class, 'removeFromCart'])->name('cart.remove.wine');
 
     //new Products Hog
@@ -81,16 +121,15 @@ Route::middleware("auth")->group(function(){
     Route::get('/cart/option/wine', [CartNavController::class, 'toWineCart'])->name('cart.wine.view');
     Route::get('/cart/option/hog', [CartNavController::class, 'toHogCart'])->name('cart.hog.view');
 
-    //Quik Links
-    Route::get('/FAQs', [CartNavController::class, 'toFAQ'])->name('question.page');
-    Route::get('/Privacy-Policy', [CartNavController::class, 'toPrivacy'])->name('privacy-policy.page');
-    
 });
 
-//admin routes
-Route::middleware("auth")->group(function(){
+//admin routes (session-based)
+Route::middleware('admin.session')->group(function(){
     Route::get('/admin/dashboard', [AdminBillingController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout'); 
+    Route::get('/admin/notifications/latest', [AdminBillingController::class, 'latestCompletedNotification'])->name('admin.notifications.latest');
+    Route::get('/admin/profile', [AdminController::class, 'editProfile'])->name('admin.profile.edit');
+    Route::put('/admin/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
 
     //contact table
     Route::get("contactforlist", [ControllerName::class, "index"])->name("contactforlist");
