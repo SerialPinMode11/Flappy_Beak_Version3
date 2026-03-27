@@ -230,7 +230,7 @@
         <!-- Sidebar - Desktop (Fixed) & Mobile (Sliding) -->
         <aside id="sidebar" class="bg-gray-800 text-white w-64 fixed h-screen overflow-y-auto z-50 mobile-sidebar md:translate-x-0 md:z-10">
             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-[#ff6b6b]">Admin Dashboard</h2>
+                <h2 class="text-xl font-bold text-[#ff6b6b]">Admin Pannel</h2>
                 <!-- Close button for mobile -->
                 <button id="closeSidebar" class="md:hidden text-gray-300 hover:text-white" onclick="toggleMobileSidebar()">
                     <i class="fas fa-times text-xl"></i>
@@ -299,20 +299,15 @@
                     <li>
                         <div class="space-y-1">
                             <a href="{{ route('admin.hardware_esp32') }}" 
-                               class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardware_esp32') || request()->routeIs('admin.hardwareAnalytics') || request()->routeIs('admin.hardwareHistory') || request()->routeIs('admin.hardwareSetting') || request()->routeIs('admin.hardwareInventory') ? 'nav-link-active' : '' }}"
+                               class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardware_esp32') || request()->routeIs('admin.hardwareHistory') || request()->routeIs('admin.hardwareSetting') || request()->routeIs('admin.hardwareInventory') ? 'nav-link-active' : '' }}"
                                onclick="closeMobileSidebar()">
                                 <i class="fas fa-desktop mr-3"></i>Hardware
                             </a>
-                            @if(request()->routeIs('admin.hardware_esp32') || request()->routeIs('admin.hardwareAnalytics') || request()->routeIs('admin.hardwareHistory') || request()->routeIs('admin.hardwareSetting') || request()->routeIs('admin.hardwareInventory'))
+                            @if(request()->routeIs('admin.hardware_esp32') || request()->routeIs('admin.hardwareHistory') || request()->routeIs('admin.hardwareSetting') || request()->routeIs('admin.hardwareInventory'))
                                 <a href="{{ route('admin.hardwareHistory') }}"
                                    class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardwareHistory') ? 'nav-link-active' : '' }}"
                                    onclick="closeMobileSidebar()">
                                     <i class="fas fa-history mr-2"></i>Feeding History
-                                </a>
-                                <a href="{{ route('admin.hardwareAnalytics') }}"
-                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardwareAnalytics') ? 'nav-link-active' : '' }}"
-                                   onclick="closeMobileSidebar()">
-                                    <i class="fas fa-chart-line mr-2"></i>Analytics
                                 </a>
                                 <a href="{{ route('admin.hardwareInventory') }}"
                                    class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.hardwareInventory') ? 'nav-link-active' : '' }}"
@@ -355,17 +350,32 @@
             <header class="bg-white shadow-sm">
                 <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between items-start md:items-center header-content">
-                        <!-- Left: Mobile Menu + Title -->
-                        <div class="flex items-center space-x-3">
+                        <!-- Left: Mobile Menu + Title (optional subtitle + toggle dot) -->
+                        <div class="flex items-start space-x-3 flex-1 min-w-0 md:mr-4">
                             <!-- Mobile Menu Button -->
-                            <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200" onclick="toggleMobileSidebar()">
+                            <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 shrink-0" onclick="toggleMobileSidebar()">
                                 <div class="hamburger w-6 h-6 flex flex-col justify-center items-center space-y-1">
                                     <span class="hamburger-line w-6 h-0.5 bg-gray-600 block"></span>
                                     <span class="hamburger-line w-6 h-0.5 bg-gray-600 block"></span>
                                     <span class="hamburger-line w-6 h-0.5 bg-gray-600 block"></span>
                                 </div>
                             </button>
-                            <h1 class="text-xl md:text-2xl font-semibold text-gray-800">@yield('header-title', 'Dashboard Overview')</h1>
+                            @hasSection('header-title')
+                                <div class="min-w-0 flex-1 flex flex-col">
+                                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                        <h1 class="text-xl md:text-2xl font-semibold text-gray-800 leading-tight">@yield('header-title')</h1>
+                                        @hasSection('header-subtitle')
+                                            <button type="button" id="adminHeaderSubtitleToggle" class="shrink-0 w-2.5 h-2.5 rounded-full bg-gray-400 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400 transition-colors" aria-label="Show or hide description" aria-expanded="false" title="Show description"></button>
+                                        @endif
+                                        @hasSection('header-extra')
+                                            <span class="text-xs px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 font-semibold whitespace-nowrap md:ml-auto">@yield('header-extra')</span>
+                                        @endif
+                                    </div>
+                                    @hasSection('header-subtitle')
+                                        <p id="adminHeaderSubtitle" class="hidden text-sm text-gray-500 mt-1 max-w-2xl pr-2">@yield('header-subtitle')</p>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Right: Search + Theme + Notifications + User -->
@@ -396,6 +406,19 @@
                     </div>
                 </div>
             </header>
+            @hasSection('header-subtitle')
+            <script>
+                (function () {
+                    var btn = document.getElementById('adminHeaderSubtitleToggle');
+                    var sub = document.getElementById('adminHeaderSubtitle');
+                    if (!btn || !sub) return;
+                    btn.addEventListener('click', function () {
+                        sub.classList.toggle('hidden');
+                        btn.setAttribute('aria-expanded', sub.classList.contains('hidden') ? 'false' : 'true');
+                    });
+                })();
+            </script>
+            @endif
 
             <!-- Page Content -->
             <main class="flex-1 overflow-y-auto bg-gray-100 p-4">

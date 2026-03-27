@@ -11,24 +11,11 @@
             {{-- Header with Add Button --}}
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-semibold text-gray-900">Feed Inventory</h1>
-                <button onclick="openAddModal()" type="button"
-                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                <a href="{{ route('inventory.create') }}"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <i class="fas fa-plus mr-2"></i>Add New Feed
-                </button>
+                </a>
             </div>
-
-            {{-- Success/Error Messages --}}
-            @if(session('success'))
-                <div class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('error') }}</span>
-                </div>
-            @endif
 
             {{-- Inventory Summary Cards --}}
             <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -296,7 +283,7 @@
                         class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded">
                         Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-primary hover:bg-secondary text-white font-semibold rounded">
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded">
                         <i class="fas fa-save mr-2"></i>Add Feed
                     </button>
                 </div>
@@ -389,7 +376,7 @@
                         class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded">
                         Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-primary hover:bg-secondary text-white font-semibold rounded">
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded">
                         <i class="fas fa-save mr-2"></i>Update Feed
                     </button>
                 </div>
@@ -398,8 +385,7 @@
     </div>
 @endsection
 
-@section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+@push('scripts')
     <script>
         // Add Modal Functions
         function openAddModal() {
@@ -463,67 +449,61 @@
         });
 
         // Feed Usage Trends Chart
-        var feedUsageOptions = {
-            series: [{
-                name: 'Standard Feed',
-                data: [44, 55, 41, 67, 22, 43]
-            }, {
-                name: 'Premium Mix',
-                data: [13, 23, 20, 8, 13, 27]
-            }, {
-                name: 'Growth Formula',
-                data: [11, 17, 15, 15, 21, 14]
-            }, {
-                name: 'Maintenance Formula',
-                data: [21, 7, 25, 13, 22, 8]
-            }],
-            chart: {
-                type: 'bar',
-                height: 300,
-                stacked: true,
-                toolbar: {
-                    show: false
-                }
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    borderRadius: 5,
-                    columnWidth: '55%',
+        (function () {
+            if (typeof ApexCharts === 'undefined') return;
+            var el = document.querySelector("#feedUsageChart");
+            if (!el) return;
+
+            var trend = @json($feedUsageTrend ?? ['labels' => [], 'series' => []]);
+            var hasData = Array.isArray(trend.series) && trend.series.some(function (s) {
+                return Array.isArray(s.data) && s.data.some(function (v) { return parseFloat(v) > 0; });
+            });
+
+            if (!hasData) {
+                el.innerHTML = '<div class="h-full min-h-[260px] flex items-center justify-center text-sm text-gray-500">No feed usage records yet. Start feeding to generate monthly trends.</div>';
+                return;
+            }
+
+            var feedUsageOptions = {
+                series: trend.series,
+                chart: {
+                    type: 'bar',
+                    height: 300,
+                    stacked: true,
+                    toolbar: { show: false }
                 },
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                width: 2,
-                colors: ['transparent']
-            },
-            xaxis: {
-                categories: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
-            },
-            yaxis: {
-                title: {
-                    text: 'Feed Amount (kg)'
-                }
-            },
-            fill: {
-                opacity: 1
-            },
-            colors: ['#4f46e5', '#10b981', '#f59e0b', '#3b82f6'],
-            legend: {
-                position: 'top'
-            },
-            tooltip: {
-                y: {
-                    formatter: function (val) {
-                        return val + " kg"
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        borderRadius: 5,
+                        columnWidth: '55%',
+                    },
+                },
+                dataLabels: { enabled: false },
+                stroke: { width: 1, colors: ['transparent'] },
+                xaxis: { categories: trend.labels || [] },
+                yaxis: {
+                    title: { text: 'Feed Amount (kg)' },
+                    labels: {
+                        formatter: function (val) {
+                            return Number(val).toFixed(2);
+                        }
+                    }
+                },
+                fill: { opacity: 1 },
+                colors: ['#4f46e5', '#10b981', '#f59e0b', '#3b82f6', '#ef4444', '#14b8a6'],
+                legend: { position: 'top' },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return Number(val).toFixed(2) + ' kg';
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        var feedUsageChart = new ApexCharts(document.querySelector("#feedUsageChart"), feedUsageOptions);
-        feedUsageChart.render();
+            var feedUsageChart = new ApexCharts(el, feedUsageOptions);
+            feedUsageChart.render();
+        })();
     </script>
-@endsection
+@endpush

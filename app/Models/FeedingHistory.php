@@ -16,13 +16,19 @@ class FeedingHistory extends Model
         'fed_at',
         'fed_by',
         'notes',
-        'is_manual'
+        'is_manual',
+        'feed_inventory_id',
     ];
 
     protected $casts = [
         'fed_at' => 'datetime',
         'is_manual' => 'boolean',
     ];
+
+    public function feedInventory()
+    {
+        return $this->belongsTo(FeedInventory::class);
+    }
 
     // Order by most recent first
     protected static function booted()

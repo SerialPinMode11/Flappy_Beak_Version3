@@ -50,7 +50,7 @@
     <footer class="bg-gray-800 text-white py-12">
         <div class="container mx-auto px-4 text-center space-y-6">
             <!-- Footer Brand/Info -->
-            <p class="text-lg font-semibold">&copy; 2025 Exclusive. All rights reserved.</p>
+            <p class="text-lg font-semibold">&copy; 2026 Exclusive. All rights reserved.</p>
             
             <!-- Quote Section -->
             <div class="max-w-2xl mx-auto border-2 border-gray-700 rounded-lg p-6 shadow-md bg-gray-900">

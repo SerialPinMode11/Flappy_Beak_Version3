@@ -6,7 +6,7 @@
 @endpush
 
 @section('content')
-<div class="py-6">
+<div id="hardware-settings-page" class="py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl font-semibold text-gray-900">Feeding System Settings</h1>
         
@@ -608,4 +608,74 @@
         </div>
     </div>
 </div>
+
+<div id="hardware-settings-lock-modal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/50 p-4">
+    <div class="w-full max-w-lg rounded-xl bg-white shadow-2xl">
+        <div class="border-b px-6 py-4">
+            <h3 class="text-lg font-semibold text-gray-900">Hardware Setting Locked</h3>
+        </div>
+        <div class="px-6 py-5">
+            <p class="text-sm text-gray-700">
+                You must not customize the configuration in the hardware setting tab.
+            </p>
+            <p class="mt-2 text-sm font-medium text-gray-900">
+                Contact the developer of the project - Marnelson L. Lanot
+            </p>
+        </div>
+        <div class="border-t px-6 py-4 text-right">
+            <button type="button" data-allow-action="true" id="hardware-settings-lock-close" class="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-secondary">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var page = document.getElementById('hardware-settings-page');
+    var modal = document.getElementById('hardware-settings-lock-modal');
+    var closeBtn = document.getElementById('hardware-settings-lock-close');
+    if (!page || !modal || !closeBtn) return;
+
+    function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    page.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof Element)) return;
+        var button = target.closest('button');
+        if (!button) return;
+        if (button.getAttribute('data-allow-action') === 'true') return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        openModal();
+    }, true);
+
+    closeBtn.addEventListener('click', function () {
+        closeModal();
+    });
+
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeModal();
+        }
+    });
+});
+</script>
+@endpush

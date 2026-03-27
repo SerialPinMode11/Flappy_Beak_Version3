@@ -1,6 +1,16 @@
 @extends('layouts.static')
 @section('title', 'Admin Dashboard')
 
+@section('header-title', 'Dashboard Overview')
+
+@section('header-subtitle')
+Operational summary of sales, products, inventory, bookings, expenses, and customer inquiries.
+@endsection
+
+@section('header-extra')
+Updated {{ now()->format('M d, Y h:i A') }}
+@endsection
+
 @push('styles')
 <style>
     .kpi-card { transition: transform .2s ease, box-shadow .2s ease; }
@@ -11,14 +21,6 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
-    <div class="flex items-start justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
-            <p class="text-sm text-gray-500">Operational summary of sales, products, inventory, bookings, expenses, and customer inquiries.</p>
-        </div>
-        <span class="text-xs px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 font-semibold">Updated {{ now()->format('M d, Y h:i A') }}</span>
-    </div>
-
     <!-- Executive KPIs -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <div class="kpi-card bg-white rounded-xl border border-gray-200 p-5 shadow-sm">

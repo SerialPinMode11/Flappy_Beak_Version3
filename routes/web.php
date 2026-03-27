@@ -155,6 +155,7 @@ Route::middleware('admin.session')->group(function(){
     Route::get('/admin/hardware-esp32/history', [AdminController::class, 'toHardwareHistory'])->name('admin.hardwareHistory');
     Route::get('/admin/hardware-esp32/setting', [AdminController::class, 'toHardwareSetting'])->name('admin.hardwareSetting');
     Route::get('/admin/hardware-esp32/inventory', [AdminController::class, 'toHardwareInventory'])->name('admin.hardwareInventory');
+    Route::get('/inventory/create', [AdminController::class, 'toCreateFeed'])->name('inventory.create');
     Route::post('/inventory/store', [AdminController::class, 'storeFeed'])->name('inventory.store');
     Route::put('/inventory/{id}', [AdminController::class, 'updateFeed'])->name('inventory.update');
     Route::delete('/inventory/{id}', [AdminController::class, 'destroyFeed'])->name('inventory.destroy');

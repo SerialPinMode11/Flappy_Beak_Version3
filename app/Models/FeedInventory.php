@@ -48,4 +48,9 @@ class FeedInventory extends Model
     {
         return '₱' . number_format($this->cost_per_unit, 2);
     }
+
+    public function feedingHistories()
+    {
+        return $this->hasMany(FeedingHistory::class);
+    }
 }

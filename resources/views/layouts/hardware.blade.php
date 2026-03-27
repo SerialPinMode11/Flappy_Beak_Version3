@@ -161,13 +161,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.hardwareAnalytics') }}" 
-                           class="mobile-nav-item {{ request()->routeIs('admin.hardwareAnalytics') ? 'nav-link-active' : '' }}">
-                            <i class="fas fa-chart-line"></i>
-                            Analytics
-                        </a>
-                    </li>
-                    <li>
                         <a href="{{ route('admin.hardwareSetting') }}" 
                            class="mobile-nav-item {{ request()->routeIs('admin.hardwareSetting') ? 'nav-link-active' : '' }}">
                             <i class="fas fa-cog"></i>

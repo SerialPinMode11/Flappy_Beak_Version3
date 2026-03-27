@@ -311,7 +311,7 @@
         <!-- Sidebar - Desktop (Fixed) & Mobile (Sliding) -->
         <aside id="sidebar" class="bg-gray-800 text-white w-64 fixed h-screen overflow-y-auto z-50 mobile-sidebar md:translate-x-0 md:z-10">
             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-[#ff6b6b]">Admin Dashboard</h2>
+                <h2 class="text-xl font-bold text-[#ff6b6b]">Admin Pannel</h2>
                 <!-- Close button for mobile -->
                 <button id="closeSidebar" class="md:hidden text-gray-300 hover:text-white" onclick="toggleMobileSidebar()">
                     <i class="fas fa-times text-xl"></i>
