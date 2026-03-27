@@ -9,8 +9,10 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -24,10 +26,18 @@ class AdminController extends Controller
         $password = $request->input('password');
 
         if ($email === $this->validEmail && $password === $this->validPassword) {
-            // Successful login
+            $admin = Admin::where('email', $this->validEmail)->first();
+
+            // If 2FA is enabled, require TOTP challenge before login completes.
+            if ($admin && !empty($admin->two_factor_secret) && !empty($admin->two_factor_enabled_at)) {
+                $request->session()->put('admin_2fa_pending_email', $this->validEmail);
+                return redirect()->route('admin.2fa.challenge');
+            }
+
             $request->session()->put('admin_logged_in', true);
             $request->session()->put('admin_email', $this->validEmail);
             $request->session()->put('admin_name', 'JM Casabar');
+            $request->session()->put('admin_photo_url', $this->resolveAdminPhotoUrl($admin));
             return redirect()->route('admin.dashboard');
         } else {
             // Failed login
@@ -55,11 +65,26 @@ class AdminController extends Controller
     {
         $email = $request->session()->get('admin_email', $this->validEmail);
         $admin = Admin::where('email', $email)->first();
+        $tab = $request->query('tab', 'profile');
+        $tab = in_array($tab, ['profile', 'security'], true) ? $tab : 'profile';
+        $isTwoFactorEnabled = (bool) ($admin && !empty($admin->two_factor_secret) && !empty($admin->two_factor_enabled_at));
+        $hasPendingTwoFactor = (bool) ($admin && !empty($admin->two_factor_secret) && empty($admin->two_factor_enabled_at));
+
+        $qrCodeUrl = null;
+        if ($admin && !empty($admin->two_factor_secret) && ($isTwoFactorEnabled || $hasPendingTwoFactor)) {
+            $otpauth = $this->buildOtpAuthUrl($admin->email, $admin->two_factor_secret);
+            $qrCodeUrl = 'https://quickchart.io/qr?size=240&text=' . urlencode($otpauth);
+        }
 
         return view('admin.profile.edit', [
             'admin' => $admin,
             'adminEmail' => $email,
             'adminName' => $request->session()->get('admin_name', 'Admin'),
+            'adminPhotoUrl' => $this->resolveAdminPhotoUrl($admin),
+            'activeTab' => $tab,
+            'isTwoFactorEnabled' => $isTwoFactorEnabled,
+            'hasPendingTwoFactor' => $hasPendingTwoFactor,
+            'qrCodeUrl' => $qrCodeUrl,
         ]);
     }
 
@@ -72,6 +97,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'password' => 'nullable|string|min:6',
+            'profile_photo' => 'nullable|image|max:2048',
         ]);
 
         // If admin record doesn't exist yet, create it (keeps your seeded/hardcoded flow working)
@@ -93,12 +119,200 @@ class AdminController extends Controller
         if (!empty($validated['password'])) {
             $admin->password = Hash::make($validated['password']);
         }
+        if ($request->hasFile('profile_photo')) {
+            if (!empty($admin->profile_photo_path) && Storage::disk('public')->exists($admin->profile_photo_path)) {
+                Storage::disk('public')->delete($admin->profile_photo_path);
+            }
+            $admin->profile_photo_path = $request->file('profile_photo')->store('admin-photos', 'public');
+        }
         $admin->save();
 
         $request->session()->put('admin_email', $admin->email);
         $request->session()->put('admin_name', $admin->name);
+        $request->session()->put('admin_photo_url', $this->resolveAdminPhotoUrl($admin));
 
         return back()->with('success', 'Profile updated successfully.');
+    }
+
+    public function enableTwoFactor(Request $request): RedirectResponse
+    {
+        $email = $request->session()->get('admin_email', $this->validEmail);
+        $admin = Admin::where('email', $email)->first();
+        if (!$admin) {
+            return back()->with('error', 'Admin profile not found.');
+        }
+
+        $admin->two_factor_secret = $this->generateBase32Secret(32);
+        $admin->two_factor_enabled_at = null;
+        $admin->save();
+
+        return redirect()->route('admin.profile.edit', ['tab' => 'security'])
+            ->with('success', 'Two-factor setup started. Scan the QR code, then enter the 6-digit code to confirm.');
+    }
+
+    public function verifyTwoFactor(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'code' => 'required|string|min:6|max:8',
+        ]);
+
+        $email = $request->session()->get('admin_email', $this->validEmail);
+        $admin = Admin::where('email', $email)->first();
+        if (!$admin || empty($admin->two_factor_secret)) {
+            return back()->with('error', 'Two-factor setup is not initialized.');
+        }
+
+        $code = preg_replace('/\s+/', '', (string) $request->input('code'));
+        if (!$this->verifyTotpCode($admin->two_factor_secret, $code)) {
+            return redirect()->route('admin.profile.edit', ['tab' => 'security'])
+                ->with('error', 'Invalid authenticator code. Please try again.');
+        }
+
+        $admin->two_factor_enabled_at = now();
+        $admin->save();
+
+        return redirect()->route('admin.profile.edit', ['tab' => 'security'])
+            ->with('success', 'Two-factor authentication enabled successfully.');
+    }
+
+    public function disableTwoFactor(Request $request): RedirectResponse
+    {
+        $email = $request->session()->get('admin_email', $this->validEmail);
+        $admin = Admin::where('email', $email)->first();
+        if (!$admin) {
+            return back()->with('error', 'Admin profile not found.');
+        }
+
+        $admin->two_factor_secret = null;
+        $admin->two_factor_enabled_at = null;
+        $admin->save();
+
+        return redirect()->route('admin.profile.edit', ['tab' => 'security'])
+            ->with('success', 'Two-factor authentication disabled.');
+    }
+
+    public function twoFactorChallenge(Request $request)
+    {
+        if ($request->session()->get('admin_logged_in')) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if (!$request->session()->has('admin_2fa_pending_email')) {
+            return redirect()->route('admin.login')->with('error', 'Your two-factor session expired. Please log in again.');
+        }
+
+        return view('auth.admin-2fa');
+    }
+
+    public function verifyTwoFactorChallenge(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'code' => 'required|string|min:6|max:8',
+        ]);
+
+        $email = $request->session()->get('admin_2fa_pending_email');
+        if (!$email) {
+            return redirect()->route('admin.login')->with('error', 'Your two-factor session expired. Please log in again.');
+        }
+
+        $admin = Admin::where('email', $email)->first();
+        if (!$admin || empty($admin->two_factor_secret) || empty($admin->two_factor_enabled_at)) {
+            return redirect()->route('admin.login')->with('error', 'Two-factor is not enabled for this account.');
+        }
+
+        $code = preg_replace('/\s+/', '', (string) $request->input('code'));
+        if (!$this->verifyTotpCode($admin->two_factor_secret, $code)) {
+            return back()->with('error', 'Invalid authenticator code. Please try again.');
+        }
+
+        $request->session()->forget('admin_2fa_pending_email');
+        $request->session()->put('admin_logged_in', true);
+        $request->session()->put('admin_email', $admin->email);
+        $request->session()->put('admin_name', $admin->name ?: 'Admin');
+        $request->session()->put('admin_photo_url', $this->resolveAdminPhotoUrl($admin));
+
+        return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully.');
+    }
+
+    private function resolveAdminPhotoUrl(?Admin $admin): string
+    {
+        if ($admin && !empty($admin->profile_photo_path) && Storage::disk('public')->exists($admin->profile_photo_path)) {
+            return asset('storage/' . $admin->profile_photo_path);
+        }
+
+        return 'https://randomuser.me/api/portraits/men/1.jpg';
+    }
+
+    private function buildOtpAuthUrl(string $email, string $secret): string
+    {
+        $issuer = 'Store Duck Admin';
+        $label = rawurlencode($issuer . ':' . $email);
+        return "otpauth://totp/{$label}?secret={$secret}&issuer=" . rawurlencode($issuer) . '&digits=6&period=30';
+    }
+
+    private function generateBase32Secret(int $length = 32): string
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        $secret = '';
+        for ($i = 0; $i < $length; $i++) {
+            $secret .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        }
+        return $secret;
+    }
+
+    private function verifyTotpCode(string $base32Secret, string $code, int $window = 1): bool
+    {
+        if (!preg_match('/^\d{6}$/', $code)) {
+            return false;
+        }
+
+        $timeSlice = (int) floor(time() / 30);
+        for ($offset = -$window; $offset <= $window; $offset++) {
+            if (hash_equals($this->totpCode($base32Secret, $timeSlice + $offset), $code)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function totpCode(string $base32Secret, int $timeSlice): string
+    {
+        $secretKey = $this->base32Decode($base32Secret);
+        $time = pack('N*', 0) . pack('N*', $timeSlice);
+        $hm = hash_hmac('sha1', $time, $secretKey, true);
+        $offset = ord(substr($hm, -1)) & 0x0F;
+        $value = (
+            ((ord($hm[$offset]) & 0x7F) << 24) |
+            ((ord($hm[$offset + 1]) & 0xFF) << 16) |
+            ((ord($hm[$offset + 2]) & 0xFF) << 8) |
+            (ord($hm[$offset + 3]) & 0xFF)
+        ) % 1000000;
+
+        return str_pad((string) $value, 6, '0', STR_PAD_LEFT);
+    }
+
+    private function base32Decode(string $secret): string
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        $secret = strtoupper(preg_replace('/[^A-Z2-7]/', '', $secret) ?? '');
+        $bits = '';
+
+        foreach (str_split($secret) as $char) {
+            $pos = strpos($alphabet, $char);
+            if ($pos === false) {
+                continue;
+            }
+            $bits .= str_pad(decbin($pos), 5, '0', STR_PAD_LEFT);
+        }
+
+        $decoded = '';
+        foreach (str_split($bits, 8) as $byte) {
+            if (strlen($byte) === 8) {
+                $decoded .= chr(bindec($byte));
+            }
+        }
+
+        return $decoded;
     }
 
     public function tologin()
@@ -575,42 +789,65 @@ class AdminController extends Controller
             $monthKeys[] = $m->format('Y-m');
             $labels[] = $m->format('M Y');
         }
-        $start = Carbon::parse($monthKeys[0].'-01')->startOfMonth();
+        $start = Carbon::parse($monthKeys[0] . '-01')->startOfMonth();
 
         $rows = FeedingHistory::withoutGlobalScope('recent')
+            ->with(['feedInventory:id,feed_name'])
             ->where('fed_at', '>=', $start)
             ->orderBy('fed_at', 'asc')
-            ->get(['fed_at', 'notes']);
+            ->get(['fed_at', 'notes', 'feed_inventory_id']);
 
-        $typeKeys = ['Standard Feed', 'Premium Mix', 'Growth Formula', 'Other'];
-        $byMonth = [];
-        foreach ($monthKeys as $k) {
-            $byMonth[$k] = array_fill_keys($typeKeys, 0.0);
-        }
-
+        $byFeedByMonth = [];
         foreach ($rows as $row) {
-            $mk = $row->fed_at->format('Y-m');
-            if (! isset($byMonth[$mk])) {
+            $monthKey = $row->fed_at->format('Y-m');
+            if (! in_array($monthKey, $monthKeys, true)) {
                 continue;
             }
+
             $kg = $this->parseKgFromNotes($row->notes);
-            $bucket = $this->parseFeedTypeBucket($row->notes);
-            $byMonth[$mk][$bucket] += $kg;
+            if ($kg <= 0) {
+                continue;
+            }
+
+            $feedLabel = $this->parseFeedLabelForTrend($row->notes, $row->feedInventory->feed_name ?? null);
+            if (! isset($byFeedByMonth[$feedLabel])) {
+                $byFeedByMonth[$feedLabel] = array_fill_keys($monthKeys, 0.0);
+            }
+            $byFeedByMonth[$feedLabel][$monthKey] += $kg;
+        }
+
+        if (empty($byFeedByMonth)) {
+            return ['labels' => $labels, 'series' => []];
+        }
+
+        uasort($byFeedByMonth, function (array $a, array $b): int {
+            return array_sum($b) <=> array_sum($a);
+        });
+
+        // Keep legend readable; top feeds first (highest consumed).
+        $maxSeries = 6;
+        $top = array_slice($byFeedByMonth, 0, $maxSeries, true);
+        $rest = array_slice($byFeedByMonth, $maxSeries, null, true);
+        if (! empty($rest)) {
+            $other = array_fill_keys($monthKeys, 0.0);
+            foreach ($rest as $monthMap) {
+                foreach ($monthKeys as $k) {
+                    $other[$k] += (float) ($monthMap[$k] ?? 0);
+                }
+            }
+            $top['Other Feeds'] = $other;
         }
 
         $series = [];
-        foreach ($typeKeys as $typeName) {
+        foreach ($top as $feedName => $monthMap) {
             $data = [];
             foreach ($monthKeys as $k) {
-                $data[] = round($byMonth[$k][$typeName], 2);
+                $data[] = round((float) ($monthMap[$k] ?? 0), 2);
             }
-            $series[] = ['name' => $typeName, 'data' => $data];
+            $series[] = ['name' => $feedName, 'data' => $data];
         }
 
-        return [
-            'labels' => $labels,
-            'series' => $series,
-        ];
+        return ['labels' => $labels, 'series' => $series];
     }
 
     /**

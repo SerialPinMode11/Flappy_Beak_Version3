@@ -27,6 +27,9 @@ class Admin extends Authenticatable
         'email',
         'password',
         'role',
+        'profile_photo_path',
+        'two_factor_secret',
+        'two_factor_enabled_at',
     ];
 
     /**
@@ -49,6 +52,7 @@ class Admin extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'two_factor_enabled_at' => 'datetime',
         ];
     }
 }

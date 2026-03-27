@@ -149,7 +149,7 @@ class AdminBillingController extends Controller
             'address' => 'required|string',
             'city' => 'required|string|max:255',
             'zip' => 'required|string|max:20',
-            'status' => 'required|string|in:pending,processing,completed,cancelled',
+            'status' => 'required|string|in:pending,preparing,processing,out_for_delivery,delivered,completed,cancelled',
         ]);
 
         $billing = BillingInformation::findOrFail($id);

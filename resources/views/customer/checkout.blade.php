@@ -150,6 +150,7 @@
         const checkoutReturnUrl = @json(route('checkout.return'));
         const checkoutSaveBillingUrl = @json(route('checkout.save-billing'));
         const createPaymentIntentUrl = @json(route('checkout.create-payment-intent'));
+        const trackItemUrl = @json(route('checkout.track-item'));
 
         let stripe = null;
         let elements = null;
@@ -295,7 +296,7 @@
         });
 
         trackItemBtn.addEventListener('click', function() {
-            console.log('Tracking item...');
+            window.location.href = trackItemUrl;
         });
 
         @if($errors->any())

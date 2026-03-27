@@ -41,8 +41,24 @@ class BookingController extends Controller
             'egg_source' => 'required|string|max:255',
             'start_date' => 'required|date|after_or_equal:today',
             'special_instructions' => 'nullable|string|max:1000',
+            'payment_method' => 'required|string|in:cod,online',
+            'online_payment_method' => 'required_if:payment_method,online|nullable|string|in:stripe,gcash',
+            'payment_reference' => 'nullable|string|max:255',
             'terms' => 'required|accepted',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            if ($request->payment_method === 'online' && empty($request->online_payment_method)) {
+                $validator->errors()->add('online_payment_method', 'Please select an online payment method.');
+            }
+            if (
+                $request->payment_method === 'online'
+                && in_array($request->online_payment_method, ['stripe', 'gcash'], true)
+                && empty($request->payment_reference)
+            ) {
+                $validator->errors()->add('payment_reference', 'Reference Number / Transaction ID is required for online payment.');
+            }
+        });
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -63,6 +79,10 @@ class BookingController extends Controller
         $booking->special_instructions = $request->special_instructions;
         $booking->status = 'pending';
         $booking->booking_reference = 'INC-' . time() . rand(1000, 9999);
+        $booking->payment_method = $request->payment_method === 'online'
+            ? 'online_' . $request->online_payment_method
+            : 'cod';
+        $booking->payment_reference = $request->payment_reference;
         $booking->save();
 
         // Calculate price based on service type and quantity

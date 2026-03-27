@@ -140,8 +140,41 @@ class IncubationAdminController extends Controller
     public function show($id)
     {
         $booking = Booking::findOrFail($id);
-        
-        return view('admin.incubation.view', compact('booking'));
+
+        $statuses = [
+            'pending' => 'Pending Confirmation',
+            'confirmed' => 'Booking Confirmed',
+            'in_progress' => 'Incubation In Progress',
+            'candling' => 'Candling Phase',
+            'lockdown' => 'Lockdown Phase',
+            'hatching' => 'Hatching In Progress',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+        ];
+
+        $statusColors = [
+            'pending' => 'warning',
+            'confirmed' => 'info',
+            'in_progress' => 'primary',
+            'candling' => 'info',
+            'lockdown' => 'secondary',
+            'hatching' => 'success',
+            'completed' => 'success',
+            'cancelled' => 'danger',
+        ];
+
+        $progressColors = [
+            'pending' => 'warning',
+            'confirmed' => 'info',
+            'in_progress' => 'primary',
+            'candling' => 'info',
+            'lockdown' => 'secondary',
+            'hatching' => 'success',
+            'completed' => 'success',
+            'cancelled' => 'danger',
+        ];
+
+        return view('admin.incubation.view', compact('booking', 'statuses', 'statusColors', 'progressColors'));
     }
     
     /**

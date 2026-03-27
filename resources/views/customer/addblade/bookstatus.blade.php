@@ -162,9 +162,9 @@
                         <h3 class="font-semibold mb-3">Need Help?</h3>
                         <p class="text-sm text-gray-600">If you have any questions about your booking, please contact us:</p>
                         <div class="flex items-center gap-4 mt-2">
-                            <a href="tel:+639776193200" class="text-primary hover:text-primary-dark transition-colors flex items-center gap-2">
+                            <a href="tel:{{ config('contact.owner_phone_tel') }}" class="text-primary hover:text-primary-dark transition-colors flex items-center gap-2">
                                 <i class="fas fa-phone"></i>
-                                <span>+63 977 6193 200</span>
+                                <span>{{ config('contact.owner_phone_display') }}</span>
                             </a>
                             <a href="mailto:jmcasabar@gmail.com" class="text-primary hover:text-primary-dark transition-colors flex items-center gap-2">
                                 <i class="fas fa-envelope"></i>

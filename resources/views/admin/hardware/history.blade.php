@@ -322,6 +322,11 @@
             // still draw chart (flat zeros) — helps see timeline
         }
 
+        var palette = ['#4f46e5', '#10b981', '#f59e0b', '#06b6d4', '#ef4444', '#a855f7', '#84cc16', '#f97316', '#64748b'];
+        var dynamicColors = (series.length ? series : [{ name: 'Total (kg)', data: labels.map(function () { return 0; }) }]).map(function (_, i) {
+            return palette[i % palette.length];
+        });
+
         var monthlyFeedingOptions = {
             series: series.length ? series : [{ name: 'Total (kg)', data: labels.map(function () { return 0; }) }],
             chart: {
@@ -350,7 +355,7 @@
                 min: 0,
                 labels: { formatter: function (v) { return (Math.round(v * 100) / 100).toFixed(2); } }
             },
-            colors: ['#4f46e5', '#10b981', '#f59e0b', '#94a3b8'],
+            colors: dynamicColors,
             legend: { position: 'top', horizontalAlign: 'left' },
             tooltip: {
                 shared: true,

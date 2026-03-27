@@ -330,6 +330,22 @@
                             <i class="fas fa-user-circle mr-3"></i>Personal
                         </a>
                     </li>
+                    <li>
+                        <div class="space-y-1">
+                            <a href="{{ route('admin.public.edit') }}"
+                               class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.public.*') ? 'nav-link-active' : '' }}"
+                               onclick="closeMobileSidebar()">
+                                <i class="fas fa-globe mr-3"></i>Public
+                            </a>
+                            @if(request()->routeIs('admin.public.*'))
+                                <a href="{{ route('admin.public.others.edit') }}"
+                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.public.others.*') ? 'nav-link-active' : '' }}"
+                                   onclick="closeMobileSidebar()">
+                                    <i class="fas fa-layer-group mr-2"></i>Others
+                                </a>
+                            @endif
+                        </div>
+                    </li>
 
                     <!-- Logout Button -->
                     <li>
@@ -399,7 +415,7 @@
                             
                             <!-- User Profile -->
                             <a href="{{ route('admin.profile.edit') }}" class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                                <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User Avatar" class="w-8 h-8 rounded-full">
+                                <img src="{{ session('admin_photo_url', 'https://randomuser.me/api/portraits/men/1.jpg') }}" alt="User Avatar" class="w-8 h-8 rounded-full object-cover">
                                 <span class="font-medium hidden sm:block">{{ session('admin_name', 'Admin') }}</span>
                             </a>
                         </div>

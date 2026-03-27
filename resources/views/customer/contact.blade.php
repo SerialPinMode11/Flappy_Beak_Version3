@@ -3,6 +3,9 @@
 @section('title', 'Contact Us')
 
 @section('content')
+    @php
+        $c = $publicOthers['contact'] ?? [];
+    @endphp
     <div class="flex-grow container mx-auto px-4 py-16 bg-gray-50">
         <h2 class="text-5xl font-bold text-center mb-16 text-neutral">Contact Us</h2>
         
@@ -14,8 +17,8 @@
                         <i class="fas fa-map-marker-alt text-2xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-semibold text-xl text-neutral mb-2">Our Location</h4>
-                        <p class="text-gray-600">Barangay Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</p>
+                        <h4 class="font-semibold text-xl text-neutral mb-2">{{ $c['location_label'] ?? 'Our Location' }}</h4>
+                        <p class="text-gray-600">{{ $c['location_text'] ?? '' }}</p>
                     </div>
                 </div>
                 
@@ -24,8 +27,8 @@
                         <i class="fas fa-phone text-2xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-semibold text-xl text-neutral mb-2">Phone Number</h4>
-                        <p class="text-gray-600">+63 9294 833 413</p>
+                        <h4 class="font-semibold text-xl text-neutral mb-2">{{ $c['phone_label'] ?? 'Phone Number' }}</h4>
+                        <p class="text-gray-600">{{ !empty(trim($c['phone_text'] ?? '')) ? $c['phone_text'] : config('contact.owner_phone_display') }}</p>
                     </div>
                 </div>
                 
@@ -36,8 +39,8 @@
                             <i class="fas fa-envelope text-2xl"></i>
                         </div>
                         <div>
-                            <h4 class="font-semibold text-xl text-neutral mb-2">Email Address</h4>
-                            <p class="text-gray-600">jmcasabar@gmail.com</p>
+                            <h4 class="font-semibold text-xl text-neutral mb-2">{{ $c['email_label'] ?? 'Email Address' }}</h4>
+                            <p class="text-gray-600">{{ $c['email_text'] ?? 'jmcasabar@gmail.com' }}</p>
                         </div>
                     </div>
                     
@@ -47,10 +50,10 @@
                             <i class="fab fa-facebook-f text-2xl"></i>
                         </div>
                         <div>
-                            <h4 class="font-semibold text-xl text-neutral mb-2">Facebook Account</h4>
+                            <h4 class="font-semibold text-xl text-neutral mb-2">{{ $c['facebook_label'] ?? 'Facebook Account' }}</h4>
                             <p class="text-gray-600">
-                                <a href="https://www.facebook.com/share/18gxfPvdFU/" class="hover:text-primary transition-colors">
-                                    facebook.com/share/18gxfPvdFU
+                                <a href="{{ $c['facebook_url'] ?? 'https://www.facebook.com/share/18gxfPvdFU/' }}" class="hover:text-primary transition-colors" target="_blank" rel="noopener">
+                                    {{ $c['facebook_text'] ?? 'facebook.com/share/18gxfPvdFU' }}
                                 </a>
                             </p>
                         </div>

@@ -18,6 +18,7 @@ use App\Http\Controllers\HogProductController;
 use App\Http\Controllers\CartNavController;
 use App\Http\Controllers\IncubationAdminController;
 use App\Http\Controllers\FeedingHistoryController;
+use App\Http\Controllers\AdminPublicController;
 use App\Models\DuckProducts;
 use App\Models\WineProduct;
 
@@ -63,6 +64,8 @@ Route::get("/login", [AuthController::class, "login"])->name('login');
 Route::post("/login", [AuthController::class, "loginPost"])->name("login.post");
 
 Route::get('/admin/login', [AdminController::class, 'tologin'])->name('admin.login');
+Route::get('/admin/2fa/challenge', [AdminController::class, 'twoFactorChallenge'])->name('admin.2fa.challenge');
+Route::post('/admin/2fa/challenge', [AdminController::class, 'verifyTwoFactorChallenge'])->name('admin.2fa.challenge.verify');
 
 Route::get('/admin/register', [AdminController::class, 'toregister'])->name('admin.register');
 Route::post('/admin/register', [AnadminController::class, 'registerPost'])->name('admin.register');
@@ -99,9 +102,11 @@ Route::middleware("auth")->group(function(){
     Route::post('/home/productformat/{product}/reviews', [ProductController::class,'storeReview'])->name('customer.product.review.store');
     //My_Cart
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+    Route::patch('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.update-quantity');
     Route::delete('/remove-from-cart', [CartController::class, 'removeFromCart'])->name('cart.remove');
     //Checkout
     Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+    Route::get('/checkout/track-item/{billing?}', [CheckoutController::class, 'trackItem'])->name('checkout.track-item');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::post('/checkout/create-payment-intent', [CheckoutController::class, 'createPaymentIntent'])->name('checkout.create-payment-intent');
     Route::post('/checkout/save-billing', [CheckoutController::class, 'saveBillingToSession'])->name('checkout.save-billing');
@@ -130,6 +135,13 @@ Route::middleware('admin.session')->group(function(){
     Route::get('/admin/notifications/latest', [AdminBillingController::class, 'latestCompletedNotification'])->name('admin.notifications.latest');
     Route::get('/admin/profile', [AdminController::class, 'editProfile'])->name('admin.profile.edit');
     Route::put('/admin/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
+    Route::post('/admin/profile/2fa/enable', [AdminController::class, 'enableTwoFactor'])->name('admin.profile.2fa.enable');
+    Route::post('/admin/profile/2fa/verify', [AdminController::class, 'verifyTwoFactor'])->name('admin.profile.2fa.verify');
+    Route::post('/admin/profile/2fa/disable', [AdminController::class, 'disableTwoFactor'])->name('admin.profile.2fa.disable');
+    Route::get('/admin/public', [AdminPublicController::class, 'edit'])->name('admin.public.edit');
+    Route::put('/admin/public', [AdminPublicController::class, 'update'])->name('admin.public.update');
+    Route::get('/admin/public/others', [AdminPublicController::class, 'editOthers'])->name('admin.public.others.edit');
+    Route::put('/admin/public/others', [AdminPublicController::class, 'updateOthers'])->name('admin.public.others.update');
 
     //contact table
     Route::get("contactforlist", [ControllerName::class, "index"])->name("contactforlist");
@@ -139,6 +151,7 @@ Route::middleware('admin.session')->group(function(){
     Route::get('/admin/personal/create', [AnadminController::class, 'create'])->name('admin.personal.create');
     Route::post('/admin/personal/store', [AnadminController::class, 'store'])->name('admin.personal.store');
     Route::delete('/admin/personal/{id}', [AnadminController::class, 'destroy'])->name('admin.personal.destroy');
+    Route::get('/admin/personal/export/stock', [AnadminController::class, 'exportStockReport'])->name('admin.personal.export.stock');
     //report-generation
     Route::get('/admin/expense/export', [ExpenseController::class, 'export'])->name('admin.expense.export');
     Route::prefix('expense')->name('expense.')->group(function () {
@@ -193,6 +206,7 @@ Route::middleware('admin.session')->group(function(){
 
     //incubation table
     Route::get('/admin/incubation-list', [IncubationAdminController::class, 'index'])->name('admin.incubation.index');
+    Route::get('/admin/bookings', [IncubationAdminController::class, 'index'])->name('admin.bookings.index');
     Route::get('/admin/incubation/show/{id}', [IncubationAdminController::class, 'show'])->name('admin.bookings.show'); 
     Route::get('/admin/expenses/{id}', [IncubationAdminController::class, 'edit'])->name('admin.bookings.edit');
     Route::post('/admin/expenses/store', [IncubationAdminController::class, 'store'])->name('admin.bookings.store');

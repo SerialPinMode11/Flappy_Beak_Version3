@@ -256,10 +256,13 @@
                         <!-- Added status-column class to hide in print -->
                         <td class="px-4 py-4 whitespace-nowrap status-column">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                @if($info->status == 'completed') bg-green-100 text-green-800 
-                                @elseif($info->status == 'pending') bg-yellow-100 text-yellow-800 
+                                @if(in_array($info->status, ['completed', 'delivered'])) bg-green-100 text-green-800
+                                @elseif($info->status == 'pending') bg-yellow-100 text-yellow-800
+                                @elseif($info->status == 'preparing') bg-amber-100 text-amber-800
+                                @elseif($info->status == 'processing') bg-blue-100 text-blue-800
+                                @elseif($info->status == 'out_for_delivery') bg-purple-100 text-purple-800
                                 @else bg-red-100 text-red-800 @endif">
-                                {{ ucfirst($info->status) }}
+                                {{ ucwords(str_replace('_', ' ', $info->status)) }}
                             </span>
                         </td>
                         <!-- Improved date formatting for better print visibility -->

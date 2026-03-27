@@ -2,6 +2,11 @@
 
 @section('title', 'Booking Details')
 
+{{-- This page uses Bootstrap 5 components; layouts.static is Tailwind-only without Bootstrap. --}}
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+@endpush
+
 @section('content')
 <div class="container-fluid px-4 py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -21,9 +26,7 @@
     @if(session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session()->get('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
@@ -33,7 +36,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">Booking Information</h6>
-                    <span class="badge badge-{{ $statusColors[$booking->status] ?? 'secondary' }} p-2">
+                    <span class="badge bg-{{ $statusColors[$booking->status] ?? 'secondary' }} p-2">
                         {{ $booking->status_name }}
                     </span>
                 </div>
@@ -94,10 +97,6 @@
                         </div>
                     </div>
 
-                    <div class  }}</p>
-                        </div>
-                    </div>
-
                     <div class="row mt-4">
                         <div class="col-md-6">
                             <h5 class="font-weight-bold">Payment Information</h5>
@@ -114,9 +113,9 @@
                                     <th>Deposit Paid:</th>
                                     <td>
                                         @if($booking->deposit_paid)
-                                            <span class="badge badge-success">Paid on {{ $booking->deposit_paid_at->format('M d, Y') }}</span>
+                                            <span class="badge bg-success">Paid on {{ $booking->deposit_paid_at->format('M d, Y') }}</span>
                                         @else
-                                            <span class="badge badge-danger">Not Paid</span>
+                                            <span class="badge bg-danger">Not Paid</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -128,9 +127,9 @@
                                     <th>Balance Paid:</th>
                                     <td>
                                         @if($booking->balance_paid)
-                                            <span class="badge badge-success">Paid on {{ $booking->balance_paid_at->format('M d, Y') }}</span>
+                                            <span class="badge bg-success">Paid on {{ $booking->balance_paid_at->format('M d, Y') }}</span>
                                         @else
-                                            <span class="badge badge-danger">Not Paid</span>
+                                            <span class="badge bg-danger">Not Paid</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -253,21 +252,18 @@
                     <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
                 </div>
                 <div class="card-body">
-                    <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#statusUpdateModal">
+                    <button type="button" class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#statusUpdateModal">
                         <i class="fas fa-sync-alt"></i> Update Status
                     </button>
                     
-                    <button type="button" class="btn btn-info btn-block mb-2" data-toggle="modal" data-target="#candlingModal">
+                    <button type="button" class="btn btn-info w-100 mb-2" data-bs-toggle="modal" data-bs-target="#candlingModal">
                         <i class="fas fa-eye"></i> Record Candling Results
                     </button>
                     
-                    <button type="button" class="btn btn-success btn-block mb-2" data-toggle="modal" data-target="#hatchingModal">
+                    <button type="button" class="btn btn-success w-100 mb-2" data-bs-toggle="modal" data-bs-target="#hatchingModal">
                         <i class="fas fa-baby"></i> Record Hatching Results
                     </button>
                     
-                    <button type="button" class="btn btn-warning btn-block mb-2" data-toggle="modal" data-target="#paymentModal">
-                        <i class="fas fa-money-bill-wave"></i> Record Payment
-                    </button>
                 </div>
             </div>
         </div>
@@ -282,9 +278,7 @@
                     @method('PATCH')
                     <div class="modal-header">
                         <h5 class="modal-title" id="statusUpdateModalLabel">Update Booking Status</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -303,7 +297,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Update Status</button>
                     </div>
                 </form>
@@ -319,9 +313,7 @@
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="candlingModalLabel">Record Candling Results</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -341,7 +333,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Save Results</button>
                     </div>
                 </form>
@@ -357,9 +349,7 @@
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="hatchingModalLabel">Record Hatching Results</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -372,7 +362,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Save Results</button>
                     </div>
                 </form>
@@ -381,3 +371,7 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@endpush

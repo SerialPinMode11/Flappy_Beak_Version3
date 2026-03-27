@@ -30,13 +30,19 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">₱{{ $details['price'] }}</div>
+                                    <div class="text-sm text-gray-900">₱{{ number_format($details['price'], 2) }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <input type="number" value="{{ $details['quantity'] }}" min="1" class="w-16 px-2 py-1 border rounded-md">
+                                    <form action="{{ route('cart.update-quantity') }}" method="POST" class="flex items-center gap-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="id" value="{{ $id }}">
+                                        <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1" class="w-16 px-2 py-1 border rounded-md" onchange="this.form.submit()">
+                                        <button type="submit" class="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-700">Update</button>
+                                    </form>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">₱{{ $details['price'] * $details['quantity'] }}</div>
+                                    <div class="text-sm text-gray-900">₱{{ number_format($details['price'] * $details['quantity'], 2) }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <form action="{{ route('cart.remove') }}" method="POST">
@@ -58,7 +64,7 @@
                 <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
             </a>
             <div class="text-right">
-                <p class="text-lg font-semibold">Subtotal: <span class="text-primary">₱{{ $total }}</span></p>
+                <p class="text-lg font-semibold">Subtotal: <span class="text-primary">₱{{ number_format($total, 2) }}</span></p>
                 <p class="text-sm text-gray-500 mb-4">Taxes and shipping calculated at checkout</p>
                 <a href="{{ route('checkout') }}" class="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-dark transition-colors">
                     Proceed to Checkout

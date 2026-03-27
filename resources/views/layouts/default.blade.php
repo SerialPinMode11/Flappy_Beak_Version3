@@ -6,6 +6,7 @@
     <title>@yield('title') - Flappy-Beak</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @stack('styles')
     <script>
         tailwind.config = {
             theme: {
@@ -70,6 +71,13 @@
 </head>
 
 <body class="bg-gray-50 flex flex-col min-h-screen">
+    @php
+        $pc = $publicContent ?? [];
+        $toAsset = function ($path, $fallback) {
+            $value = $path ?: $fallback;
+            return str_starts_with($value, 'public-page/') ? asset('storage/' . $value) : asset($value);
+        };
+    @endphp
 
     <!-- FIX: Hidden checkbox to control mobile menu state -->
     <input type="checkbox" id="mobile-menu-toggle" class="hidden">
@@ -80,9 +88,9 @@
             <div class="flex items-center justify-between">
                 <!-- Logo and Brand -->
                 <a href="{{ auth()->check() ? route('home') : url('/') }}" class="flex items-center space-x-3">
-                      <img src="{{ asset('images/Flappy_IoT.png') }}" alt="Flappy IoT Logo" class="w-20 h-20">
+                      <img src="{{ $toAsset($pc['store_logo'] ?? null, 'images/fav-icon.png') }}" alt="Store Logo" class="w-20 h-20 object-cover">
                     <h1 class="text-2xl font-bold text-neutral">
-                        <span class="text-primary">JM Casabar</span> Pekin Store
+                        {{ $pc['store_name'] ?? 'JM Casabar Pekin Store' }}
                     </h1>
                 </a>
 
@@ -98,7 +106,7 @@
                     @auth
                         <button type="button" id="logout-trigger" class="text-neutral hover:text-primary transition-colors font-medium bg-transparent border-0 cursor-pointer p-0">Log Out</button>
                     @else
-                        <a href="{{ route('login') }}" class="text-neutral hover:text-primary transition-colors font-medium">Log in</a>
+                        <a href="{{ route('login') }}" class)="text-neutral hover:text-primary transition-colors font-medium">Log in</a>
                     @endauth
                 </nav>
 
@@ -120,6 +128,9 @@
                         <a href="{{ route('checkout') }}" class="relative text-neutral hover:text-primary transition-colors" title="Checkout">
                             <i class="fas fa-credit-card text-xl"></i>
                         </a>
+                        <a href="{{ route('checkout.track-item') }}" class="relative text-neutral hover:text-primary transition-colors" title="Track Item">
+                            <i class="fas fa-route text-xl"></i>
+                        </a>
                         <a href="{{ route('cart.options.list') }}" class="relative text-neutral hover:text-primary transition-colors" title="Cart">
                             <i class="fas fa-shopping-cart text-xl"></i>
                             <span class="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
@@ -127,6 +138,9 @@
                     @else
                         <a href="{{ route('login') }}" class="relative text-neutral hover:text-primary transition-colors" title="Log in">
                             <i class="fas fa-credit-card text-xl"></i>
+                        </a>
+                        <a href="{{ route('login') }}" class="relative text-neutral hover:text-primary transition-colors" title="Log in to track items">
+                            <i class="fas fa-route text-xl"></i>
                         </a>
                         <a href="{{ route('login') }}" class="relative text-neutral hover:text-primary transition-colors" title="Log in to view cart">
                             <i class="fas fa-shopping-cart text-xl"></i>
@@ -230,15 +244,15 @@
                     <ul class="space-y-2">
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-map-marker-alt mt-1 text-primary"></i>
-                            <span class="text-gray-300">Brgy. Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</span>
+                            <span class="text-gray-300">{{ $pc['contact_address'] ?? 'Brgy. Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines' }}</span>
                         </li>
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-phone mt-1 text-primary"></i>
-                            <span class="text-gray-300">+63 9294 833 413</span>
+                            <span class="text-gray-300">{{ config('contact.owner_phone_display') }}</span>
                         </li>
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-envelope mt-1 text-primary"></i>
-                            <span class="text-gray-300">jmcasabar@gmail.com</span>
+                            <span class="text-gray-300">{{ $pc['contact_email'] ?? 'jmcasabar@gmail.com' }}</span>
                         </li>
                     </ul>
                 </div>

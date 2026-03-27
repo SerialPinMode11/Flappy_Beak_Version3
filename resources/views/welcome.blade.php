@@ -371,12 +371,19 @@
     </style>
 </head>
 <body class="min-h-screen bg-slate-50 font-sans">
+    @php
+        $pc = $publicContent ?? [];
+        $toAsset = function ($path, $fallback) {
+            $value = $path ?: $fallback;
+            return str_starts_with($value, 'public-page/') ? asset('storage/' . $value) : asset($value);
+        };
+    @endphp
     <!-- Header -->
     <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                 <img src="{{ asset('images/fav-icon.png') }}" alt="Flappy IoT Logo" class="w-8 h-8">
-                <h1 class="text-2xl font-bold tracking-wide">JM Casabar Mini Farm</h1>
+                 <img src="{{ $toAsset($pc['store_logo'] ?? null, 'images/fav-icon.png') }}" alt="Store Logo" class="w-8 h-8 object-cover">
+                <h1 class="text-2xl font-bold tracking-wide">{{ $pc['store_name'] ?? 'JM Casabar Mini Farm' }}</h1>
             </div>
             
             <div class="hidden md:flex items-center space-x-6">
@@ -410,12 +417,10 @@
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-8 md:mb-0">
                     <h1 class="text-4xl md:text-5xl font-bold text-teal-900 leading-tight mb-4">
-                        Farm-Fresh <span class="text-emerald-600">Pekin Duck</span> Products
+                        {{ $pc['hero_title'] ?? 'Farm-Fresh Pekin Duck Products' }}
                     </h1>
                     <p class="text-lg text-slate-700 mb-6">
-                        Experience the exceptional quality of our farm-raised Pekin ducks. 
-                        From premium meat cuts to fresh eggs, we offer the finest duck products 
-                        straight from our family farm to your table.
+                        {{ $pc['hero_subtitle'] ?? '' }}
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a href="#products" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md text-center">
@@ -427,7 +432,7 @@
                     </div>
                 </div>
                 <div class="md:w-1/2 flex justify-center">
-                    <img src="{{asset('images/pekin-young-alive.jpg')}}" alt="Pekin Ducks" class="rounded-lg shadow-xl max-w-full h-auto object-cover" style="max-height: 400px;">
+                    <img src="{{ $toAsset($pc['hero_image'] ?? null, 'images/pekin-young-alive.jpg') }}" alt="Pekin Ducks" class="rounded-lg shadow-xl max-w-full h-auto object-cover" style="max-height: 400px;">
                 </div>
             </div>
         </div>
@@ -529,38 +534,32 @@
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row items-center gap-12">
                 <div class="md:w-1/2">
-                    <img src="{{asset('images/Male_Pekin_Duck.jpg')}}" alt="Our Duck Farm" class="rounded-xl shadow-xl w-full h-auto">
+                    <img src="{{ $toAsset($pc['about_image'] ?? null, 'images/Male_Pekin_Duck.jpg') }}" alt="Our Duck Farm" class="rounded-xl shadow-xl w-full h-auto">
                 </div>
                 <div class="md:w-1/2">
-                    <h2 class="text-3xl font-bold text-teal-900 mb-6">Our Mission & Story</h2>
+                    <h2 class="text-3xl font-bold text-teal-900 mb-6">{{ $pc['about_title'] ?? 'Our Mission & Story' }}</h2>
                     <div class="space-y-4 text-slate-700">
-                        <p>
-                            At JM Casabar Mini Farm, we're dedicated to raising the healthiest, happiest Pekin ducks using sustainable and ethical farming practices. Our family-owned farm has been in operation for over 15 years, focusing on quality over quantity.
-                        </p>
-                        <p>
-                            We believe that happy ducks produce the best meat and eggs. That's why our ducks enjoy spacious, clean living conditions with access to fresh water and natural feed. We never use antibiotics or growth hormones, ensuring you get the purest duck products possible.
-                        </p>
-                        <p>
-                            From our farm to your table, we take pride in offering premium duck products that are not only delicious but also responsibly raised. Whether you're a chef looking for the finest ingredients or a home cook wanting to try something special, our duck products will exceed your expectations.
-                        </p>
+                        <p>{{ $pc['about_paragraph_1'] ?? '' }}</p>
+                        <p>{{ $pc['about_paragraph_2'] ?? '' }}</p>
+                        <p>{{ $pc['about_paragraph_3'] ?? '' }}</p>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4 mt-8">
                         <div class="bg-white p-4 rounded-lg shadow-md">
-                            <div class="text-emerald-600 text-3xl font-bold mb-2">100%</div>
-                            <div class="text-slate-700 font-medium">Natural Feed</div>
+                            <div class="text-emerald-600 text-3xl font-bold mb-2">{{ $pc['stat_1_number'] ?? '100%' }}</div>
+                            <div class="text-slate-700 font-medium">{{ $pc['stat_1_label'] ?? 'Natural Feed' }}</div>
                         </div>
                         <div class="bg-white p-4 rounded-lg shadow-md">
-                            <div class="text-emerald-600 text-3xl font-bold mb-2">15+</div>
-                            <div class="text-slate-700 font-medium">Years Experience</div>
+                            <div class="text-emerald-600 text-3xl font-bold mb-2">{{ $pc['stat_2_number'] ?? '15+' }}</div>
+                            <div class="text-slate-700 font-medium">{{ $pc['stat_2_label'] ?? 'Years Experience' }}</div>
                         </div>
                         <div class="bg-white p-4 rounded-lg shadow-md">
-                            <div class="text-emerald-600 text-3xl font-bold mb-2">0</div>
-                            <div class="text-slate-700 font-medium">Antibiotics Used</div>
+                            <div class="text-emerald-600 text-3xl font-bold mb-2">{{ $pc['stat_3_number'] ?? '0' }}</div>
+                            <div class="text-slate-700 font-medium">{{ $pc['stat_3_label'] ?? 'Antibiotics Used' }}</div>
                         </div>
                         <div class="bg-white p-4 rounded-lg shadow-md">
-                            <div class="text-emerald-600 text-3xl font-bold mb-2">1000+</div>
-                            <div class="text-slate-700 font-medium">Happy Customers</div>
+                            <div class="text-emerald-600 text-3xl font-bold mb-2">{{ $pc['stat_4_number'] ?? '1000+' }}</div>
+                            <div class="text-slate-700 font-medium">{{ $pc['stat_4_label'] ?? 'Happy Customers' }}</div>
                         </div>
                     </div>
                 </div>
@@ -572,9 +571,9 @@
     <section class="py-16 bg-white">
         <div class="container mx-auto px-4">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-teal-900 mb-4">Why Choose Our Duck Products?</h2>
+                <h2 class="text-3xl font-bold text-teal-900 mb-4">{{ $pc['features_title'] ?? 'Why Choose Our Duck Products?' }}</h2>
                 <p class="text-slate-600 max-w-2xl mx-auto">
-                    We take pride in offering the highest quality Pekin duck products, raised with care and processed with attention to detail.
+                    {{ $pc['features_subtitle'] ?? '' }}
                 </p>
             </div>
             
@@ -583,32 +582,32 @@
                     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-leaf text-emerald-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-teal-900 mb-2">100% Natural</h3>
-                    <p class="text-slate-600">Our ducks are raised naturally without antibiotics or growth hormones.</p>
+                    <h3 class="text-xl font-bold text-teal-900 mb-2">{{ $pc['feature_1_title'] ?? '100% Natural' }}</h3>
+                    <p class="text-slate-600">{{ $pc['feature_1_text'] ?? '' }}</p>
                 </div>
                 
                 <div class="bg-emerald-50 p-6 rounded-xl text-center">
                     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-award text-emerald-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-teal-900 mb-2">Premium Quality</h3>
-                    <p class="text-slate-600">Each product meets our strict quality standards before reaching your table.</p>
+                    <h3 class="text-xl font-bold text-teal-900 mb-2">{{ $pc['feature_2_title'] ?? 'Premium Quality' }}</h3>
+                    <p class="text-slate-600">{{ $pc['feature_2_text'] ?? '' }}</p>
                 </div>
                 
                 <div class="bg-emerald-50 p-6 rounded-xl text-center">
                     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-truck text-emerald-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-teal-900 mb-2">Fast Delivery</h3>
-                    <p class="text-slate-600">We ensure quick and safe delivery to maintain freshness and quality.</p>
+                    <h3 class="text-xl font-bold text-teal-900 mb-2">{{ $pc['feature_3_title'] ?? 'Fast Delivery' }}</h3>
+                    <p class="text-slate-600">{{ $pc['feature_3_text'] ?? '' }}</p>
                 </div>
                 
                 <div class="bg-emerald-50 p-6 rounded-xl text-center">
                     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-leaf text-emerald-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-teal-900 mb-2">Ethically Raised</h3>
-                    <p class="text-slate-600">Our ducks enjoy spacious, clean living conditions with proper care.</p>
+                    <h3 class="text-xl font-bold text-teal-900 mb-2">{{ $pc['feature_4_title'] ?? 'Ethically Raised' }}</h3>
+                    <p class="text-slate-600">{{ $pc['feature_4_text'] ?? '' }}</p>
                 </div>
             </div>
         </div>
@@ -622,10 +621,10 @@
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
                        <img src="{{ asset('images/Flappy_IoT.png') }}" alt="Flappy IoT Logo" class="w-8 h-8">
-                        <h3 class="text-xl font-bold">Flappy-Beak</h3>
+                        <h3 class="text-xl font-bold">{{ $pc['footer_brand_name'] ?? 'Flappy-Beak' }}</h3>
                     </div>
                     <p class="text-teal-200 mb-4">
-                        Premium farm-raised Pekin duck products delivered straight to your door.
+                        {{ $pc['footer_brand_text'] ?? '' }}
                     </p>
                     <div class="flex space-x-4">
                         <a href="https://web.facebook.com/IMORTALxiiJERRY" class="text-teal-200 hover:text-yellow-300" target="_blank" rel="noopener" aria-label="Facebook">
@@ -634,7 +633,7 @@
                         <a href="https://www.instagram.com/jerry_casabar?igsh=Y2x6enlmdHB3cmhq" class="text-teal-200 hover:text-yellow-300" target="_blank" rel="noopener" aria-label="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="tel:+639294833413" class="text-teal-200 hover:text-yellow-300" aria-label="Call">
+                        <a href="tel:{{ config('contact.owner_phone_tel') }}" class="text-teal-200 hover:text-yellow-300" aria-label="Call">
                             <i class="fas fa-phone"></i>
                         </a>
                         <a href="mailto:jmcasabar@gmail.com" class="text-teal-200 hover:text-yellow-300" aria-label="Email">
@@ -660,15 +659,15 @@
                     <ul class="space-y-2">
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-map-marker-alt mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">Brgy. Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines</span>
+                            <span class="text-teal-200">{{ $pc['contact_address'] ?? '' }}</span>
                         </li>
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-phone mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">+63 9294 833 413</span>
+                            <span class="text-teal-200">{{ config('contact.owner_phone_display') }}</span>
                         </li>
                         <li class="flex items-start space-x-2">
                             <i class="fas fa-envelope mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">jmcasabar@gmail.com</span>
+                            <span class="text-teal-200">{{ $pc['contact_email'] ?? 'jmcasabar@gmail.com' }}</span>
                         </li>
                     </ul>
                 </div>
@@ -676,9 +675,9 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Business Hours</h3>
                     <ul class="space-y-2">
-                        <li class="text-teal-200">Monday - Friday: 8am - 5pm</li>
-                        <li class="text-teal-200">Saturday: 9am - 4pm</li>
-                        <li class="text-teal-200">Sunday: Closed</li>
+                        <li class="text-teal-200">{{ $pc['business_hours_1'] ?? '' }}</li>
+                        <li class="text-teal-200">{{ $pc['business_hours_2'] ?? '' }}</li>
+                        <li class="text-teal-200">{{ $pc['business_hours_3'] ?? '' }}</li>
                     </ul>
                 </div>
             </div>

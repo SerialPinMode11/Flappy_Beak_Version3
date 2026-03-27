@@ -18,6 +18,11 @@
             <a href="{{ route('home') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-colors font-medium shadow-sm">
                 <i class="fas fa-home"></i> Return Home
             </a>
+            @if(!empty($lastBillingId))
+                <a href="{{ route('checkout.track-item', $lastBillingId) }}" class="inline-flex items-center justify-center gap-2 bg-secondary text-neutral px-6 py-3 rounded-xl hover:bg-teal-400 transition-colors font-medium">
+                    <i class="fas fa-route"></i> Track Order
+                </a>
+            @endif
             <a href="{{ route('contact') }}" class="inline-flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 px-6 py-3 rounded-xl hover:border-primary hover:text-primary transition-colors font-medium">
                 <i class="fas fa-envelope"></i> Contact Us
             </a>

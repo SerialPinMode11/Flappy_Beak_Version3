@@ -75,11 +75,13 @@
                 <div>
                     <span class="block text-sm text-gray-500">Status</span>
                     <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        @if($billing->status == 'completed') bg-green-100 text-green-800 
-                        @elseif($billing->status == 'pending') bg-yellow-100 text-yellow-800 
+                        @if(in_array($billing->status, ['completed', 'delivered'])) bg-green-100 text-green-800
+                        @elseif($billing->status == 'pending') bg-yellow-100 text-yellow-800
+                        @elseif($billing->status == 'preparing') bg-amber-100 text-amber-800
                         @elseif($billing->status == 'processing') bg-blue-100 text-blue-800
+                        @elseif($billing->status == 'out_for_delivery') bg-purple-100 text-purple-800
                         @else bg-red-100 text-red-800 @endif">
-                        {{ ucfirst($billing->status) }}
+                        {{ ucwords(str_replace('_', ' ', $billing->status)) }}
                     </span>
                 </div>
                 

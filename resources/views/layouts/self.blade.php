@@ -483,144 +483,31 @@
                         </div>
                     </div>
 
-                    <!-- Stats Cards -->
-                    <div class="stats-grid mb-8">
-                        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-medium content-text-secondary">Total Sessions</p>
-                                    <p class="text-2xl font-bold content-text">1,247</p>
-                                </div>
-                                <div class="p-3 bg-blue-100 rounded-full">
-                                    <i class="fas fa-chart-line text-blue-600"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-medium content-text-secondary">Last Login</p>
-                                    <p class="text-2xl font-bold content-text">2 hrs ago</p>
-                                </div>
-                                <div class="p-3 bg-green-100 rounded-full">
-                                    <i class="fas fa-clock text-green-600"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-medium content-text-secondary">Account Status</p>
-                                    <p class="text-2xl font-bold text-green-600">Active</p>
-                                </div>
-                                <div class="p-3 bg-purple-100 rounded-full">
-                                    <i class="fas fa-user-check text-purple-600"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Report Generation Cards -->
-                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
                         <div class="report-card">
                             <h3>Expenses Report</h3>
                             <p>Generate a comprehensive expenses report in MS Excel format for detailed analysis and record-keeping.</p>
-                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
+                            <a href="{{ route('admin.expense.export') }}" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
                                 <i class="fas fa-download mr-2"></i>Generate Expenses Report
-                            </button>
-                        </div>
-
-                        <div class="report-card">
-                            <h3>Sales Report</h3>
-                            <p>Generate a comprehensive sales report in MS Excel format for detailed analysis and record-keeping.</p>
-                            <button id="generateSalesReport" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
-                                <i class="fas fa-download mr-2"></i>Generate Sales Report
-                            </button>
+                            </a>
                         </div>
 
                         <div class="report-card">
                             <h3>Income Report</h3>
                             <p>Generate a comprehensive income report in MS Excel format for detailed analysis and record-keeping.</p>
-                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
+                            <a href="{{ route('admin.billing.export') }}" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
                                 <i class="fas fa-download mr-2"></i>Generate Income Report
-                            </button>
+                            </a>
                         </div>
 
                         <div class="report-card">
                             <h3>Stock Report</h3>
                             <p>Generate a comprehensive stock report in MS Excel format for detailed analysis and record-keeping.</p>
-                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
+                            <a href="{{ route('admin.personal.export.stock') }}" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
                                 <i class="fas fa-download mr-2"></i>Generate Stock Report
-                            </button>
+                            </a>
                         </div>
-                    </div>
-
-                    <!-- Admin Profile Form -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-                        <h2 class="text-xl font-semibold content-text mb-6">Admin Profile</h2>
-                        <form id="adminForm" class="form-grid">
-                            <div>
-                                <label for="fullName" class="block text-sm font-medium content-text mb-2">Full Name</label>
-                                <input type="text" id="fullName" name="fullName" value="JM Casabar" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-
-                            <div>
-                                <label for="email" class="block text-sm font-medium content-text mb-2">Email Address</label>
-                                <input type="email" id="email" name="email" value="admin@example.com" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-
-                            <div>
-                                <label for="phone" class="block text-sm font-medium content-text mb-2">Phone Number</label>
-                                <input type="tel" id="phone" name="phone" value="+1 (555) 123-4567" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-
-                            <div>
-                                <label for="role" class="block text-sm font-medium content-text mb-2">Role</label>
-                                <select id="role" name="role" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="super-admin" selected>Super Admin</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="moderator">Moderator</option>
-                                </select>
-                            </div>
-
-                            <div class="md:col-span-2">
-                                <label for="bio" class="block text-sm font-medium content-text mb-2">Bio</label>
-                                <textarea id="bio" name="bio" rows="3" 
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                          placeholder="Tell us about yourself...">Experienced administrator with expertise in system management and user support.</textarea>
-                            </div>
-
-                            <div>
-                                <label for="password" class="block text-sm font-medium content-text mb-2">New Password</label>
-                                <input type="password" id="password" name="password" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="Leave blank to keep current password">
-                            </div>
-
-                            <div>
-                                <label for="confirm-password" class="block text-sm font-medium content-text mb-2">Confirm Password</label>
-                                <input type="password" id="confirm-password" name="confirm-password" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="Confirm new password">
-                            </div>
-
-                            <div class="md:col-span-2 flex flex-col sm:flex-row gap-4 pt-4">
-                                <button type="submit" 
-                                        class="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
-                                    <i class="fas fa-save mr-2"></i>Update Profile
-                                </button>
-                                <button type="button" id="generateReport"
-                                        class="flex-1 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium">
-                                    <i class="fas fa-download mr-2"></i>Generate Profile Report
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -723,61 +610,6 @@
             }
         });
 
-        // Admin form submission
-        const adminForm = document.getElementById('adminForm');
-        if (adminForm) {
-            adminForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const formData = new FormData(adminForm);
-                const adminData = Object.fromEntries(formData.entries());
-                console.log('Admin data submitted:', adminData);
-                
-                // Validate password match
-                if (adminData.password !== adminData['confirm-password']) {
-                    alert('Passwords do not match. Please try again.');
-                    return;
-                }
-                
-                // Here you would typically send the data to your backend
-                // For now, we'll just show an alert
-                alert('Admin details updated successfully!');
-            });
-        }
-
-        // Generate sales report
-        const generateReportBtn = document.getElementById('generateReport');
-        const generateSalesReportBtn = document.getElementById('generateSalesReport');
-        
-        function generateSalesReport() {
-            // Sample sales data
-            const salesData = [
-                { date: '2023-01-01', product: 'Widget A', quantity: 10, revenue: 1000 },
-                { date: '2023-01-02', product: 'Widget B', quantity: 5, revenue: 750 },
-                { date: '2023-01-03', product: 'Widget C', quantity: 8, revenue: 1200 },
-                { date: '2023-01-04', product: 'Widget A', quantity: 15, revenue: 1500 },
-                { date: '2023-01-05', product: 'Widget B', quantity: 7, revenue: 1050 },
-            ];
-
-            // Create workbook and worksheet
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.json_to_sheet(salesData);
-
-            // Add worksheet to workbook
-            XLSX.utils.book_append_sheet(wb, ws, 'Sales Report');
-
-            // Generate Excel file
-            XLSX.writeFile(wb, 'sales_report.xlsx');
-
-            alert('Sales report generated successfully!');
-        }
-        
-        if (generateReportBtn) {
-            generateReportBtn.addEventListener('click', generateSalesReport);
-        }
-        
-        if (generateSalesReportBtn) {
-            generateSalesReportBtn.addEventListener('click', generateSalesReport);
-        }
     </script>
     @include('partials.admin-logout-modal')
     @include('partials.confirm-modal')

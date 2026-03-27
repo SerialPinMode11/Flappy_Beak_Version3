@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DuckProducts;
+use App\Models\WineProduct;
 
 class CartController extends Controller
 {
@@ -60,6 +61,45 @@ class CartController extends Controller
     public function viewCart()
     {
         return view('customer.mycart', ['cart' => session('cart')]);
+    }
+
+    public function updateQuantity(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|string',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $cart = session()->get('cart', []);
+        $key = (string) $request->input('id');
+        $quantity = (int) $request->input('quantity');
+
+        if (!isset($cart[$key])) {
+            return redirect()->back()->with('error', 'Cart item not found.');
+        }
+
+        $item = $cart[$key];
+        $type = (string) ($item['type'] ?? '');
+        $productId = (int) ($item['id'] ?? 0);
+
+        if ($type === 'wine') {
+            $product = WineProduct::find($productId);
+        } else {
+            $product = DuckProducts::find($productId);
+        }
+
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+
+        if ($quantity > (int) $product->product_stock) {
+            return redirect()->back()->with('error', 'Not enough stock available for ' . ($item['name'] ?? 'this product') . '.');
+        }
+
+        $cart[$key]['quantity'] = $quantity;
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('success', 'Cart quantity updated.');
     }
 
     public function removeFromCart(Request $request)

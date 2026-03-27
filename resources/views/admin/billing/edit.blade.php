@@ -69,7 +69,10 @@
                         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Order Status</label>
                         <select id="status" name="status" class="w-full p-2 border rounded-md focus:ring-primary focus:border-primary">
                             <option value="pending" {{ old('status', $billing->status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="preparing" {{ old('status', $billing->status) == 'preparing' ? 'selected' : '' }}>Preparing</option>
                             <option value="processing" {{ old('status', $billing->status) == 'processing' ? 'selected' : '' }}>Processing</option>
+                            <option value="out_for_delivery" {{ old('status', $billing->status) == 'out_for_delivery' ? 'selected' : '' }}>Out for delivery</option>
+                            <option value="delivered" {{ old('status', $billing->status) == 'delivered' ? 'selected' : '' }}>Delivered</option>
                             <option value="completed" {{ old('status', $billing->status) == 'completed' ? 'selected' : '' }}>Completed</option>
                             <option value="cancelled" {{ old('status', $billing->status) == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                         </select>

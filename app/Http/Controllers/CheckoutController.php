@@ -18,6 +18,27 @@ class CheckoutController extends Controller
         return view('customer.checkout', compact('cart', 'stripeKey'));
     }
 
+    public function trackItem(?BillingInformation $billing = null)
+    {
+        $publicContent = \App\Models\PublicPageSetting::getContent();
+        $ownerAddress = $publicContent['contact_address'] ?? 'Brgy. Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines';
+        $storeName = $publicContent['store_name'] ?? 'JM Casabar Mini Farm';
+
+        $orders = BillingInformation::query()
+            ->where('email', auth()->user()->email)
+            ->latest()
+            ->get();
+
+        $selectedOrder = null;
+        if ($billing && $billing->email === auth()->user()->email) {
+            $selectedOrder = $billing;
+        } elseif ($orders->isNotEmpty()) {
+            $selectedOrder = $orders->first();
+        }
+
+        return view('customer.track-item', compact('ownerAddress', 'storeName', 'orders', 'selectedOrder'));
+    }
+
     /**
      * Create a Stripe PaymentIntent for Card payment (amount in PHP centavos).
      */
@@ -148,6 +169,7 @@ class CheckoutController extends Controller
         }
 
         session()->forget('cart');
+        session(['last_billing_id' => $billingInfo->id]);
 
         return redirect()->route('checkout.success')->with('success', 'Your order has been placed successfully!');
     }
@@ -222,7 +244,7 @@ class CheckoutController extends Controller
         if (abs($amountPaid - $total) > 0.01) {
             return redirect()->route('checkout')->withErrors(['payment' => 'Payment amount does not match order.']);
         }
-        BillingInformation::create([
+        $billingInfo = BillingInformation::create([
             'name' => $billing['name'],
             'email' => $billing['email'],
             'address' => $billing['address'],
@@ -254,11 +276,13 @@ class CheckoutController extends Controller
         }
         session()->forget('cart');
         session()->forget('checkout_billing');
+        session(['last_billing_id' => $billingInfo->id]);
         return redirect()->route('checkout.success')->with('success', 'Your order has been placed successfully!');
     }
 
     public function success()
     {
-        return view('customer.success.success');
+        $lastBillingId = session('last_billing_id');
+        return view('customer.success.success', compact('lastBillingId'));
     }
 }
