@@ -1,6 +1,6 @@
 @extends('layouts.public-site')
 
-@section('title', 'FAQ — ' . ($publicContent['store_name'] ?? 'JM Casabar Mini Farm'))
+@section('title', 'Frequently Asked Questions — JM Casabar Mini Farm')
 
 @push('styles')
 <style>

@@ -15,28 +15,67 @@ class CheckoutController extends Controller
     {
         $cart = session()->get('cart', []);
         $stripeKey = config('services.stripe.key');
-        return view('customer.checkout', compact('cart', 'stripeKey'));
+        $user = auth()->user();
+
+        return view('customer.checkout', compact('cart', 'stripeKey', 'user'));
     }
 
-    public function trackItem(?BillingInformation $billing = null)
+    /**
+     * All purchases for the logged-in customer (same email as checkout, case-insensitive).
+     */
+    public function trackItem()
     {
         $publicContent = \App\Models\PublicPageSetting::getContent();
         $ownerAddress = $publicContent['contact_address'] ?? 'Brgy. Maroyroy, Macatoc, Oriental Mindoro, Luzon Philippines';
         $storeName = $publicContent['store_name'] ?? 'JM Casabar Mini Farm';
 
-        $orders = BillingInformation::query()
-            ->where('email', auth()->user()->email)
+        $orders = $this->billingQueryForCurrentUser()
             ->latest()
             ->get();
 
-        $selectedOrder = null;
-        if ($billing && $billing->email === auth()->user()->email) {
-            $selectedOrder = $billing;
-        } elseif ($orders->isNotEmpty()) {
-            $selectedOrder = $orders->first();
-        }
+        return view('customer.track-item', compact('ownerAddress', 'storeName', 'orders'));
+    }
 
-        return view('customer.track-item', compact('ownerAddress', 'storeName', 'orders', 'selectedOrder'));
+    /**
+     * JSON for polling: all order statuses for the current user (no ID in URL).
+     */
+    public function trackOrdersStatusJson()
+    {
+        $labels = [
+            'pending' => 'Pending',
+            'preparing' => 'Preparing',
+            'processing' => 'Processing',
+            'out_for_delivery' => 'Out for delivery',
+            'delivered' => 'Delivered',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+        ];
+
+        $orders = $this->billingQueryForCurrentUser()
+            ->get(['id', 'status', 'updated_at']);
+
+        return response()->json([
+            'orders' => $orders->map(function ($o) use ($labels) {
+                $s = $o->status;
+                return [
+                    'id' => $o->id,
+                    'status' => $s,
+                    'status_label' => $labels[$s] ?? ucwords(str_replace('_', ' ', (string) $s)),
+                    'updated_at' => $o->updated_at?->toIso8601String(),
+                ];
+            })->values(),
+        ]);
+    }
+
+    /**
+     * Match billing rows to the account email (case-insensitive), so orders still show if casing differs.
+     */
+    protected function billingQueryForCurrentUser()
+    {
+        $email = strtolower(trim((string) auth()->user()->email));
+
+        return BillingInformation::query()
+            ->whereRaw('LOWER(TRIM(email)) = ?', [$email]);
     }
 
     /**
@@ -83,16 +122,18 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'address' => 'required|string',
-            'city' => 'required|string|max:255',
-            'zip' => 'required|string|max:20',
             'payment_method' => 'required|string|in:cash,online',
             'online_payment_method' => 'nullable|required_if:payment_method,online|string|in:gcash,card',
             'reference_number' => 'nullable|required_if:online_payment_method,gcash|string|max:255',
             'payment_intent_id' => 'nullable|required_if:online_payment_method,card|string|max:255',
         ]);
+
+        $user = auth()->user();
+        if (!$user->hasCompleteShippingProfile()) {
+            return redirect()
+                ->route('profile.edit')
+                ->withErrors(['profile' => 'Please add your delivery address in your profile before completing checkout.']);
+        }
 
         // Calculate total from cart and capture line items
         $total = 0;
@@ -137,11 +178,11 @@ class CheckoutController extends Controller
         $referenceNumber = $request->online_payment_method === 'card' ? $request->payment_intent_id : $request->reference_number;
 
         $billingInfo = BillingInformation::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'address' => $request->address,
-            'city' => $request->city,
-            'zip' => $request->zip,
+            'name' => $user->name,
+            'email' => $user->email,
+            'address' => $user->address,
+            'city' => $user->city,
+            'zip' => $user->zip,
             'payment_method' => $request->payment_method,
             'online_payment_method' => $request->online_payment_method,
             'reference_number' => $referenceNumber,
@@ -179,22 +220,23 @@ class CheckoutController extends Controller
      */
     public function saveBillingToSession(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'address' => 'required|string',
-            'city' => 'required|string|max:255',
-            'zip' => 'required|string|max:20',
-        ]);
+        $user = auth()->user();
+        if (!$user->hasCompleteShippingProfile()) {
+            return response()->json([
+                'error' => 'Please complete your delivery address in your profile before paying with card.',
+            ], 422);
+        }
+
         session([
             'checkout_billing' => [
-                'name' => $request->name,
-                'email' => $request->email,
-                'address' => $request->address,
-                'city' => $request->city,
-                'zip' => $request->zip,
+                'name' => $user->name,
+                'email' => $user->email,
+                'address' => $user->address,
+                'city' => $user->city,
+                'zip' => $user->zip,
             ],
         ]);
+
         return response()->json(['ok' => true]);
     }
 

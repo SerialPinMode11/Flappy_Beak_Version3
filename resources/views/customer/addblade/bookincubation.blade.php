@@ -1,22 +1,24 @@
-@extends('layouts.default')
+@extends('layouts.public-site')
 
-@section('title', 'Book Incubation Services')
+@section('title', 'Book incubation — ' . ($publicContent['store_name'] ?? 'JM Casabar Mini Farm'))
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
     <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold mb-6">Book Incubation Services</h1>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold-deep/90 mb-2">Booking</p>
+        <h1 class="font-serif text-2xl sm:text-3xl font-semibold text-forest mb-6">Book incubation services</h1>
         
         @if(session()->has('success'))
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
-                {{ session()->get('success') }}
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50/90 text-emerald-900 text-sm px-4 py-3 mb-6 flex gap-3 items-start">
+                <i class="fas fa-check-circle mt-0.5 text-emerald-600"></i>
+                <span>{{ session()->get('success') }}</span>
             </div>
         @endif
         
         @if($errors->any())
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+            <div class="rounded-xl border border-red-200 bg-red-50/90 text-red-900 text-sm px-4 py-3 mb-6">
                 <p class="font-semibold">Please correct the following errors:</p>
-                <ul class="list-disc list-inside">
+                <ul class="list-disc list-inside mt-2">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -24,8 +26,8 @@
             </div>
         @endif
         
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div class="p-6 bg-gradient-to-r from-neutral to-accent text-white">
+        <div class="bg-white rounded-2xl border border-stone-200/80 shadow-md overflow-hidden">
+            <div class="p-6 bg-gradient-to-r from-forest to-forest-dark text-white">
                 <h2 class="text-xl font-semibold">Incubation Service Booking</h2>
                 <p class="text-sm opacity-90 mt-1">Fill out the form below to book our professional incubation services</p>
             </div>
@@ -33,48 +35,15 @@
             <form action="{{ route('booking.store') }}" method="POST" class="p-6 space-y-6">
                 @csrf
                 
-                <!-- Personal Information -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-neutral border-b pb-2">Personal Information</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                            <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
-                        </div>
-                        
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
-                        </div>
-                        
-                        <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address *</label>
-                            <input type="text" id="address" name="address" value="{{ old('address') }}" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
-                        </div>
-                    </div>
-                </div>
-                
                 <!-- Service Details -->
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-neutral border-b pb-2">Service Details</h3>
+                    <h3 class="text-lg font-semibold text-forest border-b pb-2">Service Details</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="service_type" class="block text-sm font-medium text-gray-700 mb-1">Incubation Service Type *</label>
+                            <label for="service_type" class="block text-sm font-medium text-stone-700 mb-1">Incubation Service Type *</label>
                             <select id="service_type" name="service_type" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-forest transition-colors">
                                 <option value="">Select a service</option>
                                 @foreach($incubationServices as $value => $label)
                                     <option value="{{ $value }}" {{ old('service_type') == $value ? 'selected' : '' }}>
@@ -85,18 +54,18 @@
                         </div>
                         
                         <div>
-                            <label for="egg_quantity" class="block text-sm font-medium text-gray-700 mb-1">Number of Eggs *</label>
+                            <label for="egg_quantity" class="block text-sm font-medium text-stone-700 mb-1">Number of Eggs *</label>
                             <input type="number" id="egg_quantity" name="egg_quantity" value="{{ old('egg_quantity') }}" min="1" max="300" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
-                            <p class="text-xs text-gray-500 mt-1">Price is calculated per batch of 30 eggs</p>
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-forest transition-colors">
+                            <p class="text-xs text-stone-500 mt-1">Price is calculated per batch of 30 eggs</p>
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="egg_source" class="block text-sm font-medium text-gray-700 mb-1">Egg Source *</label>
+                            <label for="egg_source" class="block text-sm font-medium text-stone-700 mb-1">Egg Source *</label>
                             <select id="egg_source" name="egg_source" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-forest transition-colors">
                                 <option value="">Select egg source</option>
                                 <option value="own_farm" {{ old('egg_source') == 'own_farm' ? 'selected' : '' }}>Own Farm</option>
                                 <option value="jm_casabar" {{ old('egg_source') == 'jm_casabar' ? 'selected' : '' }}>JM Casabar Pekin Store</option>
@@ -105,23 +74,26 @@
                         </div>
                         
                         <div>
-                            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Preferred Start Date *</label>
-                            <input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                            <label for="start_date" class="block text-sm font-medium text-stone-700 mb-1">Preferred start date *</label>
+                            <input type="text" id="start_date" name="start_date" value="{{ old('start_date') }}" required readonly
+                                autocomplete="off"
+                                placeholder="Select a date"
+                                class="w-full px-4 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-forest transition-colors bg-white cursor-pointer">
+                            <p class="text-xs text-stone-500 mt-1">Past dates are not available.</p>
                         </div>
                     </div>
                     
                     <div>
-                        <label for="special_instructions" class="block text-sm font-medium text-gray-700 mb-1">Special Instructions</label>
+                        <label for="special_instructions" class="block text-sm font-medium text-stone-700 mb-1">Special Instructions</label>
                         <textarea id="special_instructions" name="special_instructions" rows="4"
-                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">{{ old('special_instructions') }}</textarea>
-                        <p class="text-xs text-gray-500 mt-1">For custom formulas, please specify your requirements here</p>
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-forest transition-colors">{{ old('special_instructions') }}</textarea>
+                        <p class="text-xs text-stone-500 mt-1">For custom formulas, please specify your requirements here</p>
                     </div>
                 </div>
                 
                 <!-- Service Information -->
                 <div class="bg-gray-50 p-4 rounded-lg">
-                    <h3 class="text-lg font-semibold text-neutral mb-3">Service Information</h3>
+                    <h3 class="text-lg font-semibold text-forest mb-3">Service Information</h3>
                     
                     <div class="space-y-3 text-sm">
                         <div class="grid grid-cols-2 gap-2">
@@ -138,7 +110,7 @@
                             <div>₱2,500 per batch of 30 eggs</div>
                         </div>
                         
-                        <div class="text-xs text-gray-600 mt-2">
+                        <div class="text-xs text-stone-600 mt-2">
                             <p>* Incubation period is approximately 28 days for duck eggs</p>
                             <p>* You will be notified when hatching begins</p>
                             <p>* Pickup or delivery arrangements will be made after successful hatching</p>
@@ -148,13 +120,13 @@
 
                 <!-- Payment Information -->
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-neutral border-b pb-2">Payment Information</h3>
+                    <h3 class="text-lg font-semibold text-forest border-b pb-2">Payment Information</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="payment_method" class="block text-sm font-medium text-gray-700 mb-1">Payment Method *</label>
+                            <label for="payment_method" class="block text-sm font-medium text-stone-700 mb-1">Payment Method *</label>
                             <select id="payment_method" name="payment_method" required
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-forest transition-colors">
                                 <option value="">Select payment method</option>
                                 <option value="cod" {{ old('payment_method') === 'cod' ? 'selected' : '' }}>Cash on Delivery (COD)</option>
                                 <option value="online" {{ old('payment_method') === 'online' ? 'selected' : '' }}>Online Payment</option>
@@ -165,9 +137,9 @@
                         </div>
 
                         <div id="online-payment-method-wrap" class="{{ old('payment_method') === 'online' ? '' : 'hidden' }}">
-                            <label for="online_payment_method" class="block text-sm font-medium text-gray-700 mb-1">Online Method *</label>
+                            <label for="online_payment_method" class="block text-sm font-medium text-stone-700 mb-1">Online Method *</label>
                             <select id="online_payment_method" name="online_payment_method"
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-forest transition-colors">
                                 <option value="">Select online method</option>
                                 <option value="stripe" {{ old('online_payment_method') === 'stripe' ? 'selected' : '' }}>Stripe</option>
                                 <option value="gcash" {{ old('online_payment_method') === 'gcash' ? 'selected' : '' }}>GCash</option>
@@ -179,15 +151,15 @@
                     </div>
 
                     <div id="gcash-image-wrap" class="{{ old('payment_method') === 'online' && old('online_payment_method') === 'gcash' ? '' : 'hidden' }}">
-                        <p class="text-sm text-gray-700 mb-2">Scan this GCash QR / portal image before entering your reference number.</p>
+                        <p class="text-sm text-stone-700 mb-2">Scan this GCash QR / portal image before entering your reference number.</p>
                         <img src="{{ asset('images/admin-gcash-portal.jpg') }}" alt="GCash Payment Portal" class="w-52 h-auto rounded-md border border-gray-200 shadow-sm">
                     </div>
 
                     <div id="payment-reference-wrap" class="{{ old('payment_method') === 'online' ? '' : 'hidden' }}">
-                        <label for="payment_reference" class="block text-sm font-medium text-gray-700 mb-1">Reference Number / Transaction ID *</label>
+                        <label for="payment_reference" class="block text-sm font-medium text-stone-700 mb-1">Reference Number / Transaction ID *</label>
                         <input type="text" id="payment_reference" name="payment_reference" value="{{ old('payment_reference') }}"
                             placeholder="Enter your Stripe or GCash reference"
-                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-forest transition-colors">
                         @error('payment_reference')
                             <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                         @enderror
@@ -198,17 +170,17 @@
                 <div class="flex items-start">
                     <div class="flex items-center h-5">
                         <input id="terms" name="terms" type="checkbox" required
-                            class="w-4 h-4 border-gray-300 rounded text-primary focus:ring-primary">
+                            class="w-4 h-4 border-stone-300 rounded text-forest focus:ring-gold/40 focus:ring-offset-0">
                     </div>
                     <div class="ml-3 text-sm">
-                        <label for="terms" class="font-medium text-gray-700">I agree to the terms and conditions *</label>
-                        <p class="text-gray-500">I understand that incubation success rates depend on egg quality and other factors. I agree to pay 50% deposit upon booking confirmation.</p>
+                        <label for="terms" class="font-medium text-stone-700">I agree to the terms and conditions *</label>
+                        <p class="text-stone-500">I understand that incubation success rates depend on egg quality and other factors. I agree to pay 50% deposit upon booking confirmation.</p>
                     </div>
                 </div>
                 
                 <!-- Submit Button -->
                 <div class="pt-4">
-                    <button type="submit" class="w-full bg-primary text-white py-3 px-6 rounded-full font-medium hover:bg-opacity-90 transition-colors flex items-center justify-center gap-2">
+                    <button type="submit" class="w-full bg-forest text-white py-3 px-6 rounded-xl font-medium hover:bg-forest-dark transition-colors flex items-center justify-center gap-2 shadow-sm">
                         <i class="fas fa-calendar-check"></i>
                         Book Incubation Service
                     </button>
@@ -217,67 +189,67 @@
         </div>
         
         <!-- Additional Information -->
-        <div class="mt-8 bg-white rounded-xl shadow-sm p-6">
-            <h3 class="text-lg font-semibold text-neutral mb-4">What to Expect After Booking</h3>
+        <div class="mt-8 bg-white rounded-2xl border border-stone-200/80 shadow-md p-6 sm:p-8">
+            <h3 class="text-lg font-semibold text-forest mb-4">What to Expect After Booking</h3>
             
             <div class="space-y-4">
                 <div class="flex gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary">
+                    <div class="flex-shrink-0 w-10 h-10 bg-forest bg-opacity-10 rounded-full flex items-center justify-center text-forest">
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
                         <h4 class="font-medium">Confirmation</h4>
-                        <p class="text-sm text-gray-600">You'll receive a booking confirmation with payment instructions within 24 hours.</p>
+                        <p class="text-sm text-stone-600">You'll receive a booking confirmation with payment instructions within 24 hours.</p>
                     </div>
                 </div>
                 
                 <div class="flex gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary">
+                    <div class="flex-shrink-0 w-10 h-10 bg-forest bg-opacity-10 rounded-full flex items-center justify-center text-forest">
                         <i class="fas fa-money-bill-wave"></i>
                     </div>
                     <div>
                         <h4 class="font-medium">Payment</h4>
-                        <p class="text-sm text-gray-600">50% deposit is required to secure your booking, with the balance due upon successful hatching.</p>
+                        <p class="text-sm text-stone-600">50% deposit is required to secure your booking, with the balance due upon successful hatching.</p>
                     </div>
                 </div>
                 
                 <div class="flex gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary">
+                    <div class="flex-shrink-0 w-10 h-10 bg-forest bg-opacity-10 rounded-full flex items-center justify-center text-forest">
                         <i class="fas fa-egg"></i>
                     </div>
                     <div>
                         <h4 class="font-medium">Egg Delivery/Drop-off</h4>
-                        <p class="text-sm text-gray-600">Arrange to deliver your eggs or purchase them directly from us.</p>
+                        <p class="text-sm text-stone-600">Arrange to deliver your eggs or purchase them directly from us.</p>
                     </div>
                 </div>
                 
                 <div class="flex gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary">
+                    <div class="flex-shrink-0 w-10 h-10 bg-forest bg-opacity-10 rounded-full flex items-center justify-center text-forest">
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <div>
                         <h4 class="font-medium">Progress Updates</h4>
-                        <p class="text-sm text-gray-600">Receive regular updates on the incubation progress, including candling results.</p>
+                        <p class="text-sm text-stone-600">Receive regular updates on the incubation progress, including candling results.</p>
                     </div>
                 </div>
                 
                 <div class="flex gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary">
+                    <div class="flex-shrink-0 w-10 h-10 bg-forest bg-opacity-10 rounded-full flex items-center justify-center text-forest">
                         <i class="fas fa-baby"></i>
                     </div>
                     <div>
                         <h4 class="font-medium">Hatching</h4>
-                        <p class="text-sm text-gray-600">We'll notify you when hatching begins and is complete.</p>
+                        <p class="text-sm text-stone-600">We'll notify you when hatching begins and is complete.</p>
                     </div>
                 </div>
                 
                 <div class="flex gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary">
+                    <div class="flex-shrink-0 w-10 h-10 bg-forest bg-opacity-10 rounded-full flex items-center justify-center text-forest">
                         <i class="fas fa-home"></i>
                     </div>
                     <div>
                         <h4 class="font-medium">Pickup/Delivery</h4>
-                        <p class="text-sm text-gray-600">Arrange for pickup or delivery of your newly hatched ducklings.</p>
+                        <p class="text-sm text-stone-600">Arrange for pickup or delivery of your newly hatched ducklings.</p>
                     </div>
                 </div>
             </div>
@@ -286,7 +258,25 @@
 </div>
 @endsection
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endpush
+
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('start_date');
+        if (el && typeof flatpickr !== 'undefined') {
+            flatpickr(el, {
+                dateFormat: 'Y-m-d',
+                minDate: 'today',
+                allowInput: false,
+                disableMobile: true,
+            });
+        }
+    });
+</script>
 <script>
     // Calculate and display estimated price
     const serviceTypeSelect = document.getElementById('service_type');

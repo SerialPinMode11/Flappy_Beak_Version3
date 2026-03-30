@@ -30,12 +30,23 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate form data
+        $user = $request->user();
+
+        if (
+            !$user
+            || !filled(trim((string) $user->phone))
+            || !filled(trim((string) $user->address))
+            || !filled(trim((string) $user->city))
+            || !filled(trim((string) $user->zip))
+        ) {
+            return redirect()
+                ->route('profile.edit')
+                ->withErrors(['profile' => 'Please complete your phone and default delivery address in your profile before booking incubation services.'])
+                ->withInput();
+        }
+
+        // Validate form data (identity comes from the logged-in user/profile)
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string|max:500',
             'service_type' => 'required|string|in:jm_casabar,custom,experimental,world_based',
             'egg_quantity' => 'required|integer|min:1|max:300',
             'egg_source' => 'required|string|max:255',
@@ -68,10 +79,14 @@ class BookingController extends Controller
 
         // Create new booking
         $booking = new Booking();
-        $booking->name = $request->name;
-        $booking->email = $request->email;
-        $booking->phone = $request->phone;
-        $booking->address = $request->address;
+        $booking->name = $user->name;
+        $booking->email = $user->email;
+        $booking->phone = $user->phone;
+        $booking->address = trim(implode(', ', array_filter([
+            (string) $user->address,
+            (string) $user->city,
+            (string) $user->zip,
+        ])));
         $booking->service_type = $request->service_type;
         $booking->egg_quantity = $request->egg_quantity;
         $booking->egg_source = $request->egg_source;
@@ -140,17 +155,52 @@ class BookingController extends Controller
     public function status(Request $request)
     {
         $reference = $request->input('reference');
+        $user = $request->user();
+        $email = strtolower(trim((string) $user->email));
 
+        // Default booking = latest booking belonging to this user.
+        $defaultBooking = Booking::whereRaw('LOWER(TRIM(email)) = ?', [$email])
+            ->latest()
+            ->first();
+
+        $booking = null;
+        if ($reference) {
+            $booking = Booking::where('booking_reference', $reference)
+                ->whereRaw('LOWER(TRIM(email)) = ?', [$email])
+                ->first();
+
+            if (!$booking) {
+                return redirect()->route('booking.status')->with('error', 'Booking not found for your account. Please check your reference number.');
+            }
+        }
+
+        return view('customer.addblade.bookstatus', compact('booking', 'defaultBooking'));
+    }
+
+    /**
+     * Poll booking status (aligned with admin incubation statuses).
+     */
+    public function statusJson(Request $request)
+    {
+        $reference = $request->query('reference');
         if (!$reference) {
-            return view('booking-status');
+            return response()->json(['error' => 'Missing reference'], 422);
         }
+        $user = $request->user();
+        $email = strtolower(trim((string) $user->email));
 
-        $booking = Booking::where('booking_reference', $reference)->first();
-
+        $booking = Booking::where('booking_reference', $reference)
+            ->whereRaw('LOWER(TRIM(email)) = ?', [$email])
+            ->first();
         if (!$booking) {
-            return view('customer.addblade.bookstatus')->with('error', 'Booking not found. Please check your reference number.');
+            return response()->json(['error' => 'Not found'], 404);
         }
 
-        return view('customer.addblade.bookstatus', compact('booking'));
+        return response()->json([
+            'reference' => $booking->booking_reference,
+            'status' => $booking->status,
+            'status_label' => $booking->status_name,
+            'updated_at' => $booking->updated_at?->toIso8601String(),
+        ]);
     }
 }
