@@ -20,12 +20,13 @@ class CartNavController extends Controller
         return view("customer.cartoptions");
     }
 
-     public function toFAQ(){
-        
-        return view("customer.question");
+    public function toFAQ()
+    {
+        return view('guest.faq');
     }
-    public function toPrivacy(){
-        
-        return view("customer.privacy");
+
+    public function toPrivacy()
+    {
+        return view('guest.privacy');
     }
 }

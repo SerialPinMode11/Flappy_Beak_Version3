@@ -4,6 +4,34 @@
 
 @push('styles')
 <style>
+    /* Manual feed status: readable in light + dark (body.dark) */
+    .manual-feed-status-panel {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+    body.dark .manual-feed-status-panel {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body.dark .manual-feed-status-panel .manual-feed-status-text {
+        color: #e2e8f0 !important;
+    }
+    body.dark .manual-feed-status-panel .manual-feed-status-icon--info {
+        color: #93c5fd !important;
+    }
+    body.dark .manual-feed-status-panel .manual-feed-status-icon--warn {
+        color: #fbbf24 !important;
+    }
+    body.dark .manual-feed-status-panel .manual-feed-status-icon--ok {
+        color: #34d399 !important;
+    }
+    body.dark .manual-feed-status-panel .manual-feed-status-icon--err {
+        color: #f87171 !important;
+    }
+    body.dark .manual-feed-status-panel .manual-feed-status-icon--spin {
+        color: #a5b4fc !important;
+    }
+
     /* Hardware dashboard — toggle switches & schedule list */
     .toggle-label {
         width: 44px;
@@ -126,10 +154,10 @@
                     <span class="block sm:inline">Feeding recorded successfully!</span>
                 </div>
             </div>
-            <div class="mt-4 p-3 bg-slate-50 rounded-md border border-gray-100" id="manual-feed-status">
+            <div class="mt-4 p-3 rounded-md manual-feed-status-panel" id="manual-feed-status">
                 <div class="flex items-center">
-                    <i class="fas fa-info-circle text-indigo-600 mr-2"></i>
-                    <p class="text-gray-700 text-sm">Ready to dispense feed.</p>
+                    <i class="fas fa-info-circle text-indigo-600 manual-feed-status-icon--info mr-2"></i>
+                    <p class="text-gray-700 text-sm manual-feed-status-text">Ready to dispense feed.</p>
                 </div>
             </div>
         </div>
@@ -305,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!feedInventoryId) {
                 if (statusDiv) {
-                    statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-exclamation-circle text-amber-600 mr-2"></i><p class="text-gray-700 text-sm">Choose a feed with available stock in inventory.</p></div>';
+                    statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-exclamation-circle text-amber-600 manual-feed-status-icon--warn mr-2"></i><p class="text-gray-700 manual-feed-status-text text-sm">Choose a feed with available stock in inventory.</p></div>';
                 }
                 return;
             }
@@ -314,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Recording...';
 
             if (statusDiv) {
-                statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-spinner fa-spin text-indigo-600 mr-2"></i><p class="text-gray-700 text-sm">Dispensing ' + amount + ' kg — ' + feedLabel + '</p></div>';
+                statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-spinner fa-spin text-indigo-600 manual-feed-status-icon--spin mr-2"></i><p class="text-gray-700 manual-feed-status-text text-sm">Dispensing ' + amount + ' kg — ' + feedLabel + '</p></div>';
             }
 
             fetch('{{ route("feed.now") }}', {
@@ -336,14 +364,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!res.ok || !data.success) {
                         if (statusDiv) {
                             var msg = (data && data.message) ? data.message : 'Could not record feeding.';
-                            statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-exclamation-circle text-red-500 mr-2"></i><p class="text-gray-700 text-sm">' + msg + '</p></div>';
+                            statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-exclamation-circle text-red-500 manual-feed-status-icon--err mr-2"></i><p class="text-gray-700 manual-feed-status-text text-sm">' + msg + '</p></div>';
                         }
                         btn.disabled = false;
                         btn.innerHTML = '<i class="fas fa-utensils mr-2"></i>Feed Now';
                         return;
                     }
                     if (statusDiv) {
-                        statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-check-circle text-emerald-600 mr-2"></i><p class="text-gray-700 text-sm">Successfully dispensed ' + amount + ' kg.</p></div>';
+                        statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-check-circle text-emerald-600 manual-feed-status-icon--ok mr-2"></i><p class="text-gray-700 manual-feed-status-text text-sm">Successfully dispensed ' + amount + ' kg.</p></div>';
                         const card = document.getElementById('last-feeding-card');
                         var fedAtIso = (data.data && data.data.fed_at) ? data.data.fed_at : new Date().toISOString();
                         var m = moment(fedAtIso);
@@ -388,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(function () {
                     if (statusDiv) {
-                        statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-exclamation-circle text-red-500 mr-2"></i><p class="text-gray-700 text-sm">Failed to record feeding. Please try again.</p></div>';
+                        statusDiv.innerHTML = '<div class="flex items-center"><i class="fas fa-exclamation-circle text-red-500 manual-feed-status-icon--err mr-2"></i><p class="text-gray-700 manual-feed-status-text text-sm">Failed to record feeding. Please try again.</p></div>';
                     }
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-utensils mr-2"></i>Feed Now';
@@ -468,8 +496,17 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
+    function isDarkUi() {
+        return document.body && document.body.classList.contains('dark');
+    }
+
     function buildOptions(slice) {
+        var dark = isDarkUi();
+        var labelColor = dark ? '#94a3b8' : '#6b7280';
+        var titleColor = dark ? '#cbd5e1' : '#374151';
+        var gridColor = dark ? '#334155' : '#e5e7eb';
         return {
+            theme: { mode: dark ? 'dark' : 'light' },
             series: [{
                 name: 'Total feed (kg)',
                 data: slice.kg
@@ -479,7 +516,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 height: 340,
                 toolbar: { show: true },
                 fontFamily: 'Inter, system-ui, sans-serif',
-                zoom: { enabled: true }
+                zoom: { enabled: true },
+                foreColor: dark ? '#cbd5e1' : '#374151'
             },
             colors: ['#4f46e5'],
             stroke: { curve: 'smooth', width: 2 },
@@ -487,23 +525,38 @@ document.addEventListener('DOMContentLoaded', function () {
                 type: 'gradient',
                 gradient: {
                     shadeIntensity: 1,
-                    opacityFrom: 0.45,
-                    opacityTo: 0.05,
+                    opacityFrom: dark ? 0.5 : 0.45,
+                    opacityTo: dark ? 0.08 : 0.05,
                     stops: [0, 90, 100]
                 }
+            },
+            grid: {
+                borderColor: gridColor,
+                strokeDashArray: dark ? 4 : 0
             },
             dataLabels: { enabled: false },
             xaxis: {
                 categories: slice.labels,
-                title: { text: 'Day', style: { fontSize: '12px', color: '#6b7280' } },
-                labels: { rotate: -35, hideOverlappingLabels: true }
+                title: { text: 'Day', style: { fontSize: '12px', color: titleColor } },
+                labels: {
+                    rotate: -35,
+                    hideOverlappingLabels: true,
+                    style: { colors: labelColor }
+                }
             },
             yaxis: {
-                title: { text: 'Total kilograms (sum of logged amounts that day)' },
+                title: {
+                    text: 'Total kilograms (sum of logged amounts that day)',
+                    style: { color: titleColor }
+                },
                 min: 0,
-                labels: { formatter: function (v) { return v.toFixed(2); } }
+                labels: {
+                    formatter: function (v) { return v.toFixed(2); },
+                    style: { colors: labelColor }
+                }
             },
             tooltip: {
+                theme: dark ? 'dark' : 'light',
                 y: {
                     formatter: function (val, opts) {
                         var i = opts.dataPointIndex;
@@ -513,7 +566,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             markers: { size: 3, hover: { size: 7 } },
-            legend: { show: true, position: 'top' }
+            legend: {
+                show: true,
+                position: 'top',
+                labels: { colors: [titleColor] }
+            }
         };
     }
 

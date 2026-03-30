@@ -19,6 +19,7 @@ use App\Http\Controllers\CartNavController;
 use App\Http\Controllers\IncubationAdminController;
 use App\Http\Controllers\FeedingHistoryController;
 use App\Http\Controllers\AdminPublicController;
+use App\Http\Controllers\ProfileController;
 use App\Models\DuckProducts;
 use App\Models\WineProduct;
 
@@ -62,6 +63,10 @@ Route::get('/', function () {
 
 Route::get("/login", [AuthController::class, "login"])->name('login');
 Route::post("/login", [AuthController::class, "loginPost"])->name("login.post");
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google.redirect');
+Route::get('/auth/google-OAuth', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+Route::get('/auth/facebook', [AuthController::class, 'redirectToFacebook'])->name('auth.facebook.redirect');
+Route::get('/auth/facebook-OAuth', [AuthController::class, 'handleFacebookCallback'])->name('auth.facebook.callback');
 
 Route::get('/admin/login', [AdminController::class, 'tologin'])->name('admin.login');
 Route::get('/admin/2fa/challenge', [AdminController::class, 'twoFactorChallenge'])->name('admin.2fa.challenge');
@@ -85,10 +90,17 @@ Route::get('/Privacy-Policy', [CartNavController::class, 'toPrivacy'])->name('pr
 // Public cart add (keeps items in session even for guests)
 Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
 Route::post('/wine/add-to-cart', [WineProductController::class, 'addToCart'])->name('cart.add.wine');
+// Cart view & session updates (guests see bag; checkout stays behind auth)
+Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+Route::patch('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.update-quantity');
+Route::delete('/remove-from-cart', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::delete('/wine/remove-from-cart', [WineProductController::class, 'removeFromCart'])->name('cart.remove.wine');
 
 //customer routes (login required)
 Route::middleware("auth")->group(function(){
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     //product_formation_
     Route::get('/home', [ProductController::class,'index'])->name('home');
     Route::get('/home/incubator', [ProductController::class,'incubator'])->name('home.incubator');
@@ -97,16 +109,17 @@ Route::middleware("auth")->group(function(){
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/confirmation/{reference}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
     Route::get('/booking/status', [BookingController::class, 'status'])->name('booking.status');
+    Route::get('/booking/status-json', [BookingController::class, 'statusJson'])->name('booking.status.json');
 
     Route::get('/home/productformat/{product}', [ProductController::class,'show'])->name('customer.productformat');
     Route::post('/home/productformat/{product}/reviews', [ProductController::class,'storeReview'])->name('customer.product.review.store');
-    //My_Cart
-    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
-    Route::patch('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.update-quantity');
-    Route::delete('/remove-from-cart', [CartController::class, 'removeFromCart'])->name('cart.remove');
     //Checkout
     Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
-    Route::get('/checkout/track-item/{billing?}', [CheckoutController::class, 'trackItem'])->name('checkout.track-item');
+    Route::get('/checkout/track-item/status-json', [CheckoutController::class, 'trackOrdersStatusJson'])->name('checkout.track-status-json');
+    Route::get('/checkout/track-item', [CheckoutController::class, 'trackItem'])->name('checkout.track-item');
+    Route::get('/checkout/track-item/{billing}', function () {
+        return redirect()->route('checkout.track-item');
+    })->whereNumber('billing');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::post('/checkout/create-payment-intent', [CheckoutController::class, 'createPaymentIntent'])->name('checkout.create-payment-intent');
     Route::post('/checkout/save-billing', [CheckoutController::class, 'saveBillingToSession'])->name('checkout.save-billing');
@@ -116,8 +129,6 @@ Route::middleware("auth")->group(function(){
     //new Products Wine
     Route::get('/wineproducts', [WineProductController::class, 'index'])->name('wine.home');
     Route::get('/home/wine/productformat/{product}', [WineProductController::class,'show'])->name('customer.wine.view');
-    Route::delete('/wine/remove-from-cart', [WineProductController::class, 'removeFromCart'])->name('cart.remove.wine');
-
     //new Products Hog
     Route::get('/hogproducts', [HogProductController::class, 'index'])->name('hog.home');
 

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -68,5 +70,107 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login')->with('success', 'You have been logged out successfully.');
+    }
+
+    public function redirectToGoogle()
+    {
+        if (! config('services.google.client_id') || ! config('services.google.client_secret')) {
+            return redirect()->route('login')->with('error', 'Google sign-in is not configured.');
+        }
+
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (Throwable $e) {
+            return redirect()->route('login')->with('error', 'Google sign-in was cancelled or failed. Please try again.');
+        }
+
+        $email = $googleUser->getEmail();
+        if (! $email) {
+            return redirect()->route('login')->with('error', 'Your Google account does not share an email address.');
+        }
+
+        $user = User::where('google_id', $googleUser->getId())->first();
+
+        if (! $user) {
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $user->google_id = $googleUser->getId();
+                $user->save();
+            }
+        }
+
+        if (! $user) {
+            $name = $googleUser->getName()
+                ?: $googleUser->getNickname()
+                ?: (string) str($email)->before('@');
+
+            $user = User::create([
+                'name' => $name,
+                'email' => $email,
+                'google_id' => $googleUser->getId(),
+                'password' => Str::password(64),
+            ]);
+        }
+
+        Auth::login($user, true);
+
+        return redirect()->intended(route('home'));
+    }
+
+    public function redirectToFacebook()
+    {
+        if (! config('services.facebook.client_id') || ! config('services.facebook.client_secret')) {
+            return redirect()->route('login')->with('error', 'Facebook sign-in is not configured.');
+        }
+
+        return Socialite::driver('facebook')
+            ->scopes(['email', 'public_profile'])
+            ->redirect();
+    }
+
+    public function handleFacebookCallback()
+    {
+        try {
+            $fbUser = Socialite::driver('facebook')->user();
+        } catch (Throwable $e) {
+            return redirect()->route('login')->with('error', 'Facebook sign-in was cancelled or failed. Please try again.');
+        }
+
+        $email = $fbUser->getEmail();
+        if (! $email) {
+            return redirect()->route('login')->with('error', 'Your Facebook account does not share an email address. Add an email to your Facebook profile or use another sign-in method.');
+        }
+
+        $user = User::where('facebook_id', $fbUser->getId())->first();
+
+        if (! $user) {
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $user->facebook_id = $fbUser->getId();
+                $user->save();
+            }
+        }
+
+        if (! $user) {
+            $name = $fbUser->getName()
+                ?: $fbUser->getNickname()
+                ?: (string) str($email)->before('@');
+
+            $user = User::create([
+                'name' => $name,
+                'email' => $email,
+                'facebook_id' => $fbUser->getId(),
+                'password' => Str::password(64),
+            ]);
+        }
+
+        Auth::login($user, true);
+
+        return redirect()->intended(route('home'));
     }
 }

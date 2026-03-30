@@ -322,20 +322,35 @@
             // still draw chart (flat zeros) — helps see timeline
         }
 
+        var chartSeries = series.length ? series : [{ name: 'Total (kg)', data: labels.map(function () { return 0; }) }];
         var palette = ['#4f46e5', '#10b981', '#f59e0b', '#06b6d4', '#ef4444', '#a855f7', '#84cc16', '#f97316', '#64748b'];
-        var dynamicColors = (series.length ? series : [{ name: 'Total (kg)', data: labels.map(function () { return 0; }) }]).map(function (_, i) {
+        var dynamicColors = chartSeries.map(function (_, i) {
             return palette[i % palette.length];
         });
 
+        var darkUi = document.body && document.body.classList.contains('dark');
+        var axisLabelColor = darkUi ? '#94a3b8' : '#6b7280';
+        var axisTitleColor = darkUi ? '#cbd5e1' : '#374151';
+        var gridColor = darkUi ? '#334155' : '#e5e7eb';
+        var barDividerColor = darkUi ? '#0f172a' : '#ffffff';
+        var strokeColors = chartSeries.map(function () {
+            return barDividerColor;
+        });
+        var legendTextColors = chartSeries.map(function () {
+            return axisTitleColor;
+        });
+
         var monthlyFeedingOptions = {
-            series: series.length ? series : [{ name: 'Total (kg)', data: labels.map(function () { return 0; }) }],
+            theme: { mode: darkUi ? 'dark' : 'light' },
+            series: chartSeries,
             chart: {
                 type: 'bar',
                 height: 340,
                 stacked: true,
                 toolbar: { show: true },
                 fontFamily: 'Inter, system-ui, sans-serif',
-                animations: { enabled: true }
+                animations: { enabled: true },
+                foreColor: axisTitleColor
             },
             plotOptions: {
                 bar: {
@@ -345,19 +360,40 @@
                 }
             },
             dataLabels: { enabled: false },
-            stroke: { show: true, width: 1, colors: ['#fff'] },
+            stroke: { show: true, width: 1, colors: strokeColors },
+            grid: {
+                borderColor: gridColor,
+                strokeDashArray: darkUi ? 4 : 0
+            },
             xaxis: {
                 categories: labels.length ? labels : ['—'],
-                title: { text: 'Month', style: { fontSize: '12px' } }
+                title: {
+                    text: 'Month',
+                    style: { fontSize: '12px', color: axisTitleColor }
+                },
+                labels: {
+                    style: { colors: axisLabelColor }
+                }
             },
             yaxis: {
-                title: { text: 'Feed (kg) — from stored records' },
+                title: {
+                    text: 'Feed (kg) — from stored records',
+                    style: { color: axisTitleColor }
+                },
                 min: 0,
-                labels: { formatter: function (v) { return (Math.round(v * 100) / 100).toFixed(2); } }
+                labels: {
+                    formatter: function (v) { return (Math.round(v * 100) / 100).toFixed(2); },
+                    style: { colors: axisLabelColor }
+                }
             },
             colors: dynamicColors,
-            legend: { position: 'top', horizontalAlign: 'left' },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'left',
+                labels: { colors: legendTextColors }
+            },
             tooltip: {
+                theme: darkUi ? 'dark' : 'light',
                 shared: true,
                 intersect: false,
                 y: {

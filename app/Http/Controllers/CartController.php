@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\DuckProducts;
 use App\Models\WineProduct;
 
@@ -60,7 +61,12 @@ class CartController extends Controller
 
     public function viewCart()
     {
-        return view('customer.mycart', ['cart' => session('cart')]);
+        $cart = session('cart', []);
+        if (Auth::check()) {
+            return view('customer.mycart', ['cart' => $cart]);
+        }
+
+        return view('guest.cart', ['cart' => $cart]);
     }
 
     public function updateQuantity(Request $request)

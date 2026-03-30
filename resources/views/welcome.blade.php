@@ -1,489 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    @php
+        $pcHead = $publicContent ?? [];
+    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Flappy-Beak - Farm-Fresh Duck Products</title>
+    <title>{{ !empty($pcHead['store_name'] ?? null) ? $pcHead['store_name'] . ' — Farm-Raised Duck' : 'JM Casabar Mini Farm — Farm-Raised Duck' }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        forest: { DEFAULT: '#1a3d2e', light: '#234d3a', dark: '#0f2419' },
+                        gold: { DEFAULT: '#c9a227', pale: '#e8d48b', deep: '#8b6914' },
+                        cream: '#faf8f3',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .product-card:hover .quick-view {
-            opacity: 1;
+        body { font-family: Inter, system-ui, sans-serif; }
+        .font-serif { font-family: "Playfair Display", Georgia, serif; }
+        .hero-bg {
+            background-size: cover;
+            background-position: center;
         }
-        .hero-pattern {
-            background-color: #f8fafc;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        .heritage-img-wrap::before {
+            content: '';
+            position: absolute;
+            inset: 12% -8% -8% 12%;
+            background: #f5f0e6;
+            border-radius: 0.75rem;
+            z-index: 0;
         }
-
-        /* Enhanced Responsive Styles */
-        
-        /* Mobile First Approach - Extra Small devices (portrait phones, less than 576px) */
-        @media (max-width: 575.98px) {
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-            
-            /* Header adjustments */
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .mobile-header-top {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            
-            .mobile-nav {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-            
-            .mobile-nav a {
-                font-size: 0.875rem;
-                padding: 0.5rem;
-            }
-            
-            .mobile-search {
-                width: 100%;
-                margin-top: 0.5rem;
-            }
-            
-            .mobile-search input {
-                width: 100% !important;
-                font-size: 0.875rem;
-            }
-            
-            /* Hero section */
-            .hero-title {
-                font-size: 2rem !important;
-                line-height: 1.2;
-                margin-bottom: 1rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1rem;
-                line-height: 1.5;
-                margin-bottom: 1.5rem;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            
-            .hero-buttons a {
-                text-align: center;
-                padding: 0.75rem 1.5rem;
-                font-size: 0.875rem;
-            }
-            
-            .hero-image {
-                margin-top: 2rem;
-                max-height: 250px !important;
-            }
-            
-            /* Product cards */
-            .product-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1.5rem;
-            }
-            
-            .product-card {
-                max-width: 100%;
-            }
-            
-            .product-card img {
-                height: 200px;
-            }
-            
-            .product-price {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.25rem;
-            }
-            
-            .product-buttons {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .product-buttons button:last-child {
-                width: 100%;
-            }
-            
-            /* About section */
-            .about-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .about-image {
-                order: -1;
-                margin-bottom: 2rem;
-            }
-            
-            .about-stats {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 1rem;
-            }
-            
-            .about-stats > div {
-                padding: 1rem;
-            }
-            
-            .about-stats .stat-number {
-                font-size: 1.5rem;
-            }
-            
-            /* Features section */
-            .features-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1.5rem;
-            }
-            
-            /* Footer */
-            .footer-grid {
-                grid-template-columns: 1fr !important;
-                gap: 2rem;
-                text-align: center;
-            }
-            
-            .footer-bottom {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .footer-links {
-                justify-content: center;
+        .featured-track {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .featured-track::-webkit-scrollbar { display: none; }
+        .featured-card { scroll-snap-align: start; }
+        #mobile-menu:not(.hidden) { animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Toast sits over hero (upper-right), not under browser chrome */
+        body.welcome-page #toast-container {
+            top: max(6.5rem, 22vh);
+            right: clamp(0.75rem, 3vw, 2rem);
+            left: auto;
+            width: min(22rem, calc(100vw - 1.5rem));
+            max-width: min(22rem, calc(100vw - 1.5rem));
+            align-items: flex-end;
+        }
+        body.welcome-page #toast-container .toast-item {
+            animation: toast-hero-in 0.35s ease-out;
+        }
+        @keyframes toast-hero-in {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (min-width: 1024px) {
+            body.welcome-page #toast-container {
+                top: max(7.5rem, 24vh);
+                right: 2.5rem;
             }
         }
-        
-        /* Small devices (landscape phones, 576px and up) */
-        @media (min-width: 576px) and (max-width: 767.98px) {
-            .product-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            
-            .footer-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .about-stats {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
+        /* Mobile FAB nav: draggable; collapsed = only active tab */
+        #welcome-mobile-float-root {
+            touch-action: none;
+            cursor: grab;
         }
-        
-        /* Medium devices (tablets, 768px and up) */
-        @media (min-width: 768px) and (max-width: 991.98px) {
-            .product-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            
-            .footer-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            
-            .mobile-nav {
-                display: none !important;
-            }
+        #welcome-mobile-float-root.is-dragging {
+            cursor: grabbing;
         }
-        
-        /* Large devices (desktops, 992px and up) */
-        @media (min-width: 992px) and (max-width: 1199.98px) {
-            .product-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-            }
-            
-            .features-grid {
-                grid-template-columns: repeat(4, 1fr) !important;
-            }
+        #welcome-mobile-float-root.is-dragging * {
+            pointer-events: none;
         }
-        
-        /* Extra large devices (large desktops, 1200px and up) */
-        @media (min-width: 1200px) {
-            .product-grid {
-                grid-template-columns: repeat(4, 1fr) !important;
-            }
+        #welcome-mobile-bottom-pill[data-expanded="false"] .welcome-mobile-nav-link:not([aria-current="page"]) {
+            display: none;
         }
-        
-        /* Utility classes for better responsiveness */
-        .responsive-text-sm {
-            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        #welcome-mobile-bottom-pill[data-expanded="false"] {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
         }
-        
-        .responsive-text-base {
-            font-size: clamp(1rem, 3vw, 1.125rem);
+        #welcome-mobile-bottom-pill {
+            transition: box-shadow 0.2s ease;
         }
-        
-        .responsive-text-lg {
-            font-size: clamp(1.125rem, 3.5vw, 1.25rem);
+        #welcome-mobile-bottom-pill[data-expanded="true"] {
+            transition: none;
         }
-        
-        .responsive-text-xl {
-            font-size: clamp(1.25rem, 4vw, 1.5rem);
+        #welcome-mobile-bottom-pill[data-expanded="true"][data-layout="row-left"] {
+            flex-direction: row-reverse;
+            flex-wrap: nowrap;
         }
-        
-        .responsive-text-2xl {
-            font-size: clamp(1.5rem, 5vw, 2rem);
+        #welcome-mobile-bottom-pill[data-expanded="true"][data-layout="row-right"] {
+            flex-direction: row;
+            flex-wrap: nowrap;
         }
-        
-        .responsive-text-3xl {
-            font-size: clamp(2rem, 6vw, 3rem);
+        #welcome-mobile-bottom-pill[data-expanded="true"][data-layout="col-up"] {
+            flex-direction: column-reverse;
+            flex-wrap: nowrap;
+            align-items: flex-end;
         }
-        
-        .responsive-padding {
-            padding: clamp(1rem, 5vw, 2rem);
+        #welcome-mobile-bottom-pill[data-expanded="true"][data-layout="col-down"] {
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: flex-end;
         }
-        
-        .responsive-margin {
-            margin: clamp(1rem, 5vw, 2rem);
+        .welcome-mobile-nav-link.welcome-mobile-nav-link--active {
+            background-color: rgb(201 162 39 / 0.2);
+            color: #e8d48b;
         }
-        
-        /* Image responsiveness */
-        .responsive-img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
+        .welcome-mobile-nav-link:not(.welcome-mobile-nav-link--active) {
+            color: rgb(255 255 255 / 0.7);
         }
-        
-        /* Button responsiveness */
-        .responsive-btn {
-            padding: clamp(0.5rem, 2vw, 1rem) clamp(1rem, 4vw, 2rem);
-            font-size: clamp(0.875rem, 2.5vw, 1rem);
-        }
-        
-        /* Card responsiveness */
-        .responsive-card {
-            padding: clamp(1rem, 3vw, 1.5rem);
-        }
-        
-        /* Navigation fixes for mobile */
-        @media (max-width: 767.98px) {
-            .desktop-nav {
-                display: none !important;
-            }
-            
-            .mobile-menu-toggle {
-                display: block !important;
-            }
-            
-            .mobile-nav.active {
-                display: flex !important;
-            }
-            
-            .header-actions {
-                gap: 0.5rem;
-            }
-            
-            .header-actions button,
-            .header-actions a {
-                padding: 0.5rem;
-                font-size: 0.875rem;
-            }
-            
-            .cart-icon,
-            .wishlist-icon {
-                font-size: 1.25rem;
-            }
-        }
-        
-        /* Improved touch targets for mobile */
-        @media (max-width: 767.98px) {
-            button, 
-            a, 
-            input[type="submit"], 
-            input[type="button"] {
-                min-height: 44px;
-                min-width: 44px;
-            }
-            
-            .product-card .quick-view {
-                opacity: 1; /* Always visible on mobile */
-                position: relative !important;
-                bottom: auto !important;
-                right: auto !important;
-                margin-top: 0.5rem;
-                width: 100%;
-                border-radius: 0.5rem;
-            }
-        }
-        
-        /* Loading performance improvements */
-        .product-card img,
-        .hero-image,
-        .about-image {
-            transition: transform 0.3s ease;
-        }
-        
-        /* Accessibility improvements */
-        @media (prefers-reduced-motion: reduce) {
-            .product-card img,
-            .hero-image,
-            button,
-            a {
-                transition: none;
-            }
-            
-            .product-card:hover img {
-                transform: none;
-            }
-        }
-        
-        /* High contrast mode support */
-        @media (prefers-contrast: high) {
-            .product-card {
-                border: 2px solid currentColor;
-            }
-            
-            .bg-emerald-50,
-            .bg-white {
-                background-color: transparent;
-            }
-        }
-        
-        /* Dark mode considerations (if needed in future) */
-        @media (prefers-color-scheme: dark) {
-            .hero-pattern {
-                background-color: #ffffff;
-            }
+        .welcome-mobile-nav-link:not(.welcome-mobile-nav-link--active):hover {
+            background-color: rgb(255 255 255 / 0.1);
         }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 font-sans">
+<body class="welcome-page min-h-screen bg-cream text-stone-800 antialiased pb-10 lg:pb-0">
     @php
-        $pc = $publicContent ?? [];
+        $pc = $pcHead;
         $toAsset = function ($path, $fallback) {
             $value = $path ?: $fallback;
             return str_starts_with($value, 'public-page/') ? asset('storage/' . $value) : asset($value);
         };
+        $items = $products ?? collect();
+        $storeName = $pc['store_name'] ?? 'JM Casabar Mini Farm';
+        $heroTitle = $pc['hero_title'] ?? 'The Gold Standard of Farm-Raised Duck.';
+        $heroSub = $pc['hero_subtitle'] ?? 'Honored by tradition. Raised with care. Discover the difference of ethical husbandry and lineage you can taste in every cut.';
     @endphp
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                 <img src="{{ $toAsset($pc['store_logo'] ?? null, 'images/fav-icon.png') }}" alt="Store Logo" class="w-8 h-8 object-cover">
-                <h1 class="text-2xl font-bold tracking-wide">{{ $pc['store_name'] ?? 'JM Casabar Mini Farm' }}</h1>
-            </div>
-            
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="{{ url('/') }}" class="hover:text-yellow-300 transition-colors font-medium">Home</a>
-                <a href="#products" class="hover:text-yellow-300 transition-colors font-medium">Products</a>
-                <a href="#about" class="hover:text-yellow-300 transition-colors font-medium">About Us</a>
-                <a href="{{ route('contact') }}" class="hover:text-yellow-300 transition-colors font-medium">Contact</a>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <div class="relative hidden md:block">
-                    <input type="text" placeholder="Search our products..." class="pl-4 pr-10 py-2 border-2 border-teal-300 rounded-lg w-64 shadow-sm focus:ring-2 focus:ring-yellow-300 focus:outline-none">
-                    <button class="absolute right-3 top-2.5" onclick="redirectToLogin()">
-                        <i class="fas fa-search text-gray-500"></i>
-                    </button>
-                </div>
-                <button class="hover:text-yellow-300 transition-colors relative">
-                    <i class="fas fa-shopping-cart text-xl" onclick="redirectToLogin(event)"></i>
-                    <span class="absolute -top-2 -right-2 bg-yellow-400 text-xs text-teal-800 font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+
+    <!-- Header: mobile row (no overlap) + desktop 3-column row -->
+    <header class="sticky top-0 z-[60] bg-white border-b border-stone-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Mobile / tablet: [menu] [brand center] [icons] -->
+            <div class="flex lg:hidden items-center justify-between gap-3 h-16 min-h-[4rem]">
+                <button type="button" id="mobile-menu-btn" class="p-2 -ml-2 rounded-lg text-forest hover:bg-cream shrink-0" aria-label="Open menu">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
-                <a href="{{route('login')}}" class="bg-yellow-400 hover:bg-yellow-500 text-teal-900 font-semibold px-4 py-2 rounded-lg transition-colors shadow-md hidden md:block">
-                    Sign In
+                <a href="{{ url('/') }}" class="font-serif text-base sm:text-lg font-semibold text-forest text-center truncate min-w-0 flex-1 px-2">
+                    {{ $storeName }}
                 </a>
+                <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+                    <a href="{{ route('login') }}" class="inline-flex p-2 rounded-full text-stone-500 hover:text-forest hover:bg-cream transition-colors" aria-label="Account">
+                        <i class="fas fa-user text-lg"></i>
+                    </a>
+                    <a href="{{ route('cart.view') }}" class="p-2 rounded-full text-stone-500 hover:text-forest hover:bg-cream transition-colors" aria-label="Shopping bag">
+                        <i class="fas fa-shopping-bag text-lg"></i>
+                    </a>
+                </div>
             </div>
+
+            <!-- Desktop: [brand left] [nav center] [icons right] — no absolute positioning -->
+            <div class="hidden lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-6 lg:h-[4.25rem]">
+                <div class="flex items-center justify-start min-w-0">
+                    <a href="{{ url('/') }}" class="font-serif text-xl font-semibold text-forest tracking-tight truncate">
+                        {{ $storeName }}
+                    </a>
+                </div>
+                <nav class="flex items-center justify-center gap-5 xl:gap-7 text-sm font-medium text-stone-600 whitespace-nowrap">
+                    <a href="#heritage" class="hover:text-forest transition-colors">Heritage</a>
+                    <a href="#products" class="hover:text-forest transition-colors">Products</a>
+                    
+                    <a href="{{ route('question.page') }}" class="hover:text-forest transition-colors">FAQ</a>
+                    <a href="{{ route('contact') }}" class="hover:text-forest transition-colors">Contact</a>
+                </nav>
+                <div class="flex items-center justify-end gap-3">
+                    <a href="{{ route('login') }}" class="inline-flex p-2 rounded-full text-stone-500 hover:text-forest hover:bg-cream transition-colors" aria-label="Account">
+                        <i class="fas fa-user text-lg"></i>
+                    </a>
+                    <a href="{{ route('cart.view') }}" class="inline-flex p-2 rounded-full text-stone-500 hover:text-forest hover:bg-cream transition-colors" aria-label="Shopping bag">
+                        <i class="fas fa-shopping-bag text-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile slide-down menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-stone-100 bg-white">
+            <nav class="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1 text-stone-700 font-medium">
+                <a href="#heritage" class="py-3 border-b border-stone-100">Heritage</a>
+                <a href="#products" class="py-3 border-b border-stone-100">The Aviary</a>
+                <a href="#products" class="py-3 border-b border-stone-100">Curation</a>
+                <a href="{{ route('question.page') }}" class="py-3 border-b border-stone-100">FAQ</a>
+                <a href="{{ route('contact') }}" class="py-3 border-b border-stone-100">Contact</a>
+                <a href="{{ route('login') }}" class="py-3 text-forest">Sign in</a>
+            </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-pattern py-16 md:py-24">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-8 md:mb-0">
-                    <h1 class="text-4xl md:text-5xl font-bold text-teal-900 leading-tight mb-4">
-                        {{ $pc['hero_title'] ?? 'Farm-Fresh Pekin Duck Products' }}
-                    </h1>
-                    <p class="text-lg text-slate-700 mb-6">
-                        {{ $pc['hero_subtitle'] ?? '' }}
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#products" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md text-center">
-                            Shop Now
-                        </a>
-                        <a href="#about" class="border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 font-semibold px-6 py-3 rounded-lg transition-colors text-center">
-                            Learn More
-                        </a>
-                    </div>
-                </div>
-                <div class="md:w-1/2 flex justify-center">
-                    <img src="{{ $toAsset($pc['hero_image'] ?? null, 'images/pekin-young-alive.jpg') }}" alt="Pekin Ducks" class="rounded-lg shadow-xl max-w-full h-auto object-cover" style="max-height: 400px;">
+    <!-- Hero -->
+    <section class="relative min-h-[78vh] md:min-h-[85vh] flex items-center">
+        <div class="absolute inset-0 hero-bg z-0"
+             style="background-image: url('{{ $toAsset($pc['hero_image'] ?? null, 'images/pekin-young-alive.jpg') }}');">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/25 z-[1]"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 w-full">
+            <div class="max-w-2xl text-center md:text-left mx-auto md:mx-0">
+                <p class="inline-block px-4 py-1.5 rounded-full bg-gold/90 text-forest-dark text-xs font-semibold tracking-widest uppercase mb-6">
+                    Established 2020
+                </p>
+                <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-semibold text-white leading-tight mb-6">
+                    {{ $heroTitle }}
+                </h1>
+                <p class="text-lg text-white/90 font-light leading-relaxed mb-10 max-w-xl mx-auto md:mx-0">
+                    {{ $heroSub }}
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <a href="#products"
+                       class="inline-flex items-center justify-center px-8 py-3.5 bg-forest text-white font-semibold rounded-lg hover:bg-forest-light transition-colors shadow-lg">
+                        Explore Our Products
+                    </a>
+                    <a href="#heritage"
+                       class="inline-flex items-center justify-center px-8 py-3.5 border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors">
+                        Our Story
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Featured Products -->
-    <section id="products" class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-teal-900 mb-4">Our Premium Duck Products</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto">
-                    Discover our selection of high-quality, farm-raised Pekin duck products. 
-                    Each item is carefully produced with a focus on quality, freshness, and ethical farming practices.
-                </p>
+    <!-- Featured Selection -->
+    <section id="products" class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 md:mb-12">
+                <div>
+                    <h2 class="font-serif text-3xl md:text-4xl text-forest font-semibold">Featured Selection</h2>
+                    <p class="mt-2 text-stone-600 max-w-xl text-sm md:text-base">
+                        A curated offering from our reserve — whole duck, eggs, and cellar selections, prepared with the same care we bring to the farm.
+                    </p>
+                    <span class="mt-4 inline-block h-1 w-16 bg-gold rounded-full md:hidden" aria-hidden="true"></span>
+                </div>
+                <div class="hidden md:flex items-center gap-2 shrink-0">
+                    <button type="button" id="feat-prev" class="w-10 h-10 rounded-full border border-stone-200 text-stone-600 hover:bg-cream hover:border-gold/50 transition-colors" aria-label="Previous products">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button type="button" id="feat-next" class="w-10 h-10 rounded-full border border-stone-200 text-stone-600 hover:bg-cream hover:border-gold/50 transition-colors" aria-label="Next products">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                @php
-                    $items = $products ?? collect();
-                @endphp
-
-                @forelse($items as $item)
-                    @php
-                        $p = $item->product;
-                        $badge = $item->type === 'wine' ? 'Wine' : ($item->type === 'egg' ? 'Egg' : 'Duck');
-                        $badgeClass = $item->type === 'wine' ? 'bg-purple-600' : ($item->type === 'egg' ? 'bg-yellow-400 text-teal-900' : 'bg-emerald-600');
-                        $img = $p->product_image ? asset($p->product_image) : asset('images/pekin-young-alive.jpg');
-                    @endphp
-
-                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group js-product-card {{ $loop->index >= 8 ? 'hidden' : '' }}">
-                        <div class="relative">
-                            <span class="absolute top-3 left-3 {{ $badgeClass }} text-white text-sm px-3 py-1 rounded-full font-medium z-10">
-                                {{ $badge }}
-                            </span>
-                            <div class="overflow-hidden">
-                                <img src="{{ $img }}" alt="{{ $p->product_name }}" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+            @if($items->isEmpty())
+                <p class="text-center text-stone-500 py-16">No products available yet.</p>
+            @else
+                <div id="featured-scroller" class="featured-track flex gap-6 overflow-x-auto pb-2 md:cursor-grab active:cursor-grabbing">
+                    @foreach($items as $item)
+                        @php
+                            $p = $item->product;
+                            $badge = $item->type === 'wine' ? 'Wine' : ($item->type === 'egg' ? 'Egg' : 'Duck');
+                            $isLimited = $loop->index === 0;
+                            $isBest = $loop->index === 1;
+                            $img = $p->product_image ? asset($p->product_image) : asset('images/pekin-young-alive.jpg');
+                            $desc = \Illuminate\Support\Str::limit($p->product_description ?? 'Clean, succulent, farm-to-table freshness from our ponds.', 120);
+                        @endphp
+                        <article class="js-product-card featured-card flex-shrink-0 w-[min(100%,340px)] sm:w-[300px] lg:w-[320px] rounded-2xl overflow-hidden border border-stone-200/80 shadow-md bg-white flex flex-col @if($loop->index >= 8) hidden @endif">
+                            <div class="relative aspect-[4/3] bg-stone-900">
+                                @if($isLimited)
+                                    <span class="absolute top-3 right-3 z-10 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/95 text-stone-800">Limited Reserve</span>
+                                @elseif($isBest)
+                                    <span class="absolute top-3 right-3 z-10 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-gold text-forest-dark">Best Seller</span>
+                                @else
+                                    <span class="absolute top-3 right-3 z-10 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-700/90 text-white">{{ $badge }}</span>
+                                @endif
+                                <img src="{{ $img }}" alt="{{ $p->product_name }}" class="w-full h-full object-cover opacity-95 md:opacity-100">
                             </div>
-                            <a href="{{ route('login') }}" class="quick-view absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-emerald-600 hover:text-white transition-colors duration-300 opacity-0 group-hover:opacity-100 z-10" aria-label="Quick view">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                        </div>
-                        <div class="p-5 border-t">
-                            <h3 class="font-bold text-lg text-teal-900 mb-1 truncate" title="{{ $p->product_name }}">{{ $p->product_name }}</h3>
-                            <p class="text-slate-600 text-sm mb-3">
-                                {{ \Illuminate\Support\Str::limit($p->product_description ?? '', 90) }}
-                            </p>
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="text-emerald-600 font-bold text-xl">₱{{ number_format($p->product_price ?? 0, 2) }}</span>
-                                <div class="flex gap-2">
+                            <div class="p-5 flex flex-col flex-1 bg-white md:bg-white text-stone-800">
+                                <div class="flex items-start justify-between gap-3 mb-2">
+                                    <h3 class="font-serif font-semibold text-lg leading-snug">{{ $p->product_name }}</h3>
+                                    <span class="font-serif font-semibold text-forest whitespace-nowrap">₱{{ number_format($p->product_price ?? 0, 0) }}</span>
+                                </div>
+                                <p class="text-sm text-stone-500 mb-5 flex-1 leading-relaxed">{{ $desc }}</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <a href="{{ route('login') }}"
+                                       class="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-stone-300 text-sm font-medium text-stone-800 hover:bg-cream hover:border-gold/40 transition-colors">
+                                        View Selection
+                                        <i class="fas fa-chevron-down text-xs opacity-60"></i>
+                                    </a>
                                     <button type="button"
-                                            class="w-10 h-10 flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-300 js-add-to-cart"
+                                            class="js-add-to-cart inline-flex items-center justify-center w-12 h-12 rounded-xl bg-forest text-white hover:bg-forest-light transition-colors shrink-0"
                                             data-type="{{ $item->type === 'wine' ? 'wine' : 'duck' }}"
                                             data-id="{{ $p->id }}"
                                             aria-label="Add to cart">
@@ -491,278 +299,512 @@
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-full text-center py-12 text-slate-600">
-                        No products available yet.
-                    </div>
-                @endforelse
-            </div>
-
-            @if(($items ?? collect())->count() > 8)
-                <div class="mt-10 flex justify-center">
-                    <div class="relative inline-block text-left">
-                        <button type="button" id="see-more-button"
-                                class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg shadow hover:bg-emerald-700 transition-colors"
-                                aria-haspopup="true" aria-expanded="false">
-                            See More
-                            <i class="fas fa-chevron-down text-sm"></i>
-                        </button>
-
-                        <div id="see-more-menu"
-                             class="hidden absolute left-1/2 -translate-x-1/2 mt-3 w-56 rounded-xl bg-white shadow-lg ring-1 ring-black/5 overflow-hidden z-20">
-                            <button type="button" id="show-all-products"
-                                    class="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50">
-                                Show all products
-                            </button>
-                            <button type="button" id="show-less-products"
-                                    class="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50">
-                                Show fewer (8)
-                            </button>
-                        </div>
-                    </div>
+                        </article>
+                    @endforeach
                 </div>
+
+                @if($items->count() > 8)
+                    <div class="mt-10 flex justify-center">
+                        <div class="relative inline-block text-left">
+                            {{-- <button type="button" id="see-more-button"
+                                    class="inline-flex items-center gap-2 px-6 py-3 bg-forest text-white font-medium rounded-lg shadow hover:bg-forest-light transition-colors"
+                                    aria-haspopup="true" aria-expanded="false">
+                                See more
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button> --}}
+                            <div id="see-more-menu"
+                                 class="hidden absolute left-1/2 -translate-x-1/2 mt-3 w-56 rounded-xl bg-white shadow-lg ring-1 ring-black/5 overflow-hidden z-20">
+                                <button type="button" id="show-all-products" class="w-full px-4 py-3 text-left text-sm text-stone-700 hover:bg-cream">Show all products</button>
+                                <button type="button" id="show-less-products" class="w-full px-4 py-3 text-left text-sm text-stone-700 hover:bg-cream">Show fewer</button>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             @endif
-            
-           
         </div>
     </section>
 
-    <!-- About Us Section -->
-    <section id="about" class="py-16 bg-emerald-50">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2">
-                    <img src="{{ $toAsset($pc['about_image'] ?? null, 'images/Male_Pekin_Duck.jpg') }}" alt="Our Duck Farm" class="rounded-xl shadow-xl w-full h-auto">
+    <!-- CTA strip -->
+    <section class="py-12 md:py-16 bg-forest">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="hidden sm:flex w-14 h-14 rounded-full bg-gold/20 items-center justify-center text-gold text-xl shrink-0" aria-hidden="true">
+                    <i class="fas fa-quote-left"></i>
                 </div>
-                <div class="md:w-1/2">
-                    <h2 class="text-3xl font-bold text-teal-900 mb-6">{{ $pc['about_title'] ?? 'Our Mission & Story' }}</h2>
-                    <div class="space-y-4 text-slate-700">
-                        <p>{{ $pc['about_paragraph_1'] ?? '' }}</p>
-                        <p>{{ $pc['about_paragraph_2'] ?? '' }}</p>
-                        <p>{{ $pc['about_paragraph_3'] ?? '' }}</p>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 mt-8">
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <div class="text-emerald-600 text-3xl font-bold mb-2">{{ $pc['stat_1_number'] ?? '100%' }}</div>
-                            <div class="text-slate-700 font-medium">{{ $pc['stat_1_label'] ?? 'Natural Feed' }}</div>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <div class="text-emerald-600 text-3xl font-bold mb-2">{{ $pc['stat_2_number'] ?? '15+' }}</div>
-                            <div class="text-slate-700 font-medium">{{ $pc['stat_2_label'] ?? 'Years Experience' }}</div>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <div class="text-emerald-600 text-3xl font-bold mb-2">{{ $pc['stat_3_number'] ?? '0' }}</div>
-                            <div class="text-slate-700 font-medium">{{ $pc['stat_3_label'] ?? 'Antibiotics Used' }}</div>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <div class="text-emerald-600 text-3xl font-bold mb-2">{{ $pc['stat_4_number'] ?? '1000+' }}</div>
-                            <div class="text-slate-700 font-medium">{{ $pc['stat_4_label'] ?? 'Happy Customers' }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-teal-900 mb-4">{{ $pc['features_title'] ?? 'Why Choose Our Duck Products?' }}</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto">
-                    {{ $pc['features_subtitle'] ?? '' }}
+                <p class="font-serif text-2xl md:text-3xl text-white italic leading-snug">
+                    Ethically Raised, Exquisitely Delivered.
                 </p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="bg-emerald-50 p-6 rounded-xl text-center">
-                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-leaf text-emerald-600 text-2xl"></i>
+            <a href="{{ route('login') }}"
+               class="inline-flex items-center justify-center px-8 py-3.5 bg-gold text-forest-dark font-bold text-sm tracking-widest rounded-full hover:bg-gold-pale transition-colors shadow-lg whitespace-nowrap">
+                Reserve Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Heritage -->
+    <section id="heritage" class="py-16 md:py-24 bg-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div class="relative heritage-img-wrap">
+                    <div class="relative z-[1] rounded-xl overflow-hidden shadow-xl">
+                        <img src="{{ $toAsset($pc['about_image'] ?? null, 'images/Male_Pekin_Duck.jpg') }}"
+                             alt="Our farm" class="w-full h-[420px] lg:h-[520px] object-cover">
                     </div>
-                    <h3 class="text-xl font-bold text-teal-900 mb-2">{{ $pc['feature_1_title'] ?? '100% Natural' }}</h3>
-                    <p class="text-slate-600">{{ $pc['feature_1_text'] ?? '' }}</p>
                 </div>
-                
-                <div class="bg-emerald-50 p-6 rounded-xl text-center">
-                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-award text-emerald-600 text-2xl"></i>
+                <div>
+                    <p class="text-xs font-semibold tracking-[0.2em] text-stone-500 uppercase mb-3">Our Legacy</p>
+                    <h2 class="font-serif text-3xl md:text-4xl text-forest font-semibold mb-6">
+                        {{ $pc['about_title'] ?? 'Heritage & Heart: The Digital Conservatory' }}
+                    </h2>
+                    <div class="space-y-4 text-stone-600 leading-relaxed text-sm md:text-base">
+                        <p>{{ $pc['about_paragraph_1'] ?? 'For over fifteen years, JM Casabar Mini Farm has blended time-honored husbandry with modern care — nurturing Pekin ducks in open ponds and ethical conditions you can trace from egg to table.' }}</p>
+                        <p>{{ $pc['about_paragraph_2'] ?? 'We believe exceptional flavor begins with respect: for the land, the flock, and the families who share our table.' }}</p>
                     </div>
-                    <h3 class="text-xl font-bold text-teal-900 mb-2">{{ $pc['feature_2_title'] ?? 'Premium Quality' }}</h3>
-                    <p class="text-slate-600">{{ $pc['feature_2_text'] ?? '' }}</p>
-                </div>
-                
-                <div class="bg-emerald-50 p-6 rounded-xl text-center">
-                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-truck text-emerald-600 text-2xl"></i>
+                    <div class="flex flex-wrap items-center gap-6 mt-10 py-6 border-y border-stone-200/80">
+                        <div>
+                            <p class="font-serif text-xl md:text-2xl font-semibold text-forest">{{ $pc['stat_1_number'] ?? '100%' }}</p>
+                            <p class="text-xs font-semibold tracking-wider text-stone-500 uppercase">{{ $pc['stat_1_label'] ?? 'Natural Feed' }}</p>
+                        </div>
+                        <span class="hidden sm:block w-px h-12 bg-stone-200" aria-hidden="true"></span>
+                        <div>
+                            <p class="font-serif text-xl md:text-2xl font-semibold text-forest">{{ $pc['stat_2_number'] ?? '15+' }}</p>
+                            <p class="text-xs font-semibold tracking-wider text-stone-500 uppercase">{{ $pc['stat_2_label'] ?? 'Years Experience' }}</p>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-teal-900 mb-2">{{ $pc['feature_3_title'] ?? 'Fast Delivery' }}</h3>
-                    <p class="text-slate-600">{{ $pc['feature_3_text'] ?? '' }}</p>
-                </div>
-                
-                <div class="bg-emerald-50 p-6 rounded-xl text-center">
-                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-leaf text-emerald-600 text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-teal-900 mb-2">{{ $pc['feature_4_title'] ?? 'Ethically Raised' }}</h3>
-                    <p class="text-slate-600">{{ $pc['feature_4_text'] ?? '' }}</p>
+                    <a href="{{ route('question.page') }}" class="inline-flex items-center gap-2 mt-6 text-forest font-medium border-b border-gold/60 hover:border-gold pb-0.5 transition-colors">
+                        Explore our provenance history
+                        <span aria-hidden="true">—</span>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-
-    <!-- Footer -->
-    <footer class="bg-teal-900 text-white pt-12 pb-6">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+    <!-- Journal / Newsletter -->
+    <section id="journal" class="py-16 md:py-24 bg-white border-t border-stone-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                       <img src="{{ asset('images/Flappy_IoT.png') }}" alt="Flappy IoT Logo" class="w-8 h-8">
-                        <h3 class="text-xl font-bold">{{ $pc['footer_brand_name'] ?? 'Flappy-Beak' }}</h3>
-                    </div>
-                    <p class="text-teal-200 mb-4">
-                        {{ $pc['footer_brand_text'] ?? '' }}
+                    <h2 class="font-serif text-3xl md:text-4xl text-forest font-semibold mb-3">The Weekly Journal</h2>
+                    <p class="text-stone-600 mb-8 max-w-md">
+                        Recipes, harvest notes, and farm updates — subscribe and we’ll send seasonal inspiration to your inbox.
                     </p>
-                    <div class="flex space-x-4">
-                        <a href="https://web.facebook.com/IMORTALxiiJERRY" class="text-teal-200 hover:text-yellow-300" target="_blank" rel="noopener" aria-label="Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="https://www.instagram.com/jerry_casabar?igsh=Y2x6enlmdHB3cmhq" class="text-teal-200 hover:text-yellow-300" target="_blank" rel="noopener" aria-label="Instagram">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="tel:{{ config('contact.owner_phone_tel') }}" class="text-teal-200 hover:text-yellow-300" aria-label="Call">
-                            <i class="fas fa-phone"></i>
-                        </a>
-                        <a href="mailto:jmcasabar@gmail.com" class="text-teal-200 hover:text-yellow-300" aria-label="Email">
-                            <i class="fas fa-envelope"></i>
-                        </a>
-                    </div>
+                    <form class="flex flex-col sm:flex-row gap-0 sm:gap-0 max-w-lg" action="#" method="post" onsubmit="event.preventDefault(); window.showToast?.('Thanks — newsletter coming soon.', 'success');">
+                        @csrf
+                        <label class="sr-only" for="newsletter-email">Email</label>
+                        <input type="email" id="newsletter-email" required placeholder="Your email address"
+                               class="flex-1 min-w-0 px-4 py-3.5 rounded-l-lg sm:rounded-r-none border border-stone-200 bg-stone-50 text-stone-800 placeholder:text-stone-400 focus:ring-2 focus:ring-gold/50 focus:border-gold outline-none">
+                        <button type="submit" class="mt-2 sm:mt-0 px-8 py-3.5 bg-forest text-white font-semibold rounded-lg sm:rounded-l-none sm:rounded-r-lg hover:bg-forest-light transition-colors">
+                            Join
+                        </button>
+                    </form>
                 </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ url('/') }}" class="text-teal-200 hover:text-yellow-300">Home</a></li>
-                        <li><a href="{{ url('/') }}#products" class="text-teal-200 hover:text-yellow-300">Products</a></li>
-                        <li><a href="{{ url('/') }}#about" class="text-teal-200 hover:text-yellow-300">About Us</a></li>
-                        <li><a href="{{ route('contact') }}" class="text-teal-200 hover:text-yellow-300">Contact</a></li>
-                        <li><a href="{{ route('question.page') }}" class="text-teal-200 hover:text-yellow-300">FAQ</a></li>
-                        <li><a href="{{ route('privacy-policy.page') }}" class="text-teal-200 hover:text-yellow-300">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start space-x-2">
-                            <i class="fas fa-map-marker-alt mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">{{ $pc['contact_address'] ?? '' }}</span>
-                        </li>
-                        <li class="flex items-start space-x-2">
-                            <i class="fas fa-phone mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">{{ config('contact.owner_phone_display') }}</span>
-                        </li>
-                        <li class="flex items-start space-x-2">
-                            <i class="fas fa-envelope mt-1 text-yellow-300"></i>
-                            <span class="text-teal-200">{{ $pc['contact_email'] ?? 'jmcasabar@gmail.com' }}</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Business Hours</h3>
-                    <ul class="space-y-2">
-                        <li class="text-teal-200">{{ $pc['business_hours_1'] ?? '' }}</li>
-                        <li class="text-teal-200">{{ $pc['business_hours_2'] ?? '' }}</li>
-                        <li class="text-teal-200">{{ $pc['business_hours_3'] ?? '' }}</li>
-                    </ul>
+                <div class="grid grid-cols-2 gap-4">
+                    
+                    <img src="{{ $toAsset($pc['hero_image'] ?? null, 'images/pekin-young-alive.jpg') }}" alt="" class="rounded-xl h-48 object-cover w-full shadow-md mt-8">
                 </div>
             </div>
-            
-            <div class="border-t border-teal-800 pt-6 mt-6">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-teal-300 text-sm">© 2025 Flappy-Beak Duck Farm. All rights reserved.</p>
-                    <div class="flex space-x-4 mt-4 md:mt-0">
-                        <a href="#" class="text-teal-300 text-sm hover:text-yellow-300">Privacy Policy</a>
-                        <a href="#" class="text-teal-300 text-sm hover:text-yellow-300">Terms of Service</a>
-                        <a href="#" class="text-teal-300 text-sm hover:text-yellow-300">Shipping Policy</a>
-                    </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-forest-dark text-white pt-14 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-10 mb-10">
+                <div class="max-w-xs">
+                    <p class="font-serif text-xl text-gold-pale font-semibold mb-2">{{ $storeName }}</p>
+                    <p class="text-sm text-white/70 leading-relaxed">
+                        {{ $pc['footer_brand_text'] ?? 'Premium farm-raised duck and artisan products from JM Casabar Mini Farm.' }}
+                    </p>
+                </div>
+                <nav class="flex flex-wrap gap-x-8 gap-y-3 text-sm text-white/80 justify-center md:justify-end">
+                    <a href="#heritage" class="hover:text-gold-pale transition-colors">Provenance</a>
+                    <a href="{{ route('question.page') }}" class="hover:text-gold-pale transition-colors">FAQ</a>
+                    <a href="{{ route('contact') }}" class="hover:text-gold-pale transition-colors">Contact Us</a>
+                    <a href="{{ route('privacy-policy.page') }}" class="hover:text-gold-pale transition-colors">Privacy Policy</a>
+                </nav>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10">
+                <p class="text-xs text-white/50">© {{ date('Y') }} {{ $storeName }}. All rights reserved.</p>
+                <div class="flex gap-4 text-white/60">
+                    <a href="https://web.facebook.com/IMORTALxiiJERRY" target="_blank" rel="noopener" class="hover:text-gold-pale" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/jerry_casabar" target="_blank" rel="noopener" class="hover:text-gold-pale" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="mailto:jmcasabar@gmail.com" class="hover:text-gold-pale" aria-label="Email"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Mobile FAB nav: default right side, draggable; tap active tab to expand (direction from position) -->
+    <nav id="welcome-mobile-bottom-nav" class="lg:hidden fixed inset-0 z-[70] pointer-events-none" aria-label="Mobile navigation" aria-expanded="false">
+        <div id="welcome-mobile-float-root" class="pointer-events-auto fixed rounded-full bg-forest-dark/95 backdrop-blur shadow-xl border border-white/10" role="presentation">
+            <div id="welcome-mobile-bottom-pill" class="flex items-center gap-1 px-2 py-2 rounded-full" data-expanded="false" data-layout="row-left" role="group" aria-label="Quick navigation">
+            <a href="{{ url('/') }}" data-nav="home" class="welcome-mobile-nav-link welcome-mobile-nav-link--active flex flex-col items-center justify-center w-14 h-14 shrink-0 rounded-full" aria-current="page">
+                <i class="fas fa-home text-lg" aria-hidden="true"></i>
+                <span class="text-[9px] mt-0.5 font-medium">Home</span>
+            </a>
+            <a href="#products" data-nav="shop" class="welcome-mobile-nav-link flex flex-col items-center justify-center w-14 h-14 shrink-0 rounded-full">
+                <i class="fas fa-store text-lg" aria-hidden="true"></i>
+                <span class="text-[9px] mt-0.5 font-medium">Shop</span>
+            </a>
+            <a href="{{ route('question.page') }}" data-nav="faq" class="welcome-mobile-nav-link flex flex-col items-center justify-center w-14 h-14 shrink-0 rounded-full">
+                <i class="fas fa-circle-question text-lg" aria-hidden="true"></i>
+                <span class="text-[9px] mt-0.5 font-medium">FAQ</span>
+            </a>
+            <a href="{{ route('login') }}" data-nav="profile" class="welcome-mobile-nav-link flex flex-col items-center justify-center w-14 h-14 shrink-0 rounded-full">
+                <i class="fas fa-user text-lg" aria-hidden="true"></i>
+                <span class="text-[9px] mt-0.5 font-medium">Profile</span>
+            </a>
+            </div>
+        </div>
+    </nav>
+
     @include('partials.toast-container')
 
     <script>
-        // "See More" dropdown for products
         (function () {
-            const btn = document.getElementById('see-more-button');
-            const menu = document.getElementById('see-more-menu');
-            const showAll = document.getElementById('show-all-products');
-            const showLess = document.getElementById('show-less-products');
-            const cards = Array.from(document.querySelectorAll('.js-product-card'));
-
-            if (!btn || !menu || !cards.length) return;
-
-            function openMenu() {
-                menu.classList.remove('hidden');
-                btn.setAttribute('aria-expanded', 'true');
-            }
-            function closeMenu() {
-                menu.classList.add('hidden');
-                btn.setAttribute('aria-expanded', 'false');
-            }
-            function showAllProducts() {
-                cards.forEach(c => c.classList.remove('hidden'));
-            }
-            function showLessProducts() {
-                cards.forEach((c, idx) => {
-                    if (idx < 8) c.classList.remove('hidden');
-                    else c.classList.add('hidden');
+            var btn = document.getElementById('mobile-menu-btn');
+            var menu = document.getElementById('mobile-menu');
+            if (!btn || !menu) return;
+            btn.addEventListener('click', function () {
+                menu.classList.toggle('hidden');
+                var open = !menu.classList.contains('hidden');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                btn.innerHTML = open ? '<i class="fas fa-times text-xl"></i>' : '<i class="fas fa-bars text-xl"></i>';
+            });
+            menu.querySelectorAll('a').forEach(function (a) {
+                a.addEventListener('click', function () {
+                    menu.classList.add('hidden');
+                    btn.setAttribute('aria-expanded', 'false');
+                    btn.innerHTML = '<i class="fas fa-bars text-xl"></i>';
                 });
-                const productsSection = document.getElementById('products');
-                if (productsSection) productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        })();
+
+        (function () {
+            var floatRoot = document.getElementById('welcome-mobile-float-root');
+            var pill = document.getElementById('welcome-mobile-bottom-pill');
+            var navEl = document.getElementById('welcome-mobile-bottom-nav');
+            if (!floatRoot || !pill || !navEl) return;
+
+            var LS_KEY = 'welcomeMobileFab';
+            var DRAG_THRESHOLD = 12;
+            var dragMoved = false;
+            var isDragging = false;
+            var dragPointerId = null;
+            var startClientX = 0;
+            var startClientY = 0;
+            var originRightDist = 0;
+            var originTop = 0;
+            var suppressNextClick = false;
+
+            function approxExpandedWidth() {
+                var cell = 56;
+                var gap = 4;
+                var pad = 16;
+                return 4 * cell + 3 * gap + pad;
+            }
+
+            function marginX() { return 10; }
+            function marginTop() { return 64; }
+            function marginBottom() { return Math.max(24, 88); }
+
+            function clampRightTop(rightDist, top) {
+                var w = floatRoot.offsetWidth || 64;
+                var h = floatRoot.offsetHeight || 64;
+                var vw = window.innerWidth;
+                var vh = window.innerHeight;
+                var maxR = vw - w - marginX();
+                var r = Math.min(maxR, Math.max(marginX(), rightDist));
+                var t = Math.min(vh - h - marginBottom(), Math.max(marginTop(), top));
+                return { right: r, top: t };
+            }
+
+            function applyPosition(rightDist, top) {
+                var c = clampRightTop(rightDist, top);
+                floatRoot.style.left = 'auto';
+                floatRoot.style.right = c.right + 'px';
+                floatRoot.style.top = c.top + 'px';
+                return c;
+            }
+
+            function defaultPosition() {
+                var h = floatRoot.offsetHeight || 64;
+                var vh = window.innerHeight;
+                return clampRightTop(marginX(), vh - h - marginBottom());
+            }
+
+            function savePosition() {
+                try {
+                    var r = floatRoot.getBoundingClientRect();
+                    var rightDist = window.innerWidth - r.right;
+                    var top = r.top;
+                    localStorage.setItem(LS_KEY, JSON.stringify({ right: rightDist, top: top }));
+                } catch (e) {}
+            }
+
+            function loadPosition() {
+                try {
+                    var raw = localStorage.getItem(LS_KEY);
+                    if (!raw) return null;
+                    var p = JSON.parse(raw);
+                    if (typeof p.right === 'number' && typeof p.top === 'number') {
+                        return clampRightTop(p.right, p.top);
+                    }
+                    if (typeof p.left === 'number' && typeof p.top === 'number') {
+                        var w = floatRoot.offsetWidth || 64;
+                        return clampRightTop(window.innerWidth - p.left - w, p.top);
+                    }
+                    return null;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function chooseExpandLayout() {
+                var rect = floatRoot.getBoundingClientRect();
+                var vw = window.innerWidth;
+                var vh = window.innerHeight;
+                var cx = rect.left + rect.width / 2;
+                var cy = rect.top + rect.height / 2;
+                var ew = approxExpandedWidth();
+                var spaceLeft = rect.left - marginX();
+                var spaceRight = vw - rect.right - marginX();
+                var spaceUp = rect.top - marginTop();
+                var spaceDown = vh - rect.bottom - marginBottom();
+
+                if (cx >= vw * 0.5) {
+                    if (spaceLeft >= ew - rect.width + 8) {
+                        pill.setAttribute('data-layout', 'row-left');
+                    } else if (spaceUp >= ew * 0.65) {
+                        pill.setAttribute('data-layout', 'col-up');
+                    } else if (spaceDown >= ew * 0.65) {
+                        pill.setAttribute('data-layout', 'col-down');
+                    } else {
+                        pill.setAttribute('data-layout', spaceUp > spaceDown ? 'col-up' : 'col-down');
+                    }
+                } else {
+                    if (spaceRight >= ew - rect.width + 8) {
+                        pill.setAttribute('data-layout', 'row-right');
+                    } else if (spaceUp >= ew * 0.65) {
+                        pill.setAttribute('data-layout', 'col-up');
+                    } else if (spaceDown >= ew * 0.65) {
+                        pill.setAttribute('data-layout', 'col-down');
+                    } else {
+                        pill.setAttribute('data-layout', spaceUp > spaceDown ? 'col-up' : 'col-down');
+                    }
+                }
+            }
+
+            function setActiveStyles(link) {
+                pill.querySelectorAll('.welcome-mobile-nav-link').forEach(function (a) {
+                    a.removeAttribute('aria-current');
+                    a.classList.remove('welcome-mobile-nav-link--active');
+                });
+                if (link) {
+                    link.setAttribute('aria-current', 'page');
+                    link.classList.add('welcome-mobile-nav-link--active');
+                }
+            }
+
+            function syncActiveFromHash() {
+                var hash = (location.hash || '').toLowerCase();
+                var target = hash === '#products' ? pill.querySelector('[data-nav="shop"]') : pill.querySelector('[data-nav="home"]');
+                if (target) setActiveStyles(target);
+            }
+
+            function setExpanded(expanded) {
+                var rightD = window.innerWidth - floatRoot.getBoundingClientRect().right;
+                var bottom = floatRoot.getBoundingClientRect().bottom;
+                pill.setAttribute('data-expanded', expanded ? 'true' : 'false');
+                navEl.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                if (expanded) {
+                    chooseExpandLayout();
+                    requestAnimationFrame(function () {
+                        if (pill.getAttribute('data-layout') !== 'col-up') return;
+                        var nh = floatRoot.offsetHeight;
+                        applyPosition(rightD, bottom - nh);
+                    });
+                } else {
+                    requestAnimationFrame(function () {
+                        var lay = pill.getAttribute('data-layout');
+                        if (lay !== 'col-up') return;
+                        var nh = floatRoot.offsetHeight;
+                        applyPosition(rightD, bottom - nh);
+                    });
+                }
+            }
+
+            function isExpanded() {
+                return pill.getAttribute('data-expanded') === 'true';
+            }
+
+            function initFabPosition() {
+                var saved = loadPosition();
+                if (saved) {
+                    applyPosition(saved.right, saved.top);
+                } else {
+                    var d = defaultPosition();
+                    applyPosition(d.right, d.top);
+                }
+            }
+
+            pill.addEventListener('click', function (e) {
+                if (suppressNextClick) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    suppressNextClick = false;
+                    return;
+                }
+                var a = e.target.closest('.welcome-mobile-nav-link');
+                if (!a) return;
+                var isCurrent = a.getAttribute('aria-current') === 'page';
+                if (!isExpanded() && isCurrent) {
+                    e.preventDefault();
+                    setExpanded(true);
+                    return;
+                }
+                if (isExpanded() && isCurrent) {
+                    e.preventDefault();
+                    setExpanded(false);
+                    if (a.getAttribute('data-nav') === 'home') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                    return;
+                }
+                if (isExpanded() && !isCurrent) {
+                    setExpanded(false);
+                }
+            }, true);
+
+            floatRoot.addEventListener('pointerdown', function (e) {
+                if (e.button !== undefined && e.button !== 0) return;
+                dragMoved = false;
+                isDragging = false;
+                dragPointerId = e.pointerId;
+                startClientX = e.clientX;
+                startClientY = e.clientY;
+                var r = floatRoot.getBoundingClientRect();
+                originRightDist = window.innerWidth - r.right;
+                originTop = r.top;
+                try {
+                    floatRoot.setPointerCapture(e.pointerId);
+                } catch (err) {}
+            });
+
+            floatRoot.addEventListener('pointermove', function (e) {
+                if (dragPointerId !== e.pointerId) return;
+                var dx = e.clientX - startClientX;
+                var dy = e.clientY - startClientY;
+                if (!isDragging && dx * dx + dy * dy > DRAG_THRESHOLD * DRAG_THRESHOLD) {
+                    isDragging = true;
+                    dragMoved = true;
+                    floatRoot.classList.add('is-dragging');
+                    if (isExpanded()) {
+                        setExpanded(false);
+                    }
+                }
+                if (isDragging) {
+                    e.preventDefault();
+                    applyPosition(originRightDist - dx, originTop + dy);
+                }
+            });
+
+            floatRoot.addEventListener('pointerup', function (e) {
+                if (dragPointerId !== e.pointerId) return;
+                try {
+                    floatRoot.releasePointerCapture(e.pointerId);
+                } catch (err) {}
+                dragPointerId = null;
+                floatRoot.classList.remove('is-dragging');
+                if (dragMoved) {
+                    suppressNextClick = true;
+                    savePosition();
+                }
+                isDragging = false;
+            });
+
+            floatRoot.addEventListener('pointercancel', function (e) {
+                dragPointerId = null;
+                floatRoot.classList.remove('is-dragging');
+                isDragging = false;
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!isExpanded()) return;
+                if (floatRoot.contains(e.target)) return;
+                setExpanded(false);
+            });
+
+            window.addEventListener('resize', function () {
+                var r = floatRoot.getBoundingClientRect();
+                applyPosition(window.innerWidth - r.right, r.top);
+            });
+
+            window.addEventListener('hashchange', syncActiveFromHash);
+            requestAnimationFrame(function () {
+                initFabPosition();
+                syncActiveFromHash();
+            });
+
+            document.querySelectorAll('a[href="#products"]').forEach(function (el) {
+                if (pill.contains(el)) return;
+                el.addEventListener('click', function () {
+                    requestAnimationFrame(function () { syncActiveFromHash(); });
+                });
+            });
+        })();
+
+        (function () {
+            var scroller = document.getElementById('featured-scroller');
+            var prev = document.getElementById('feat-prev');
+            var next = document.getElementById('feat-next');
+            if (!scroller || !prev || !next) return;
+            var step = function () { return Math.min(scroller.clientWidth * 0.85, 340); };
+            prev.addEventListener('click', function () { scroller.scrollBy({ left: -step(), behavior: 'smooth' }); });
+            next.addEventListener('click', function () { scroller.scrollBy({ left: step(), behavior: 'smooth' }); });
+        })();
+
+        (function () {
+            var btn = document.getElementById('see-more-button');
+            var menu = document.getElementById('see-more-menu');
+            var showAll = document.getElementById('show-all-products');
+            var showLess = document.getElementById('show-less-products');
+            var cards = Array.from(document.querySelectorAll('.featured-card'));
+            if (!btn || !cards.length) return;
+
+            function openMenu() { menu?.classList.remove('hidden'); btn.setAttribute('aria-expanded', 'true'); }
+            function closeMenu() { menu?.classList.add('hidden'); btn.setAttribute('aria-expanded', 'false'); }
+            function showAllProducts() { cards.forEach(function (c) { c.classList.remove('hidden'); }); }
+            function showLessProducts() {
+                cards.forEach(function (c, idx) { c.classList.toggle('hidden', idx >= 8); });
+                document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
 
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
-                if (menu.classList.contains('hidden')) openMenu();
-                else closeMenu();
+                if (!menu) return;
+                if (menu.classList.contains('hidden')) openMenu(); else closeMenu();
             });
-            showAll?.addEventListener('click', function () {
-                showAllProducts();
-                closeMenu();
-            });
-            showLess?.addEventListener('click', function () {
-                showLessProducts();
-                closeMenu();
-            });
-
+            showAll?.addEventListener('click', function () { showAllProducts(); closeMenu(); });
+            showLess?.addEventListener('click', function () { showLessProducts(); closeMenu(); });
             document.addEventListener('click', function (e) {
-                if (!menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
-            });
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') closeMenu();
+                if (menu && !menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
             });
         })();
 
-        // Guest add-to-cart (keeps cart in session; checkout still requires login)
         (function () {
-            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-            const buttons = Array.from(document.querySelectorAll('.js-add-to-cart'));
+            var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            var buttons = Array.from(document.querySelectorAll('.js-add-to-cart'));
             if (!buttons.length) return;
 
             async function addToCart(type, id) {
-                const url = type === 'wine' ? "{{ route('cart.add.wine') }}" : "{{ route('cart.add') }}";
-                const body = new URLSearchParams();
+                var url = type === 'wine' ? "{{ route('cart.add.wine') }}" : "{{ route('cart.add') }}";
+                var body = new URLSearchParams();
                 body.set('product_id', String(id));
                 body.set('quantity', '1');
-
-                const res = await fetch(url, {
+                var res = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -771,25 +813,18 @@
                     },
                     body: body.toString(),
                 });
-
                 if (res.ok) {
-                    window.showToast?.('Added to cart. You can checkout after logging in.', 'success');
+                    window.showToast?.('Added to cart. Sign in to checkout.', 'success');
                     return;
                 }
-
-                let msg = 'Failed to add to cart.';
-                try {
-                    const data = await res.json();
-                    if (data?.message) msg = data.message;
-                } catch (e) {}
+                var msg = 'Failed to add to cart.';
+                try { var data = await res.json(); if (data?.message) msg = data.message; } catch (e) {}
                 window.showToast?.(msg, 'error');
             }
 
-            buttons.forEach(btn => {
+            buttons.forEach(function (btn) {
                 btn.addEventListener('click', function () {
-                    const type = this.getAttribute('data-type');
-                    const id = this.getAttribute('data-id');
-                    addToCart(type, id);
+                    addToCart(btn.getAttribute('data-type'), btn.getAttribute('data-id'));
                 });
             });
         })();

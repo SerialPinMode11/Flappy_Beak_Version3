@@ -1,34 +1,34 @@
-@extends('layouts.default')
+@extends('layouts.public-site')
 
 @section('title', $product->product_name)
 
 @section('content')
-    <main class="flex-grow container mx-auto px-4 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
         <!-- Breadcrumb -->
         <nav class="mb-6 flex items-center text-sm text-gray-500" aria-label="Breadcrumb">
             <ol class="flex items-center space-x-2">
                 <li>
-                    <a href="{{ route('home') }}" class="hover:text-primary transition-colors">
+                    <a href="{{ route('home') }}" class="hover:text-forest transition-colors">
                         <i class="fas fa-home"></i>
                     </a>
                 </li>
                 <li class="flex items-center space-x-2">
                     <i class="fas fa-chevron-right text-xs"></i>
-                    <a href="#" class="hover:text-primary transition-colors">Products</a>
+                    <a href="#" class="hover:text-forest transition-colors">Products</a>
                 </li>
                 <li class="flex items-center space-x-2">
                     <i class="fas fa-chevron-right text-xs"></i>
-                    <span class="text-primary">{{ $product->product_name }}</span>
+                    <span class="text-forest">{{ $product->product_name }}</span>
                 </li>
             </ol>
         </nav>
 
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-md border border-stone-200/80 overflow-hidden">
             <div class="md:grid md:grid-cols-2">
                 <!-- Product Image Section -->
                 <div class="relative group">
                     <div class="absolute top-4 left-4 z-10">
-                        <span class="bg-primary text-white text-sm font-semibold px-4 py-1 rounded-full">
+                        <span class="bg-forest text-white text-sm font-semibold px-4 py-1 rounded-full">
                             Premium Wine Product
                         </span>
                     </div>
@@ -43,7 +43,7 @@
                     <!-- Image Navigation Dots -->
                     <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
                         <button class="w-2 h-2 rounded-full bg-white opacity-75"></button>
-                        <button class="w-2 h-2 rounded-full bg-primary"></button>
+                        <button class="w-2 h-2 rounded-full bg-forest"></button>
                         <button class="w-2 h-2 rounded-full bg-white opacity-75"></button>
                     </div>
                 </div>
@@ -61,19 +61,19 @@
                                 <span class="ml-2 text-sm text-gray-500">(4.5)</span>
                             </div>
                             <span class="text-sm text-gray-500">|</span>
-                            <a href="#reviews" class="text-sm text-primary hover:underline">24 Reviews</a>
+                            <a href="#reviews" class="text-sm text-forest hover:underline">24 Reviews</a>
                         </div>
-                        <button class="text-gray-400 hover:text-primary transition-colors">
+                        <button class="text-gray-400 hover:text-forest transition-colors">
                             <i class="far fa-heart text-xl"></i>
                         </button>
                     </div>
 
-                    <h1 class="text-3xl font-bold text-neutral mb-4">{{ $product->product_name }}</h1>
+                    <h1 class="text-3xl font-bold text-forest mb-4">{{ $product->product_name }}</h1>
 
                     <div class="mb-6">
                         <div class="flex items-baseline space-x-3">
                             <span
-                                class="text-4xl font-bold text-primary">₱{{ number_format($product->product_price, 2) }}</span>
+                                class="text-4xl font-bold text-forest">₱{{ number_format($product->product_price, 2) }}</span>
                             @if(isset($product->original_price))
                                 <span
                                     class="text-lg text-gray-400 line-through">₱{{ number_format($product->original_price, 2) }}</span>
@@ -113,7 +113,7 @@
                         <!-- Action Buttons -->
                         <div class="flex flex-col sm:flex-row gap-4">
                             <button type="submit"
-                                class="flex-1 bg-primary hover:bg-opacity-90 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center">
+                                class="flex-1 bg-forest hover:bg-opacity-90 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center">
                                 <i class="fas fa-shopping-cart mr-2"></i>
                                 Add to Cart
                             </button>
@@ -152,15 +152,15 @@
                 <div class="p-6 md:p-8">
                     <div class="flex border-b border-gray-200">
                         <button onclick="openTab(event, 'description')"
-                            class="tab-button px-6 py-3 text-primary border-b-2 border-primary">
+                            class="tab-button px-6 py-3 text-forest border-b-2 border-forest">
                             Description
                         </button>
                         <button onclick="openTab(event, 'specifications')"
-                            class="tab-button px-6 py-3 text-gray-500 hover:text-primary">
+                            class="tab-button px-6 py-3 text-gray-500 hover:text-forest">
                             Specifications
                         </button>
                         <button onclick="openTab(event, 'reviews')"
-                            class="tab-button px-6 py-3 text-gray-500 hover:text-primary">
+                            class="tab-button px-6 py-3 text-gray-500 hover:text-forest">
                             Reviews (24)
                         </button>
                     </div>
@@ -168,7 +168,7 @@
                     <div id="description" class="tab-content py-6">
                         <div class="prose max-w-none text-gray-600">
                             <p class="mb-4">{{ $product->product_description }}</p>
-                            <h3 class="text-lg font-semibold text-neutral mb-3">Key Features:</h3>
+                            <h3 class="text-lg font-semibold text-forest mb-3">Key Features:</h3>
                             <ul class="list-disc pl-5 space-y-2">
                                 <li>Crafted from macopa fruit cultivated on JM Casabar Private Farm.</li>
                                 <li>Handcrafted with care in limited quantities.</li>
@@ -181,44 +181,44 @@
                     <div id="specifications" class="tab-content hidden py-6">
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
-                                <h3 class="text-lg font-semibold text-neutral mb-4">Product Specifications</h3>
+                                <h3 class="text-lg font-semibold text-forest mb-4">Product Specifications</h3>
                                 <div class="space-y-3">
                                     <div class="flex justify-between py-2 border-b">
                                         <span class="text-gray-600">Wine Variant</span>
-                                        <span class="font-medium text-neutral">{{ $product->product_name }}</span>
+                                        <span class="font-medium text-forest">{{ $product->product_name }}</span>
                                     </div>
                                     <div class="flex justify-between py-2 border-b">
                                         <span class="text-gray-600">Age</span>
-                                        <span class="font-medium text-neutral">6 month</span>
+                                        <span class="font-medium text-forest">6 month</span>
                                     </div>
                                     <div class="flex justify-between py-2 border-b">
                                         <span class="text-gray-600">Average Height</span>
-                                        <span class="font-medium text-neutral">400g</span>
+                                        <span class="font-medium text-forest">400g</span>
                                     </div>
                                     <div class="flex justify-between py-2 border-b">
                                         <span class="text-gray-600">Average Volume</span>
-                                        <span class="font-medium text-neutral">720ml</span>
+                                        <span class="font-medium text-forest">720ml</span>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-neutral mb-4">Care Requirements</h3>
+                                <h3 class="text-lg font-semibold text-forest mb-4">Care Requirements</h3>
                                 <div class="space-y-3">
                                     <div class="flex justify-between py-2 border-b">
                                         <span class="text-gray-600">Storage Temperature</span>
-                                        <span class="font-medium text-neutral">10−15°C</span>
+                                        <span class="font-medium text-forest">10−15°C</span>
                                     </div>
                                     <div class="flex justify-between py-2 border-b">
                                         <span class="text-gray-600">Light Exposure</span>
-                                        <span class="font-medium text-neutral">Store in a dark place, away from direct sunlight or strong artificial light.</span>
+                                        <span class="font-medium text-forest">Store in a dark place, away from direct sunlight or strong artificial light.</span>
                                     </div>
                                     <div class="flex justify-between py-2 border-b">
                                         <span class="text-gray-600">Humidity</span>
-                                        <span class="font-medium text-neutral">70−80% relative humidity</span>
+                                        <span class="font-medium text-forest">70−80% relative humidity</span>
                                     </div>
                                     <div class="flex justify-between py-2 border-b">
                                         <span class="text-gray-600">Bottle Position</span>
-                                        <span class="font-medium text-neutral">Store horizontally  to keep the cork moist and prevent it from drying out and shrinking</span>
+                                        <span class="font-medium text-forest">Store horizontally  to keep the cork moist and prevent it from drying out and shrinking</span>
                                     </div>
                                 </div>
                             </div>
@@ -229,7 +229,7 @@
                         <div class="mb-8">
                             <div class="flex items-center mb-4">
                                 <div class="flex-1">
-                                    <h3 class="text-lg font-semibold text-neutral">Customer Reviews</h3>
+                                    <h3 class="text-lg font-semibold text-forest">Customer Reviews</h3>
                                     <div class="flex items-center mt-2">
                                         <div class="flex items-center">
                                             <i class="fas fa-star text-yellow-400"></i>
@@ -242,7 +242,7 @@
                                     </div>
                                 </div>
                                 <button
-                                    class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
+                                    class="bg-forest text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
                                     Write a Review
                                 </button>
                             </div>
@@ -253,12 +253,12 @@
                                     <div class="flex items-start mb-4">
                                         <div class="flex-shrink-0">
                                             <div
-                                                class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
+                                                class="w-10 h-10 rounded-full bg-forest text-white flex items-center justify-center font-semibold">
                                                 JD
                                             </div>
                                         </div>
                                         <div class="ml-4">
-                                            <h4 class="font-semibold text-neutral">Juan Dela Cruz</h4>
+                                            <h4 class="font-semibold text-forest">Juan Dela Cruz</h4>
                                             <div class="flex items-center mt-1">
                                                 <div class="flex items-center text-yellow-400">
                                                     <i class="fas fa-star"></i>
@@ -287,7 +287,7 @@
                                             </div>
                                         </div>
                                         <div class="ml-4">
-                                            <h4 class="font-semibold text-neutral">Maria Reyes</h4>
+                                            <h4 class="font-semibold text-forest">Maria Reyes</h4>
                                             <div class="flex items-center mt-1">
                                                 <div class="flex items-center text-yellow-400">
                                                     <i class="fas fa-star"></i>
@@ -314,7 +314,7 @@
 
         <!-- Similar Products -->
         <div class="mt-12">
-            <h2 class="text-2xl font-bold text-neutral mb-6">You May Also Like</h2>
+            <h2 class="text-2xl font-bold text-forest mb-6">You May Also Like</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Similar Product Cards -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden group">
@@ -322,11 +322,11 @@
                         <img src="{{ asset('images/Female_Pekin_Duck.jpg') }}" alt="Female Pekin Duck"
                             class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-2 left-2">
-                            <span class="bg-primary text-white text-xs px-2 py-1 rounded-full">Premium</span>
+                            <span class="bg-forest text-white text-xs px-2 py-1 rounded-full">Premium</span>
                         </div>
                     </div>
                     <div class="p-4">
-                        <h3 class="font-semibold text-neutral">Female Pekin Duck</h3>
+                        <h3 class="font-semibold text-forest">Female Pekin Duck</h3>
                         <div class="flex items-center mt-1">
                             <div class="flex text-yellow-400 text-xs">
                                 <i class="fas fa-star"></i>
@@ -338,10 +338,10 @@
                             <span class="ml-1 text-xs text-gray-500">(18)</span>
                         </div>
                         <div class="mt-2">
-                            <span class="font-bold text-primary">₱2,300.00</span>
+                            <span class="font-bold text-forest">₱2,300.00</span>
                         </div>
                         <button
-                            class="mt-3 w-full bg-gray-100 text-primary font-medium py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                            class="mt-3 w-full bg-gray-100 text-forest font-medium py-2 rounded-lg hover:bg-gray-200 transition-colors">
                             View Details
                         </button>
                     </div>
@@ -380,11 +380,11 @@
 
                 const tabButtons = document.getElementsByClassName("tab-button");
                 for (let i = 0; i < tabButtons.length; i++) {
-                    tabButtons[i].className = tabButtons[i].className.replace(" text-primary border-b-2 border-primary", " text-gray-500");
+                    tabButtons[i].className = tabButtons[i].className.replace(" text-forest border-b-2 border-forest", " text-stone-500 hover:text-forest");
                 }
 
                 document.getElementById(tabName).style.display = "block";
-                evt.currentTarget.className += " text-primary border-b-2 border-primary";
+                evt.currentTarget.className += " text-forest border-b-2 border-forest";
             }
 
             // Set default tab

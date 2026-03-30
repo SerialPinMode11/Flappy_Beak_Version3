@@ -29,6 +29,51 @@
   --color-chart-4: #8b5cf6;
 }
 
+/* Dark mode: align with layouts/static (body.dark) — same semantic tokens, slate surfaces */
+body.dark {
+  --color-primary: #0f172a;
+  --color-primary-foreground: #f8fafc;
+  --color-secondary: #1e293b;
+  --color-secondary-foreground: #e2e8f0;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+  --color-card: #0f172a;
+  --color-card-foreground: #f1f5f9;
+  --color-background: #0b1220;
+  --color-foreground: #e5e7eb;
+  --color-border: #334155;
+  --color-input: #0f172a;
+  --color-ring: #a78bfa;
+  --color-destructive: #f87171;
+}
+
+body.dark .bg-muted\/50 {
+  background-color: rgb(30 41 59 / 0.55);
+}
+
+body.dark .incubation-index tbody tr:hover {
+  background-color: rgb(30 41 59 / 0.65) !important;
+}
+
+/* Slightly stronger tinted badges on dark cards */
+body.dark .bg-chart-1\/10 { background-color: rgb(245 158 11 / 0.18); }
+body.dark .bg-chart-2\/10 { background-color: rgb(16 185 129 / 0.18); }
+body.dark .bg-chart-2\/20 { background-color: rgb(16 185 129 / 0.28); }
+body.dark .bg-chart-3\/10 { background-color: rgb(59 130 246 / 0.2); }
+body.dark .bg-chart-4\/10 { background-color: rgb(139 92 246 / 0.2); }
+body.dark .bg-chart-4\/20 { background-color: rgb(139 92 246 / 0.3); }
+body.dark .bg-destructive\/10 { background-color: rgb(248 113 113 / 0.15); }
+body.dark .bg-accent\/10 { background-color: rgb(167 139 250 / 0.18); }
+body.dark .bg-accent\/20 { background-color: rgb(167 139 250 / 0.28); }
+
+/* Light mode: keep readable toolbar (was inline #f0f0f0 + black title) */
+body:not(.dark) .incubation-toolbar {
+  background-color: #f0f0f0 !important;
+}
+body:not(.dark) .incubation-toolbar h1 {
+  color: #111827 !important;
+}
+
 /* Custom Tailwind utilities */
 .bg-primary { background-color: var(--color-primary); }
 .text-primary-foreground { color: var(--color-primary-foreground); }
@@ -170,13 +215,13 @@
 }
 </style>
 
-<div class="min-h-screen bg-background">
+<div class="min-h-screen bg-background incubation-index">
     <!-- Updated header with modern Tailwind styling and semantic tokens -->
-    <div class="bg-primary border-b border-border no-print" style="background-color: #f0f0f0">
+    <div class="incubation-toolbar bg-primary border-b border-border no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-4">
-                    <h1 class="text-xl font-bold text-primary-foreground" style="color: #000">Incubation Management</h1>
+                    <h1 class="text-xl font-bold text-primary-foreground">Incubation Management</h1>
                 </div>
                 <!-- Replaced CSV export with Excel export and added print functionality -->
                 <div class="flex items-center space-x-3">

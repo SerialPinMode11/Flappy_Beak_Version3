@@ -1,6 +1,6 @@
 @extends('layouts.public-site')
 
-@section('title', 'Contact — ' . ($publicContent['store_name'] ?? 'JM Casabar Mini Farm'))
+@section('title', 'Contact Us — JM Casabar Mini Farm')
 
 @section('content')
 @include('partials.contact-content')

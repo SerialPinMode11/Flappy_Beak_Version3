@@ -1,5 +1,6 @@
 {{-- Global toast container: use window.showToast(message, 'success'|'error'|'info') --}}
-<div id="toast-container" class="fixed top-4 right-4 z-[9999] flex flex-col gap-3 max-w-sm w-full pointer-events-none" aria-live="polite"></div>
+{{-- Below sticky header, right side — cream band (matches “green box” placement in mockups) --}}
+<div id="toast-container" class="fixed top-[4.75rem] right-4 sm:right-6 lg:right-8 z-[9999] flex flex-col gap-3 max-w-sm w-[calc(100%-2rem)] sm:w-full pointer-events-none" aria-live="polite"></div>
 
 <style>
 #toast-container .toast-item {
@@ -7,14 +8,14 @@
     animation: toast-slide-in 0.3s ease-out;
 }
 @keyframes toast-slide-in {
-    from { opacity: 0; transform: translateX(100%); }
-    to { opacity: 1; transform: translateX(0); }
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 #toast-container .toast-item.hiding {
     animation: toast-slide-out 0.25s ease-in forwards;
 }
 @keyframes toast-slide-out {
-    to { opacity: 0; transform: translateX(100%); }
+    to { opacity: 0; transform: translateY(-6px); }
 }
 </style>
 

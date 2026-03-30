@@ -7,8 +7,9 @@ use App\Models\ContactForm;
 
 class ControllerName extends Controller
 {
-    public function contactUs(){
-        return view("customer.contact");
+    public function contactUs()
+    {
+        return view('guest.contact');
     }
 
     public function index()
