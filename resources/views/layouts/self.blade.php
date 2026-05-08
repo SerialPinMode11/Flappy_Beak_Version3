@@ -375,6 +375,14 @@
                             <i class="fas fa-desktop mr-3"></i>Hardware
                         </a>
                     </li>
+                    <!-- Public -->
+                    <li>
+                        <a href="{{ route('admin.public.edit') }}"  
+                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.public.*') ? 'nav-link-active' : '' }}"
+                           onclick="closeMobileSidebar()">
+                            <i class="fas fa-globe mr-3"></i>Public
+                        </a>
+                    </li>
                     <!-- Personal -->
                     <li>
                         <a href="#" 

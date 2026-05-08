@@ -58,6 +58,7 @@ class AdminController extends Controller
         $request->session()->forget('admin_logged_in');
         $request->session()->forget('admin_email');
         $request->session()->forget('admin_name');
+        $request->session()->forget('admin_photo_url');
         return redirect()->route('login')->with('success', 'You have been logged out successfully.');
     }
 
@@ -65,6 +66,14 @@ class AdminController extends Controller
     {
         $email = $request->session()->get('admin_email', $this->validEmail);
         $admin = Admin::where('email', $email)->first();
+        $resolvedPhotoUrl = $this->resolveAdminPhotoUrl($admin);
+
+        // Keep header avatar/name in sync with latest profile values.
+        $request->session()->put('admin_photo_url', $resolvedPhotoUrl);
+        if ($admin && !empty($admin->name)) {
+            $request->session()->put('admin_name', $admin->name);
+        }
+
         $tab = $request->query('tab', 'profile');
         $tab = in_array($tab, ['profile', 'security'], true) ? $tab : 'profile';
         $isTwoFactorEnabled = (bool) ($admin && !empty($admin->two_factor_secret) && !empty($admin->two_factor_enabled_at));
@@ -80,7 +89,7 @@ class AdminController extends Controller
             'admin' => $admin,
             'adminEmail' => $email,
             'adminName' => $request->session()->get('admin_name', 'Admin'),
-            'adminPhotoUrl' => $this->resolveAdminPhotoUrl($admin),
+            'adminPhotoUrl' => $resolvedPhotoUrl,
             'activeTab' => $tab,
             'isTwoFactorEnabled' => $isTwoFactorEnabled,
             'hasPendingTwoFactor' => $hasPendingTwoFactor,

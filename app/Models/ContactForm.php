@@ -12,5 +12,10 @@ class ContactForm extends Model
         'lastname',
         'email',
         'message',
+        'replied_at',
+    ];
+
+    protected $casts = [
+        'replied_at' => 'datetime',
     ];
 }

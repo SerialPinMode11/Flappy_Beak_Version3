@@ -158,6 +158,8 @@ Route::middleware('admin.session')->group(function(){
 
     //contact table
     Route::get("contactforlist", [ControllerName::class, "index"])->name("contactforlist");
+    Route::get("contactforlist/customers", [ControllerName::class, "customerAccounts"])->name("contactforlist.customers");
+    Route::post("contactforlist/reply", [ControllerName::class, "sendReply"])->name("contactforlist.reply");
 
     //personal
     Route::get('/admin/personal', [AnadminController::class, 'index'])->name('admin.personal');

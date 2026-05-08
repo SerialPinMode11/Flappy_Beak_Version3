@@ -10,14 +10,27 @@ class SuperAdminSeeder extends Seeder
 {
     public function run(): void
     {
-        Admin::updateOrCreate(
-            ['email' => 'jmcasabarsuccess@gmail.com'],
+        $admins = [
+            // <managed-admin-seeder-records>
             [
                 'name' => 'Super Admin',
-                'password' => Hash::make('0147K!0147.'),
+                'email' => 'jmcasabarsuccess@gmail.com',
+                'password' => '0147K!0147.',
                 'role' => 'super-admin',
-            ]
-        );
+            ],
+            // </managed-admin-seeder-records>
+        ];
+
+        foreach ($admins as $admin) {
+            Admin::updateOrCreate(
+                ['email' => $admin['email']],
+                [
+                    'name' => $admin['name'],
+                    'password' => Hash::make($admin['password']),
+                    'role' => $admin['role'],
+                ]
+            );
+        }
     }
 }
 

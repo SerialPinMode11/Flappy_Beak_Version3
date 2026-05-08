@@ -136,7 +136,7 @@
             <h2 class="text-2xl font-semibold text-gray-100">Admin Privileges</h2>
         </div>
         <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Expenses Report -->
                 <div class="dark-panel rounded-lg p-5 shadow-md">
                     <h3 class="text-lg font-medium mb-3 text-gray-100">Expenses Report</h3>
@@ -144,27 +144,12 @@
                         Generate a comprehensive expenses report in MS Excel format for detailed analysis and
                         record-keeping.
                     </p>
-                    <button id="generateExpensesReport"
-                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200">
+                    <a href="{{ route('admin.expense.export') }}"
+                        class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200">
                         Generate Expenses Report
-                    </button>
+                    </a>
                 </div>
                 
-                <!-- Sales Report -->
-                <div class="dark-panel rounded-lg p-5 shadow-md">
-                    <h3 class="text-lg font-medium mb-3 text-gray-100">Sales Report</h3>
-                    <p class="text-gray-400 mb-4">
-                        Generate a comprehensive sales report in MS Excel format for detailed analysis and
-                        record-keeping.
-                    </p>
-                    <button id="generateSalesReport"
-                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200">
-                        Generate Sales Report
-                    </button>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <!-- Income Report -->
                 <div class="dark-panel rounded-lg p-5 shadow-md">
                     <h3 class="text-lg font-medium mb-3 text-gray-100">Income Report</h3>
@@ -172,10 +157,10 @@
                         Generate a comprehensive income report in MS Excel format for detailed analysis and
                         record-keeping.
                     </p>
-                    <button id="generateIncomeReport"
-                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200">
+                    <a href="{{ route('admin.billing.export') }}"
+                        class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200">
                         Generate Income Report
-                    </button>
+                    </a>
                 </div>
                 
                 <!-- Product Stock Report -->
@@ -185,36 +170,13 @@
                         Generate a comprehensive stock report in MS Excel format for detailed analysis and
                         record-keeping.
                     </p>
-                    <button id="generateStockReport"
-                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200">
+                    <a href="{{ route('admin.personal.export.stock') }}"
+                        class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-200">
                         Generate Stock Report
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // <CHANGE> Updated expenses report button to actually call export endpoint
-        const expensesReportButton = document.getElementById('generateExpensesReport');
-        if (expensesReportButton) {
-            expensesReportButton.addEventListener('click', function() {
-                // Create and submit form to export expenses
-                window.location.href = '{{ route("admin.expense.export") }}';
-            });
-        }
-
-        // Keep existing alert functionality for other report buttons
-        const otherReportButtons = document.querySelectorAll('[id^="generate"]:not(#generateExpensesReport)');
-        otherReportButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                alert('Report generation initiated. Your download will begin shortly.');
-            });
-        });
-    });
-</script>
-@endpush
