@@ -112,6 +112,84 @@ class AdminPublicController extends Controller
         return back()->with('success', 'Other public pages updated successfully.');
     }
 
+    public function editIncubation()
+    {
+        $content = PublicPageSetting::getContent();
+        $defaults = PublicPageSetting::othersDefaults()['incubation_page'] ?? [];
+        $incubation = array_replace_recursive($defaults, $content['others']['incubation_page'] ?? []);
+
+        return view('admin.public.incubation', [
+            'incubation' => $incubation,
+        ]);
+    }
+
+    public function updateIncubation(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'eyebrow' => 'required|string|max:120',
+            'title' => 'required|string|max:255',
+            'details_title' => 'required|string|max:255',
+            'details_text' => 'required|string|max:3000',
+            'why_title' => 'required|string|max:255',
+            'book_button' => 'required|string|max:120',
+            'services' => 'required|array|size:4',
+            'services.*.badge' => 'required|string|max:80',
+            'services.*.title' => 'required|string|max:255',
+            'services.*.description' => 'required|string|max:2000',
+            'services.*.price' => 'required|string|max:50',
+            'services.*.price_note' => 'required|string|max:120',
+            'services.*.rating' => 'required|string|max:10',
+            'services.*.reviews' => 'required|string|max:20',
+            'factors' => 'required|array|size:8',
+            'factors.*.icon' => 'required|string|max:80',
+            'factors.*.title' => 'required|string|max:150',
+            'factors.*.description' => 'required|string|max:500',
+            'why_items' => 'required|array|min:3|max:8',
+            'why_items.*' => 'nullable|string|max:255',
+            'service_images' => 'nullable|array',
+            'service_images.*' => 'nullable|image|max:4096',
+        ]);
+
+        $setting = PublicPageSetting::query()->firstOrCreate([], [
+            'content' => PublicPageSetting::defaults(),
+        ]);
+
+        $base = array_replace_recursive(PublicPageSetting::defaults(), $setting->content ?? []);
+        $incubation = $base['others']['incubation_page'] ?? (PublicPageSetting::othersDefaults()['incubation_page'] ?? []);
+
+        $whyItems = array_values(array_filter(
+            array_map(fn ($v) => trim((string) $v), $validated['why_items']),
+            fn ($v) => $v !== ''
+        ));
+
+        if (count($whyItems) < 3) {
+            return back()->withErrors(['why_items' => 'Please provide at least 3 "Why choose us" items.'])->withInput();
+        }
+
+        $incubation = array_replace_recursive($incubation, [
+            'eyebrow' => trim($validated['eyebrow']),
+            'title' => trim($validated['title']),
+            'details_title' => trim($validated['details_title']),
+            'details_text' => trim($validated['details_text']),
+            'why_title' => trim($validated['why_title']),
+            'book_button' => trim($validated['book_button']),
+            'services' => $this->sanitizeArray($validated['services']),
+            'factors' => $this->sanitizeArray($validated['factors']),
+            'why_items' => $whyItems,
+        ]);
+
+        foreach ($request->file('service_images', []) as $idx => $img) {
+            if ($img) {
+                $incubation['services'][$idx]['image'] = $img->store('public-page/incubation', 'public');
+            }
+        }
+
+        $base['others']['incubation_page'] = $incubation;
+        $setting->update(['content' => $base]);
+
+        return back()->with('success', 'Incubation page details updated successfully.');
+    }
+
     private function sanitizeArray(array $input): array
     {
         $out = [];

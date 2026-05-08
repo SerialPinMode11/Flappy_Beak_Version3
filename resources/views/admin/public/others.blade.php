@@ -4,6 +4,15 @@
 @section('header-title', 'Public · Others')
 @section('header-subtitle', 'Edit all non-product public page content using text fields only.')
 
+@push('styles')
+<style>
+    .editor-section summary { cursor: pointer; list-style: none; }
+    .editor-section summary::-webkit-details-marker { display: none; }
+    .editor-section[open] .chev { transform: rotate(180deg); }
+    .editor-section .chev { transition: transform .2s ease; }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-6xl mx-auto space-y-8">
     @if(session('success'))
@@ -30,8 +39,16 @@
         @csrf
         @method('PUT')
 
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 space-y-4">
-            <h2 class="text-lg font-semibold">Contact Us (red box only)</h2>
+        <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-sm text-indigo-800">
+            This page has many fields. Expand only the section you are currently updating to avoid overload.
+        </div>
+
+        <details class="editor-section bg-white rounded-xl border border-gray-200 shadow-sm" open>
+            <summary class="px-5 py-4 flex items-center justify-between border-b border-gray-200">
+                <h2 class="text-lg font-semibold">Contact Us (red box only)</h2>
+                <i class="fas fa-chevron-down chev text-gray-400"></i>
+            </summary>
+            <div class="p-5 space-y-4">
             <div class="grid md:grid-cols-2 gap-4">
                 <div><label class="text-sm block mb-1">Location label</label><input type="text" name="contact[location_label]" value="{{ $c['location_label'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
                 <div><label class="text-sm block mb-1">Location text</label><input type="text" name="contact[location_text]" value="{{ $c['location_text'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
@@ -43,10 +60,15 @@
                 <div><label class="text-sm block mb-1">Facebook display text</label><input type="text" name="contact[facebook_text]" value="{{ $c['facebook_text'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
                 <div class="md:col-span-2"><label class="text-sm block mb-1">Facebook URL</label><input type="text" name="contact[facebook_url]" value="{{ $c['facebook_url'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
             </div>
-        </div>
+            </div>
+        </details>
 
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 space-y-4">
-            <h2 class="text-lg font-semibold">About Us (red box only)</h2>
+        <details class="editor-section bg-white rounded-xl border border-gray-200 shadow-sm">
+            <summary class="px-5 py-4 flex items-center justify-between border-b border-gray-200">
+                <h2 class="text-lg font-semibold">About Us (red box only)</h2>
+                <i class="fas fa-chevron-down chev text-gray-400"></i>
+            </summary>
+            <div class="p-5 space-y-4">
             <div class="grid md:grid-cols-2 gap-4">
                 <div class="md:col-span-2"><label class="text-sm block mb-1">Story title</label><input type="text" name="about[story_title]" value="{{ $a['story_title'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
                 <div><label class="text-sm block mb-1">Story paragraph 1</label><textarea name="about[story_p1]" rows="4" class="w-full border rounded-lg px-3 py-2">{{ $a['story_p1'] ?? '' }}</textarea></div>
@@ -61,10 +83,15 @@
                     </div>
                 @endforeach
             </div>
-        </div>
+            </div>
+        </details>
 
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 space-y-4">
-            <h2 class="text-lg font-semibold">FAQ page (all content)</h2>
+        <details class="editor-section bg-white rounded-xl border border-gray-200 shadow-sm">
+            <summary class="px-5 py-4 flex items-center justify-between border-b border-gray-200">
+                <h2 class="text-lg font-semibold">FAQ page (all content)</h2>
+                <i class="fas fa-chevron-down chev text-gray-400"></i>
+            </summary>
+            <div class="p-5 space-y-4">
             <div class="grid md:grid-cols-3 gap-4">
                 <div><label class="text-sm block mb-1">Hero title</label><input type="text" name="faq[hero_title]" value="{{ $fq['hero_title'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
                 <div><label class="text-sm block mb-1">Hero subtitle</label><input type="text" name="faq[hero_subtitle]" value="{{ $fq['hero_subtitle'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
@@ -106,10 +133,15 @@
                 <div><label class="text-sm block mb-1">Call button text</label><input type="text" name="faq[cta_button_call]" value="{{ $fq['cta_button_call'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
                 <div class="md:col-span-2"><label class="text-sm block mb-1">Bottom note</label><input type="text" name="faq[cta_bottom_note]" value="{{ $fq['cta_bottom_note'] ?? '' }}" class="w-full border rounded-lg px-3 py-2"></div>
             </div>
-        </div>
+            </div>
+        </details>
 
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 space-y-4">
-            <h2 class="text-lg font-semibold">Privacy Policy (all content)</h2>
+        <details class="editor-section bg-white rounded-xl border border-gray-200 shadow-sm">
+            <summary class="px-5 py-4 flex items-center justify-between border-b border-gray-200">
+                <h2 class="text-lg font-semibold">Privacy Policy (all content)</h2>
+                <i class="fas fa-chevron-down chev text-gray-400"></i>
+            </summary>
+            <div class="p-5 space-y-4">
             <div class="grid md:grid-cols-2 gap-4">
                 @foreach([
                     'hero_title' => 'Hero title', 'hero_subtitle' => 'Hero subtitle',
@@ -191,10 +223,11 @@
                     </div>
                 @endfor
             </div>
-        </div>
+            </div>
+        </details>
 
-        <div>
-            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg">Save Others</button>
+        <div class="sticky bottom-4 z-20 flex justify-end">
+            <button type="submit" class="shadow-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg">Save Others</button>
         </div>
     </form>
 </div>

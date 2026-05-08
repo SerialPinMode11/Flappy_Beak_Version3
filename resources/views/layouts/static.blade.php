@@ -281,19 +281,37 @@
                     </li>
                     <!-- Customer Feedback Management -->
                     <li>
-                        <a href="{{ route('contactforlist' ) }}" 
-                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('contactforlist') ? 'nav-link-active' : '' }}"
-                           onclick="closeMobileSidebar()">
-                            <i class="fas fa-comments mr-3"></i>Customer Feedback Management
-                        </a>
+                        <div class="space-y-1">
+                            <a href="{{ route('contactforlist' ) }}" 
+                               class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('contactforlist') || request()->routeIs('contactforlist.customers') ? 'nav-link-active' : '' }}"
+                               onclick="closeMobileSidebar()">
+                                <i class="fas fa-comments mr-3"></i>Customer Feedback Management
+                            </a>
+                            @if(request()->routeIs('contactforlist') || request()->routeIs('contactforlist.customers'))
+                                <a href="{{ route('contactforlist.customers') }}"
+                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('contactforlist.customers') ? 'nav-link-active' : '' }}"
+                                   onclick="closeMobileSidebar()">
+                                    <i class="fas fa-users mr-2"></i>Customer Accounts
+                                </a>
+                            @endif
+                        </div>
                     </li>
-                    <!-- Incubation Book List -->
+                    <!-- Incubation -->
                     <li>
-                        <a href="{{ route('admin.incubation.index' ) }}" 
-                           class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.incubation.*') ? 'nav-link-active' : '' }}"
-                           onclick="closeMobileSidebar()">
-                            <i class="fas fa-industry mr-3"></i>Incubation Book List
-                        </a>
+                        <div class="space-y-1">
+                            <a href="{{ route('admin.incubation.index' ) }}" 
+                               class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.incubation.*') || request()->routeIs('admin.public.incubation.*') ? 'nav-link-active' : '' }}"
+                               onclick="closeMobileSidebar()">
+                                <i class="fas fa-industry mr-3"></i>Incubation Book List
+                            </a>
+                            @if(request()->routeIs('admin.incubation.*') || request()->routeIs('admin.public.incubation.*'))
+                                <a href="{{ route('admin.public.incubation.edit') }}"
+                                   class="ml-7 flex items-center p-1.5 text-sm text-gray-400 hover:bg-gray-700 rounded-lg transition-colors duration-200 mobile-nav-item {{ request()->routeIs('admin.public.incubation.*') ? 'nav-link-active' : '' }}"
+                                   onclick="closeMobileSidebar()">
+                                    <i class="fas fa-layer-group mr-2"></i>Incubation Details
+                                </a>
+                            @endif
+                        </div>
                     </li>
                     <!-- Hardware -->
                     <li>

@@ -155,7 +155,7 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <button type="submit" class="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark transition-colors">
+                <button type="submit" class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
                     Update Billing Information
                 </button>
             </div>

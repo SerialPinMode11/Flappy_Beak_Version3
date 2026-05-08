@@ -153,9 +153,13 @@ Route::middleware('admin.session')->group(function(){
     Route::put('/admin/public', [AdminPublicController::class, 'update'])->name('admin.public.update');
     Route::get('/admin/public/others', [AdminPublicController::class, 'editOthers'])->name('admin.public.others.edit');
     Route::put('/admin/public/others', [AdminPublicController::class, 'updateOthers'])->name('admin.public.others.update');
+    Route::get('/admin/public/incubation', [AdminPublicController::class, 'editIncubation'])->name('admin.public.incubation.edit');
+    Route::put('/admin/public/incubation', [AdminPublicController::class, 'updateIncubation'])->name('admin.public.incubation.update');
 
     //contact table
     Route::get("contactforlist", [ControllerName::class, "index"])->name("contactforlist");
+    Route::get("contactforlist/customers", [ControllerName::class, "customerAccounts"])->name("contactforlist.customers");
+    Route::post("contactforlist/reply", [ControllerName::class, "sendReply"])->name("contactforlist.reply");
 
     //personal
     Route::get('/admin/personal', [AnadminController::class, 'index'])->name('admin.personal');
@@ -219,9 +223,9 @@ Route::middleware('admin.session')->group(function(){
     Route::get('/admin/incubation-list', [IncubationAdminController::class, 'index'])->name('admin.incubation.index');
     Route::get('/admin/bookings', [IncubationAdminController::class, 'index'])->name('admin.bookings.index');
     Route::get('/admin/incubation/show/{id}', [IncubationAdminController::class, 'show'])->name('admin.bookings.show'); 
-    Route::get('/admin/expenses/{id}', [IncubationAdminController::class, 'edit'])->name('admin.bookings.edit');
-    Route::post('/admin/expenses/store', [IncubationAdminController::class, 'store'])->name('admin.bookings.store');
-    Route::put('/admin/expenses/update/{id}', [IncubationAdminController::class, 'update'])->name('admin.bookings.update');
+    Route::get('/admin/incubation/{id}/edit', [IncubationAdminController::class, 'edit'])->name('admin.bookings.edit');
+    Route::post('/admin/incubation/store', [IncubationAdminController::class, 'store'])->name('admin.bookings.store');
+    Route::put('/admin/incubation/update/{id}', [IncubationAdminController::class, 'update'])->name('admin.bookings.update');
     
     
     //incubation

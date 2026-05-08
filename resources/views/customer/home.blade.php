@@ -49,6 +49,44 @@
     };
 @endphp
 
+<div class="fixed top-20 right-4 sm:right-6 lg:right-8 z-[65]">
+    <button type="button"
+            id="logout-trigger"
+            class="inline-flex items-center justify-center w-11 h-11 rounded-lg border border-red-200 bg-white text-red-600 shadow-sm hover:bg-red-50 hover:border-red-300 transition-colors"
+            aria-label="Log out"
+            title="Log out">
+        <i class="fas fa-right-from-bracket text-lg"></i>
+    </button>
+</div>
+
+<form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
+    @csrf
+</form>
+
+<div id="logout-confirm-modal" class="fixed inset-0 z-[90] hidden" role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title">
+    <div class="absolute inset-0 bg-black/45" data-close-logout-modal></div>
+    <div class="relative min-h-full flex items-center justify-center p-4">
+        <div class="w-full max-w-md rounded-2xl border border-stone-200 bg-white shadow-2xl p-6 sm:p-7">
+            <h3 id="logout-confirm-title" class="font-serif text-2xl font-semibold text-forest">Confirm logout</h3>
+            <p class="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
+                Are you sure you want to log out? You will be redirected to the sign-in page.
+            </p>
+            <div class="mt-6 flex items-center justify-end gap-3">
+                <button type="button"
+                        id="logout-cancel-btn"
+                        class="inline-flex items-center justify-center rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button"
+                        id="logout-confirm-btn"
+                        class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors">
+                    Yes, log out
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="home-welcome-bg border-b border-stone-200/60">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold-deep/90 mb-3">Farm Customer</p>
@@ -77,9 +115,9 @@
 
     <div id="products" class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8 sm:mb-10">
         <div class="min-w-0">
-            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-forest">Curated Heritage</h2>
+            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-forest">Our Products</h2>
             <p class="mt-2 text-sm sm:text-base text-stone-600 max-w-xl leading-relaxed">
-                Hand-selected cuts, eggs, and cellar releases — raised with care and prepared for your table.
+                Hand-selected cuts, eggs, and cellar releases, raised with care and prepared for your table.
             </p>
         </div>
         <div class="flex flex-wrap gap-2 shrink-0 justify-start sm:justify-end" role="group" aria-label="Filter products">
@@ -198,6 +236,43 @@
 @push('scripts')
 <script>
     (function () {
+        var logoutTrigger = document.getElementById('logout-trigger');
+        var logoutModal = document.getElementById('logout-confirm-modal');
+        var logoutCancelBtn = document.getElementById('logout-cancel-btn');
+        var logoutConfirmBtn = document.getElementById('logout-confirm-btn');
+        var logoutForm = document.getElementById('logout-form');
+        var closeTargets = document.querySelectorAll('[data-close-logout-modal]');
+
+        function openLogoutModal() {
+            if (!logoutModal) return;
+            logoutModal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeLogoutModal() {
+            if (!logoutModal) return;
+            logoutModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        if (logoutTrigger && logoutModal && logoutForm) {
+            logoutTrigger.addEventListener('click', openLogoutModal);
+            if (logoutCancelBtn) logoutCancelBtn.addEventListener('click', closeLogoutModal);
+            if (logoutConfirmBtn) {
+                logoutConfirmBtn.addEventListener('click', function () {
+                    logoutForm.submit();
+                });
+            }
+            closeTargets.forEach(function (el) {
+                el.addEventListener('click', closeLogoutModal);
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && !logoutModal.classList.contains('hidden')) {
+                    closeLogoutModal();
+                }
+            });
+        }
+
         var form = document.getElementById('home-newsletter-form');
         var email = document.getElementById('newsletter-email');
         if (!form || !email) return;

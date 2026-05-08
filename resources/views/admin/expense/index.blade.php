@@ -104,9 +104,20 @@
 </style>
 
 <header class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <h1 class="text-2xl font-semibold text-gray-800">Expenses Information</h1>
-        
+    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex flex-wrap gap-4 justify-between items-center">
+        <div class="flex items-center gap-3 min-w-0">
+            <h1 class="text-2xl font-semibold text-gray-800">Expenses Information</h1>
+            <button type="button"
+               id="openExpenseCreateModal"
+               class="no-print inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-600 text-white shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors shrink-0"
+               title="Add new expense"
+               aria-label="Add new expense"
+               aria-haspopup="dialog"
+               aria-controls="expenseCreateModal">
+                <i class="fas fa-plus text-lg" aria-hidden="true"></i>
+            </button>
+        </div>
+
         <!-- Added person selector dropdown and enhanced print button -->
         <div class="flex space-x-3 items-center">
             <div class="no-print">
@@ -127,6 +138,92 @@
         </div>
     </div>
 </header>
+
+<!-- Add expense modal -->
+<div id="expenseCreateModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="expenseCreateModalTitle">
+    <div class="fixed inset-0 bg-black/50 transition-opacity" data-close-expense-modal></div>
+    <div class="relative min-h-full flex items-center justify-center p-4 sm:p-6">
+        <div class="relative w-full max-w-2xl rounded-xl bg-white shadow-xl border border-gray-200 max-h-[min(90vh,calc(100vh-2rem))] flex flex-col" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-200 shrink-0">
+                <h2 id="expenseCreateModalTitle" class="text-lg font-semibold text-gray-900">Add New Expense</h2>
+                <button type="button" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100" onclick="closeExpenseCreateModal()" aria-label="Close">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 py-4">
+                @if($errors->any() && old('_expense_modal'))
+                    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+                        Please correct the errors below.
+                    </div>
+                @endif
+                <form action="{{ route('admin.expense.store') }}" method="POST" id="expenseCreateForm">
+                    @csrf
+                    <input type="hidden" name="_expense_modal" value="1">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="modal_expense_type" class="block text-sm font-medium text-gray-700 mb-1">Expense Type</label>
+                            <input type="text" name="expense_type" id="modal_expense_type" value="{{ old('expense_type') }}" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" required>
+                            @error('expense_type')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="modal_amount" class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                            <input type="number" name="amount" id="modal_amount" value="{{ old('amount') }}" step="0.01" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" required>
+                            @error('amount')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="modal_date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="date" name="date" id="modal_date" value="{{ old('date', date('Y-m-d')) }}" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" required>
+                            @error('date')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="modal_category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <select name="category" id="modal_category" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" required>
+                                <option value="">Select Category</option>
+                                <option value="Farm" {{ old('category') == 'Farm' ? 'selected' : '' }}>Farm</option>
+                                <option value="Ecommerce" {{ old('category') == 'Ecommerce' ? 'selected' : '' }}>Ecommerce</option>
+                                <option value="Office" {{ old('category') == 'Office' ? 'selected' : '' }}>Office</option>
+                                <option value="Utilities" {{ old('category') == 'Utilities' ? 'selected' : '' }}>Utilities</option>
+                                <option value="Other" {{ old('category') == 'Other' ? 'selected' : '' }}>Other</option>
+                            </select>
+                            @error('category')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="modal_description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input type="text" name="description" id="modal_description" value="{{ old('description') }}" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" required>
+                            @error('description')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="modal_notes" class="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+                            <textarea name="notes" id="modal_notes" rows="3" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">{{ old('notes') }}</textarea>
+                            @error('notes')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-gray-100 pt-4">
+                        <button type="button" onclick="closeExpenseCreateModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-save"></i>
+                            Save Expense
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Added export modal -->
 <div id="exportModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
@@ -319,6 +416,43 @@
 
 <!-- Enhanced print function with header information and total calculation -->
 <script>
+function openExpenseCreateModal() {
+    var el = document.getElementById('expenseCreateModal');
+    if (!el) return;
+    el.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    var first = el.querySelector('input:not([type="hidden"])');
+    if (first) setTimeout(function () { first.focus(); }, 50);
+}
+
+function closeExpenseCreateModal() {
+    var el = document.getElementById('expenseCreateModal');
+    if (!el) return;
+    el.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var openBtn = document.getElementById('openExpenseCreateModal');
+    if (openBtn) openBtn.addEventListener('click', openExpenseCreateModal);
+
+    document.querySelectorAll('[data-close-expense-modal]').forEach(function (backdrop) {
+        backdrop.addEventListener('click', closeExpenseCreateModal);
+    });
+
+    @if($errors->any() && old('_expense_modal'))
+    openExpenseCreateModal();
+    @endif
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        var m = document.getElementById('expenseCreateModal');
+        if (m && !m.classList.contains('hidden')) {
+            closeExpenseCreateModal();
+        }
+    });
+});
+
 function printTable() {
     // Get selected person
     const selectedPerson = document.getElementById('printedBy').value;
