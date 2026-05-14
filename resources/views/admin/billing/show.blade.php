@@ -16,6 +16,7 @@
         </div>
     </div>
 
+    {{-- 1. Customer Information, Payment, and Order Status --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white rounded-xl shadow-md p-6">
             <h3 class="text-lg font-semibold mb-4">Customer Information</h3>
@@ -33,7 +34,17 @@
                 
                 <div>
                     <span class="block text-sm text-gray-500">Address</span>
-                    <span class="font-medium">{{ $billing->address }}, {{ $billing->city }}, {{ $billing->zip }}</span>
+                    <span class="font-medium">{{ $billing->address }}</span>
+                </div>
+
+                <div>
+                    <span class="block text-sm text-gray-500">City</span>
+                    <span class="font-medium">{{ $billing->city }}</span>
+                </div>
+
+                <div>
+                    <span class="block text-sm text-gray-500">ZIP Code</span>
+                    <span class="font-medium">{{ $billing->zip }}</span>
                 </div>
             </div>
         </div>
@@ -98,8 +109,9 @@
         </div>
     </div>
 
+    {{-- 2. Purchased Products --}}
     @if(is_array($billing->items) && count($billing->items) > 0)
-    <div class="mt-8 bg-white rounded-xl shadow-md p-6">
+    <div class="mt-6 bg-white rounded-xl shadow-md p-6">
         <h3 class="text-lg font-semibold mb-4">Purchased Products</h3>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -133,5 +145,64 @@
         </div>
     </div>
     @endif
+
+    {{-- 3. Delivery Address --}}
+    <div class="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl shadow-md p-6">
+        <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-truck text-amber-600 text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-1">Delivery Address</h3>
+                    <p class="text-sm text-gray-500 mb-3">Where to deliver this order</p>
+                    <div class="space-y-2">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-map-marker-alt text-amber-500 mt-1 w-4 text-center"></i>
+                            <span class="font-medium text-gray-900 text-base">{{ $billing->address }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-city text-amber-500 w-4 text-center"></i>
+                            <span class="font-medium text-gray-800">{{ $billing->city }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-mail-bulk text-amber-500 w-4 text-center"></i>
+                            <span class="font-medium text-gray-800">{{ $billing->zip }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-amber-200/60">
+                        <p class="text-sm text-gray-600">
+                            <i class="fas fa-user text-gray-400 mr-1"></i>
+                            <strong>{{ $billing->name }}</strong> — {{ $billing->email }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 flex-shrink-0">
+                <button type="button" onclick="copyAddress()" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium bg-white border border-amber-300 rounded-lg hover:bg-amber-50 transition-colors text-amber-700" title="Copy full address">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+                <a href="https://www.google.com/maps/search/{{ urlencode($billing->address . ', ' . $billing->city . ', ' . $billing->zip) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium bg-white border border-amber-300 rounded-lg hover:bg-amber-50 transition-colors text-amber-700" title="Open in Google Maps">
+                    <i class="fas fa-map"></i> Map
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+function copyAddress() {
+    var address = @json($billing->address . ', ' . $billing->city . ', ' . $billing->zip);
+    navigator.clipboard.writeText(address).then(function() {
+        var btn = event.currentTarget;
+        var original = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.classList.add('bg-green-50', 'border-green-300', 'text-green-700');
+        setTimeout(function() {
+            btn.innerHTML = original;
+            btn.classList.remove('bg-green-50', 'border-green-300', 'text-green-700');
+        }, 2000);
+    });
+}
+</script>
 @endsection

@@ -33,12 +33,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @stack('styles')
 </head>
-<body class="min-h-screen bg-cream text-stone-800 antialiased pb-20 lg:pb-0">
+<body class="min-h-screen bg-cream text-stone-800 antialiased @hasSection('auth_full_page') pb-0 @else pb-20 lg:pb-0 @endif">
     @php
         $pc = $pcLayout;
         $storeName = $storeNameLayout;
     @endphp
 
+    @sectionMissing('auth_full_page')
     <header class="sticky top-0 z-[60] bg-white border-b border-stone-200/80 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex lg:hidden items-center justify-between gap-3 h-16 min-h-[4rem]">
@@ -161,11 +162,13 @@
             </nav>
         </div>
     </header>
+    @endif
 
     <main>
         @yield('content')
     </main>
 
+    @sectionMissing('auth_full_page')
     <footer class="bg-forest-dark text-white pt-14 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-10 mb-10">
@@ -225,6 +228,7 @@
             @endauth
         </div>
     </nav>
+    @endif
 
     @include('partials.toast-container')
 
